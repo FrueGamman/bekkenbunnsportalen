@@ -1,0 +1,806 @@
+/* /pelvic-react/src/conditions/urinary-incontinance/components/condition-page.module.css */
+.container {
+  min-height: 100vh;
+  min-height: calc(var(--vh, 1vh) * 100);
+  background: var(--color-bg-primary);
+}
+
+@supports (min-height: 100dvh) {
+  .container {
+    min-height: 100dvh;
+  }
+}
+
+/* Page Header */
+.pageHeader {
+  background: var(--color-bg-accent);
+  padding: 1.5rem 1rem;
+  /* Reduced from 2rem */
+  text-align: center;
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+}
+
+.pageTitle {
+  font-size: 1.75rem;
+  font-weight: 400;
+  color: var(--color-text-tertiary);
+  margin: 0;
+  max-width: 1200px;
+  margin: 0 auto;
+  word-break: keep-all;
+  overflow-wrap: break-word;
+  hyphens: none;
+}
+
+/* Condition Navigation Bar */
+.conditionNavigation {
+  background: var(--color-nav-bg);
+  padding: 0;
+  border-bottom: 1px solid var(--color-nav-border);
+}
+
+.conditionNavContainer {
+  max-width: 1200px;
+  width: 2800px;
+  margin: 0 auto;
+  word-break: keep-all;
+  overflow-wrap: break-word;
+  hyphens: none;
+  display: flex;
+  gap: 24px;
+  /* Reduced from 40px */
+  overflow-x: auto;
+  justify-content: flex-start;
+  align-items: center;
+  padding: 0 24px;
+  height: 70px;
+  /* Reduced from 90px */
+}
+
+.conditionNavItem {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0px;
+  padding: 0 16px;
+  /* Reduced from 20px */
+  background: transparent;
+  cursor: pointer;
+  border: none;
+  border-right: 1px solid var(--color-border-secondary);
+  min-width: 160px;
+  /* Reduced from 180px */
+  max-width: none;
+  width: auto;
+  /* Changed from 700px */
+  height: 50px;
+  /* Reduced from 64px */
+  transition: background 0.2s, color 0.2s;
+  font-size: 15px;
+  /* Slightly smaller */
+  color: var(--color-nav-text);
+  font-weight: 400;
+}
+
+.conditionNavItem:last-child {
+  border-right: none;
+}
+
+.conditionNavItemActive,
+.conditionNavItem:active {
+  color: var(--color-nav-text-hover);
+  font-weight: 600;
+  background: var(--color-card-hover);
+}
+
+.conditionNavItem:hover {
+  background: var(--color-card-hover);
+}
+
+.conditionIcon {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 8px;
+}
+
+.conditionIconImage {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}
+
+.conditionTitle {
+  font-size: 16px;
+  font-weight: 400;
+  color: var(--color-nav-text);
+  line-height: 1.2;
+  text-align: left;
+  margin: 0;
+  white-space: pre-line;
+}
+
+/* Responsive: stack or scroll on small screens */
+@media (max-width: 700px) {
+  .conditionNavContainer {
+    gap: 16px;
+    padding: 0 8px;
+    height: auto;
+  }
+
+  .conditionNavItem {
+    font-size: 14px;
+    height: 48px;
+    padding: 0 8px;
+  }
+
+  .conditionIcon {
+    width: 24px;
+    height: 24px;
+    margin-right: 4px;
+  }
+}
+
+/* Section Navigation - Matching Figma Exactly */
+.sectionNavigation {
+  background: var(--health-section-bg);
+  padding: 0;
+  box-shadow: var(--shadow-sm);
+}
+
+.sectionNavContainer {
+  max-width: 1300px;
+  margin: 0 auto;
+  word-break: keep-all;
+  overflow-wrap: break-word;
+  hyphens: none;
+  display: flex;
+  gap: 0;
+  overflow-x: no-wrap;
+  padding: 0;
+}
+
+.sectionNavButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  /* Reduced from 1rem 1.25rem */
+  border: none;
+  border-radius: 0;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+  font-size: 18px;
+  /* Reduced from 21px */
+  font-weight: 400;
+  /* Increased from 300 */
+  background: transparent;
+  color: var(--health-tab-text);
+  min-width: -webkit-fill-available;
+  /* fallback for Samsung Internet */
+  flex: 1;
+  border-right: 1px solid var(--health-tab-border);
+  text-align: center;
+}
+
+.sectionNavButton:hover {
+  background: var(--health-tab-bg);
+  color: var(--health-tab-text);
+}
+
+.sectionNavButtonActive {
+  background: var(--health-tab-bg);
+  color: var(--health-tab-text);
+  position: relative;
+}
+
+.sectionNavButtonActive::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: var(--health-separator-bg);
+}
+
+.sectionNavButton:last-child {
+  border-right: none;
+}
+
+.sectionIcon {
+  width: 1.25rem;
+  height: 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sectionIconImage {
+  width: 1rem;
+  height: 1rem;
+  object-fit: contain;
+  filter: var(--health-icon-filter);
+  transition: all 0.3s ease;
+}
+
+.sectionText {
+  font-weight: 500;
+  font-size: 0.875rem;
+}
+
+/* Main Content */
+.mainContent {
+  padding: 1.5rem 1rem;
+  /* Reduced from 2rem */
+  min-height: 50vh;
+  background: var(--color-bg-primary);
+}
+
+.contentContainer {
+  max-width: 100%;
+  margin: 0 auto;
+  word-break: keep-all;
+  overflow-wrap: break-word;
+  padding: 0 2rem;
+  hyphens: none;
+}
+
+/* Section Container - Matching Figma Design */
+.sectionContainer {
+  background: var(--color-card-bg);
+  border-radius: 1.5rem;
+  padding: 0;
+  box-shadow: var(--shadow-xl);
+  overflow: hidden;
+  border: 1px solid var(--color-card-border);
+}
+
+.sectionHeader {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 2rem 2rem 1rem 2rem;
+}
+
+.sectionIconCircle {
+  position: relative;
+  width: 5rem;
+  height: 5rem;
+  background: var(--color-primary);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.sectionTitle {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--color-primary);
+  margin: 0;
+}
+
+/* Content Box - Light Blue Background as in Figma */
+.contentBox {
+  background: var(--color-bg-secondary);
+  margin: 0 2rem 2rem 2rem;
+  padding: 2rem;
+  border-radius: 1rem;
+  border: 1px solid var(--color-border-primary);
+}
+
+.contentText {
+  margin-bottom: 1.5rem;
+  font-size: 1rem;
+  line-height: 1.6;
+  color: var(--color-text-secondary);
+}
+
+.contentText:last-child {
+  margin-bottom: 0;
+}
+
+.subheading {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--color-primary);
+  margin: 2rem 0 1rem 0;
+}
+
+/* Bladder Capacity Box */
+.capacityBox {
+  background: var(--color-card-bg);
+  border: 1px solid var(--color-border-secondary);
+  border-radius: 0.75rem;
+  padding: 1.5rem;
+  margin-top: 2rem;
+}
+
+.capacityTitle {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--color-primary);
+  margin-bottom: 1rem;
+}
+
+.capacityList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.capacityList li {
+  padding: 0.5rem 0;
+  border-bottom: 1px solid var(--color-border-primary);
+  font-weight: 500;
+  color: var(--color-text-secondary);
+}
+
+.capacityList li:last-child {
+  border-bottom: none;
+}
+
+/* Symptoms List */
+.symptomsList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.symptomsList li {
+  padding: 0.75rem 0;
+  border-bottom: 1px solid var(--color-border-secondary);
+  font-size: 1rem;
+  line-height: 1.5;
+  color: var(--color-text-secondary);
+  position: relative;
+  padding-left: 1.5rem;
+}
+
+.symptomsList li:before {
+  content: "•";
+  color: var(--color-primary);
+  font-weight: 700;
+  position: absolute;
+  left: 0;
+}
+
+.symptomsList li:last-child {
+  border-bottom: none;
+}
+
+/* Causes List */
+.causesList {
+  list-style: none;
+  padding: 0;
+  margin: 2rem 0;
+}
+
+.causesList li {
+  padding: 1rem 0;
+  border-bottom: 1px solid var(--color-border-secondary);
+  font-size: 1rem;
+  line-height: 1.6;
+  color: var(--color-text-secondary);
+  position: relative;
+  padding-left: 1.5rem;
+}
+
+.causesList li:before {
+  content: "•";
+  color: var(--color-primary);
+  font-weight: 700;
+  position: absolute;
+  left: 0;
+  top: 1rem;
+}
+
+.causesList li:last-child {
+  border-bottom: none;
+}
+
+/* Diagnosis Sections */
+.diagnosisSection {
+  margin-bottom: 2rem;
+}
+
+.diagnosisSubtitle {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  margin: 1.5rem 0 0.75rem 0;
+}
+
+.diagnosisList {
+  list-style: none;
+  padding: 0;
+  margin: 1rem 0;
+  padding-left: 2rem;
+}
+
+.diagnosisList li {
+  padding: 0.5rem 0;
+  font-size: 1rem;
+  line-height: 1.5;
+  color: var(--color-text-secondary);
+  position: relative;
+}
+
+.diagnosisList li:before {
+  content: "•";
+  color: var(--color-primary);
+  font-weight: 700;
+  position: absolute;
+  left: -1.5rem;
+}
+
+/* Treatment Sections - Matching Figma with Images */
+.treatmentSection {
+  display: flex;
+  gap: 2rem;
+  margin-bottom: 2rem;
+  padding: 1.5rem;
+  background: var(--color-card-bg);
+  border-radius: 0.75rem;
+  border: 1px solid var(--color-border-primary);
+}
+
+.treatmentSection:last-child {
+  margin-bottom: 0;
+}
+
+.treatmentImageContainer {
+  flex-shrink: 0;
+  width: 200px;
+}
+
+.treatmentImage {
+  width: 100%;
+  height: 150px;
+  object-fit: cover;
+  border-radius: 0.5rem;
+}
+
+.treatmentContent {
+  flex: 1;
+}
+
+.treatmentTitle {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--color-primary);
+  margin-bottom: 1rem;
+}
+
+.treatmentDescription {
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: var(--color-text-secondary);
+  margin: 0;
+}
+
+/* Exercises Section - Matching Figma */
+.exercisesSubtitle {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--color-primary);
+  margin-bottom: 2rem;
+}
+
+.exercisesGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+}
+
+.exerciseCard {
+  background: var(--color-card-bg);
+  border-radius: 0.75rem;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  border: 1px solid var(--color-border-primary);
+}
+
+.exerciseCard:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+  border-color: var(--color-border-accent);
+}
+
+.exerciseImageContainer {
+  position: relative;
+  width: 100%;
+  height: 200px;
+}
+
+.exerciseImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.playButton {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.playButton:hover {
+  transform: translate(-50%, -50%) scale(1.1);
+}
+
+.exerciseContent {
+  padding: 1.5rem;
+}
+
+.exerciseTitle {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--color-primary);
+  margin-bottom: 0.5rem;
+}
+
+.exerciseDuration {
+  font-size: 0.875rem;
+  color: var(--color-text-tertiary);
+  margin-bottom: 0.25rem;
+}
+
+.exerciseReps {
+  font-size: 0.875rem;
+  color: var(--color-text-tertiary);
+  margin: 0;
+}
+
+/* Resources Section */
+.resourcesSection {
+  margin-bottom: 2rem;
+}
+
+.resourcesSubtitle {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  margin: 1.5rem 0 0.75rem 0;
+}
+
+.resourcesList {
+  list-style: none;
+  padding: 0;
+  margin: 1rem 0;
+  padding-left: 2rem;
+}
+
+.resourcesList li {
+  padding: 0.5rem 0;
+  font-size: 1rem;
+  line-height: 1.5;
+  color: var(--color-text-secondary);
+  position: relative;
+}
+
+.resourcesList li:before {
+  content: "•";
+  color: var(--color-primary);
+  font-weight: 700;
+  position: absolute;
+  left: -1.5rem;
+}
+
+/* Dark mode specific adjustments */
+html.dark .sectionNavigation {
+  background: var(--health-section-bg);
+}
+
+html.dark .pageTitle {
+  color: var(--color-text-primary);
+}
+
+/* High contrast mode adjustments */
+html.high-contrast .sectionNavigation {
+  background: var(--hc-bg-primary);
+  border-bottom: 2px solid var(--hc-text-primary);
+}
+
+html.high-contrast .sectionNavButton {
+  color: var(--hc-text-primary);
+  border-right: 2px solid var(--hc-text-primary);
+}
+
+html.high-contrast .sectionNavButtonActive {
+  background: var(--hc-text-primary);
+  color: var(--hc-bg-primary);
+}
+
+html.high-contrast .sectionNavButtonActive::after {
+  background: var(--hc-bg-primary);
+}
+
+html.high-contrast .sectionIconImage {
+  filter: var(--health-icon-filter);
+}
+
+/* Focus states for accessibility */
+.conditionNavItem:focus-visible,
+.sectionNavButton:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+.exerciseCard:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+/* Responsive Design */
+@media (min-width: 640px) {
+  .pageTitle {
+    font-size: 2rem;
+  }
+
+  .conditionNavContainer {
+    gap: 0.75rem;
+    padding: 0 2rem;
+  }
+
+  .conditionNavItem {
+    padding: 1rem 0.75rem;
+    min-width: 140px;
+  }
+
+  .conditionIcon {
+    width: 3rem;
+    height: 3rem;
+  }
+
+  .conditionTitle {
+    font-size: 0.875rem;
+  }
+
+  .sectionNavContainer {
+    gap: 0.5rem;
+    padding: 0 2rem;
+  }
+
+  .sectionNavButton {
+    padding: 1rem 1.5rem;
+    font-size: 1rem;
+  }
+
+  .mainContent {
+    padding: 3rem 2rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .treatmentSection {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .treatmentImageContainer {
+    width: 100%;
+  }
+
+  .exercisesGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .contentBox {
+    margin: 0 1rem 1rem 1rem;
+    padding: 1.5rem;
+  }
+
+  .sectionHeader {
+    padding: 1.5rem 1rem 1rem 1rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .conditionNavContainer {
+    gap: 1rem;
+    padding: 0 5rem;
+  }
+
+  .sectionNavContainer {
+    gap: 0.75rem;
+    padding: 0 5rem;
+  }
+
+  .mainContent {
+    padding: 4rem 5rem;
+  }
+}
+
+/* Page-level Dark Mode Overrides */
+.darkMode .pageHeader {
+  background: var(--color-bg-accent);
+}
+
+.darkMode .pageTitle {
+  color: var(--color-text-primary);
+}
+
+.darkMode .conditionNavigation {
+  background: var(--color-nav-bg);
+  border-bottom-color: var(--color-nav-border);
+}
+
+.darkMode .conditionNavItem,
+.darkMode .conditionTitle {
+  color: var(--color-nav-text);
+}
+
+.darkMode .conditionNavItemActive,
+.darkMode .conditionNavItem:hover {
+  background: var(--color-card-hover);
+  color: var(--color-nav-text-hover);
+}
+
+.darkMode .mainContent {
+  background: var(--color-bg-primary);
+}
+
+.darkMode .sectionContainer {
+  background: var(--color-card-bg);
+  border-color: var(--color-card-border);
+  box-shadow: var(--shadow-md);
+}
+
+.darkMode .sectionTitle {
+  color: var(--color-text-primary);
+}
+
+.darkMode .sectionContent {
+  background: var(--color-bg-tertiary);
+  color: var(--color-text-secondary);
+}
+
+.darkMode .normalFunctionSection {
+  background: var(--color-card-bg);
+  border-color: var(--color-border-primary);
+}
+
+.darkMode .normalFunctionTitle {
+  color: var(--color-text-primary);
+}
+
+.darkMode .normalFunctionContent {
+  color: var(--color-text-secondary);
+}
+
+.darkMode .enhancedParagraph {
+  color: var(--color-text-secondary);
+}
+
+.darkMode .highlightBox {
+  background: var(--color-bg-accent);
+  border-color: var(--color-border-primary);
+}
+
+.darkMode .resourceList {
+  background: var(--color-card-bg);
+}
+
+.darkMode .resourceListItem {
+  color: var(--color-text-secondary);
+  border-color: var(--color-border-primary);
+}
+
+.darkMode .resourceLink {
+  color: var(--color-link);
+  background: var(--color-button-bg);
+}
+
+/* Dark mode resource link hover effects removed */

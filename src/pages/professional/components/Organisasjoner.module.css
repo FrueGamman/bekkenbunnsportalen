@@ -1,0 +1,310 @@
+.container {
+  background: var(--color-bg-primary);
+  border-radius: 20px;
+  padding: 32px;
+  margin-bottom: 32px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05), 0 1px 2px rgba(0, 0, 0, 0.1);
+  border: 1px solid var(--color-bg-tertiary);
+}
+
+.header {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.iconContainer {
+  flex-shrink: 0;
+}
+
+.icon {
+  width: 52px;
+  height: 52px;
+  background: #0d47a1;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(13,71,161,0.2);
+}
+
+.icon img {
+  width: 24px;
+  height: 24px;
+  filter: brightness(0) invert(1);
+}
+
+.content {
+  flex: 1;
+}
+
+.title {
+  font-family: "Outfit", sans-serif;
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--brand-navy);
+  margin: 0 0 8px 0;
+  letter-spacing: -0.02em;
+}
+
+.subtitle {
+  font-family: "Outfit", sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  color: var(--color-text-secondary);
+  margin: 0;
+  line-height: 1.6;
+}
+
+.categoriesList {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  margin-bottom: 32px;
+}
+
+.categorySection {
+  border: 1px solid var(--color-bg-tertiary);
+  border-radius: 16px;
+  padding: 24px;
+  background: var(--color-bg-primary);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05), 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.categoryTitle {
+  font-family: "Outfit", sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  margin: 0 0 20px 0;
+  padding-bottom: 12px;
+  border-bottom: 2px solid #0d47a1;
+  letter-spacing: -0.01em;
+}
+
+.organizationsList {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 16px;
+}
+
+.organizationItem {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px;
+  border: 1px solid var(--color-bg-tertiary);
+  border-radius: 12px;
+  background: var(--color-bg-primary);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.organizationItem::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: transparent;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+/* Organization item hover effects removed */
+
+.orgIcon {
+  flex-shrink: 0;
+  width: 48px;
+  height: 48px;
+  background: var(--color-bg-primary);
+  border: 1px solid var(--color-bg-tertiary);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  position: relative;
+  z-index: 1;
+  overflow: hidden;
+}
+
+.orgIcon img {
+  width: 14px;
+  height: 14px;
+}
+
+.orgLogo {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: contain !important;
+  padding: 4px;
+  border-radius: 4px;
+}
+
+.orgInfo {
+  flex: 1;
+  position: relative;
+  z-index: 1;
+}
+
+.orgName {
+  font-family: "Outfit", sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  margin: 0;
+  line-height: 1.4;
+  letter-spacing: -0.01em;
+}
+
+.orgBtn {
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  background: #0d47a1;
+  border: none;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  z-index: 1;
+  box-shadow: 0 1px 3px rgba(73, 147, 193, 0.2);
+}
+
+/* Organization button hover effects removed */
+
+.orgBtnIcon img {
+  width: 12px;
+  height: 12px;
+  filter: brightness(0) invert(1);
+}
+
+.userOrganizationsSection {
+  background: var(--color-bg-primary);
+  border: 1px solid var(--color-bg-tertiary);
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05), 0 1px 2px rgba(0, 0, 0, 0.1);
+  position: relative;
+  overflow: hidden;
+}
+
+.userOrganizationsSection::before { content: none; }
+
+.userOrgTitle {
+  font-family: "Outfit", sans-serif;
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--brand-navy);
+  margin: 0 0 12px 0;
+  position: relative;
+  z-index: 1;
+}
+
+.userOrgDescription {
+  font-family: "Outfit", sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--color-text-secondary);
+  margin: 0 0 16px 0;
+  line-height: 1.6;
+  position: relative;
+  z-index: 1;
+}
+
+.userOrgLink {
+  font-family: "Outfit", sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  color: #4993C1;
+  text-decoration: none;
+  position: relative;
+  z-index: 1;
+  transition: color 0.3s ease;
+}
+
+/* User organization link hover effects removed */
+
+@media (max-width: 768px) {
+  .organizationsList {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Dark Mode Styles */
+:global(:root[data-theme="dark"]) .container {
+  background: rgba(5, 56, 112, 0.95);
+  border-color: rgba(73, 147, 193, 0.3);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+}
+
+:global(:root[data-theme="dark"]) .title {
+  color: #93c5fd;
+}
+
+:global(:root[data-theme="dark"]) .subtitle {
+  color: #c0c0c0;
+}
+
+:global(:root[data-theme="dark"]) .categorySection {
+  background: #333;
+  border-color: #4993C1;
+  box-shadow: 0 4px 16px rgba(73, 147, 193, 0.2);
+}
+
+:global(:root[data-theme="dark"]) .categoryTitle {
+  color: #93c5fd;
+  border-bottom-color: #4993C1;
+}
+
+:global(:root[data-theme="dark"]) .organizationItem {
+  background: rgba(5, 56, 112, 0.6);
+  border-color: rgba(73, 147, 193, 0.3);
+}
+
+/* Dark mode organization item hover effects removed */
+
+:global(:root[data-theme="dark"]) .orgIcon {
+  background: rgba(5, 56, 112, 0.4);
+  border-color: rgba(73, 147, 193, 0.3);
+}
+
+:global(:root[data-theme="dark"]) .orgName {
+  color: #e5e7eb;
+}
+
+:global(:root[data-theme="dark"]) .orgBtn {
+  background: #4993C1;
+  box-shadow: 0 2px 4px rgba(73, 147, 193, 0.3);
+}
+
+/* Dark mode organization button hover effects removed */
+
+:global(:root[data-theme="dark"]) .userOrganizationsSection {
+  background: rgba(5, 56, 112, 0.7);
+  border-color: rgba(73, 147, 193, 0.3);
+  box-shadow: 0 4px 16px rgba(73, 147, 193, 0.2);
+}
+
+:global(:root[data-theme="dark"]) .userOrgTitle {
+  color: #93c5fd;
+}
+
+:global(:root[data-theme="dark"]) .userOrgDescription {
+  color: #c0c0c0;
+}
+
+:global(:root[data-theme="dark"]) .userOrgLink {
+  color: #93c5fd;
+}
+
+:global(:root[data-theme="dark"]) .userOrgLink:hover {
+  color: #bfdbfe;
+}

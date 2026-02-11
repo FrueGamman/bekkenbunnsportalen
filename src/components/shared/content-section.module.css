@@ -1,0 +1,139 @@
+/* Content Section Styles */
+.contentSection {
+  margin: 2rem 0;
+  padding: 2rem;
+  background: var(--color-bg-primary);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+}
+
+.loading {
+  text-align: center;
+  padding: 2rem;
+  color: var(--color-text-secondary);
+}
+
+.error {
+  text-align: center;
+  padding: 2rem;
+  color: var(--color-error);
+  background: var(--color-error-light);
+  border-radius: var(--radius-md);
+}
+
+.introSection h2,
+.symptomsSection h2,
+.treatmentSection h2,
+.genericSection h2 {
+  color: var(--color-heading-primary);
+  margin-bottom: 1.5rem;
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-bold);
+}
+
+.textContent {
+  line-height: var(--line-height-relaxed);
+  margin-bottom: 2rem;
+}
+
+.textContent p {
+  margin-bottom: 1rem;
+  color: var(--color-text-primary);
+}
+
+.textContent h3 {
+  color: var(--color-heading-secondary);
+  margin: 1.5rem 0 1rem 0;
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-semibold);
+}
+
+.images {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1rem;
+  margin: 2rem 0;
+  justify-items: center;
+}
+
+.treatmentImages {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1rem;
+  margin: 2rem 0;
+  justify-items: center;
+}
+
+.contentImage,
+.treatmentImage {
+  width: 100%;
+  height: auto;
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+}
+
+.symptomGroup,
+.treatmentOption {
+  margin-bottom: 1.5rem;
+  padding: 1rem;
+  background: var(--color-bg-secondary);
+  border-radius: var(--radius-md);
+  border-left: 4px solid var(--color-primary);
+}
+
+.relatedLinks,
+.resources {
+  margin-top: 2rem;
+  padding-top: 2rem;
+  border-top: 1px solid var(--color-border-primary);
+}
+
+.relatedLinks h3,
+.resources h3 {
+  color: var(--color-heading-secondary);
+  margin-bottom: 1rem;
+  font-size: var(--font-size-lg);
+}
+
+.relatedLinks ul,
+.resources ul {
+  list-style: none;
+  padding: 0;
+}
+
+.relatedLinks li,
+.resources li {
+  margin-bottom: 0.5rem;
+}
+
+.relatedLinks a,
+.resources a {
+  color: var(--color-link-primary);
+  text-decoration: none;
+  transition: var(--transition-fast);
+}
+
+.relatedLinks a:hover,
+.resources a:hover {
+  color: var(--color-link-hover);
+  text-decoration: underline;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .contentSection {
+    margin: 1rem 0;
+    padding: 1rem;
+  }
+  
+  .images {
+    grid-template-columns: 1fr;
+  }
+  
+  .introSection h2,
+  .symptomsSection h2,
+  .treatmentSection h2,
+  .genericSection h2 {
+    font-size: var(--font-size-xl);
+  }
+}

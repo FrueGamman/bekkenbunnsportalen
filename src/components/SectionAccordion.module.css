@@ -1,0 +1,214 @@
+/* Section Accordion Component Styles */
+
+.accordionContainer {
+  margin-bottom: 1.5rem;
+  border-radius: 0.75rem;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.accordionHeader {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.25rem 1.5rem;
+  background: white;
+  border: 1px solid rgba(5, 56, 112, 0.1);
+  border-radius: 0.75rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-align: left;
+}
+
+.accordionHeader:hover {
+  background: rgba(5, 56, 112, 0.02);
+  border-color: rgba(5, 56, 112, 0.2);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.accordionHeader:focus-visible {
+  outline: 2px solid #053870;
+  outline-offset: 2px;
+}
+
+.accordionHeaderOpen {
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+  border-bottom-color: rgba(5, 56, 112, 0.1);
+  background: rgba(5, 56, 112, 0.03);
+}
+
+.accordionTitle {
+  flex: 1;
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #053870;
+  margin: 0;
+  line-height: 1.4;
+}
+
+.accordionIcon {
+  width: 32px;
+  height: 32px;
+  min-width: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #053870;
+  color: white;
+  border-radius: 50%;
+  font-size: 1.5rem;
+  font-weight: 600;
+  line-height: 1;
+  transition: all 0.3s ease;
+  margin-left: 1rem;
+}
+
+.accordionHeader:hover .accordionIcon {
+  transform: scale(1.1);
+  background: #074a8f;
+}
+
+.accordionContent {
+  padding: 1.25rem;
+  background: white;
+  border: 1px solid rgba(5, 56, 112, 0.1);
+  border-top: none;
+  border-bottom-left-radius: 0.75rem;
+  border-bottom-right-radius: 0.75rem;
+  animation: slideDown 0.3s ease;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Dark Mode Styles */
+.darkMode .accordionHeader {
+  background: rgba(30, 41, 59, 0.5);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.darkMode .accordionHeader:hover {
+  background: rgba(30, 41, 59, 0.7);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.darkMode .accordionHeaderOpen {
+  background: rgba(30, 41, 59, 0.6);
+  border-bottom-color: rgba(255, 255, 255, 0.1);
+}
+
+.darkMode .accordionTitle {
+  color: #e5e7eb;
+}
+
+.darkMode .accordionIcon {
+  background: #3b82f6;
+}
+
+.darkMode .accordionHeader:hover .accordionIcon {
+  background: #60a5fa;
+}
+
+.darkMode .accordionContent {
+  background: rgba(30, 41, 59, 0.3);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .accordionHeader {
+    padding: 1rem 1.25rem;
+  }
+
+  .accordionTitle {
+    font-size: 1rem;
+  }
+
+  .accordionIcon {
+    width: 28px;
+    height: 28px;
+    min-width: 28px;
+    font-size: 1.25rem;
+  }
+
+  .accordionContent {
+    padding: 1rem;
+  }
+}
+
+/* Large Screen Optimizations */
+@media (min-width: 1440px) {
+  .accordionHeader {
+    padding: 1.5rem 2rem;
+  }
+
+  .accordionTitle {
+    font-size: clamp(1.25rem, 1.3vw, 1.5rem);
+  }
+
+  .accordionIcon {
+    width: 36px;
+    height: 36px;
+    min-width: 36px;
+    font-size: clamp(1.625rem, 1.7vw, 2rem);
+    margin-left: 1.25rem;
+  }
+
+  .accordionContent {
+    padding: 1.75rem 2rem;
+  }
+}
+
+@media (min-width: 1920px) {
+  .accordionHeader {
+    padding: 1.75rem 2.5rem;
+  }
+
+  .accordionTitle {
+    font-size: clamp(1.375rem, 1.4vw, 1.75rem);
+  }
+
+  .accordionIcon {
+    width: 40px;
+    height: 40px;
+    min-width: 40px;
+    font-size: clamp(1.75rem, 1.85vw, 2.25rem);
+    margin-left: 1.5rem;
+  }
+
+  .accordionContent {
+    padding: 2rem 2.5rem;
+  }
+}
+
+@media (min-width: 2560px) {
+  .accordionHeader {
+    padding: 2rem 3rem;
+  }
+
+  .accordionTitle {
+    font-size: clamp(1.625rem, 1.65vw, 2.125rem);
+  }
+
+  .accordionIcon {
+    width: 48px;
+    height: 48px;
+    min-width: 48px;
+    font-size: clamp(2rem, 2.1vw, 2.625rem);
+    margin-left: 2rem;
+  }
+
+  .accordionContent {
+    padding: 2.5rem 3rem;
+  }
+}

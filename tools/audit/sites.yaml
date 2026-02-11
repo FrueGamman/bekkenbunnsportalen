@@ -1,0 +1,13 @@
+old: "https://nekib.helsekompetanse.no/"
+new: "https://pelvic-react-three.vercel.app/"
+include_selectors:
+  - "main"
+  - "article"
+  - "[data-content]"
+  - ".content"
+  - ".page-content"
+  - ".main-content"
+max_pages: 500
+respect_robots: true
+delay_between_requests: 1.0
+user_agent: "PelvicReact-AuditBot/1.0 (Content Migration Tool)"

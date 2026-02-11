@@ -1,0 +1,260 @@
+/* //src/components/ui/Button.module.css */
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  white-space: nowrap;
+  border-radius: 5px;
+  font-size: 13px;
+  font-weight: 500;
+  transition: all 0.2s ease-in-out;
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.button:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--color-focus-ring);
+}
+
+.button:disabled {
+  pointer-events: none;
+  opacity: 0.5;
+}
+
+.button svg {
+  pointer-events: none;
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+}
+
+/* Variants */
+.default {
+  background-color: var(--color-button-primary);
+  color: var(--color-text-inverse);
+  box-shadow: var(--shadow-sm);
+}
+
+.default:hover {
+  background-color: var(--color-button-primary-hover);
+}
+
+.destructive {
+  background-color: var(--color-error);
+  color: var(--color-text-inverse);
+  box-shadow: var(--shadow-sm);
+}
+
+.destructive:hover {
+  background-color: #dc2626;
+}
+
+.outline {
+  border: 1px solid var(--color-border-primary);
+  background-color: var(--color-bg-primary);
+  color: var(--color-text-primary);
+  box-shadow: var(--shadow-sm);
+}
+
+.outline:hover {
+  background-color: var(--color-bg-secondary);
+  color: var(--color-text-primary);
+}
+
+.secondary {
+  background-color: var(--color-button-secondary);
+  color: var(--color-text-primary);
+  box-shadow: var(--shadow-sm);
+}
+
+.secondary:hover {
+  background-color: var(--color-button-secondary-hover);
+}
+
+.ghost {
+  background-color: transparent;
+  color: var(--color-text-primary);
+}
+
+.ghost:hover {
+  background-color: var(--color-bg-secondary);
+  color: var(--color-text-primary);
+}
+
+.link {
+  color: var(--color-text-link);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  background-color: transparent;
+}
+
+.link:hover {
+  color: var(--color-text-link-hover);
+  text-decoration: underline;
+}
+
+/* Sizes */
+.default {
+  height: 32px;
+  padding: 6px 14px;
+}
+
+.sm {
+  height: 28px;
+  border-radius: 4px;
+  padding: 0 10px;
+  font-size: 11px;
+}
+
+.lg {
+  height: 36px;
+  border-radius: 5px;
+  padding: 0 24px;
+}
+
+.icon {
+  height: 32px;
+  width: 32px;
+  padding: 0;
+}
+
+/* High contrast mode adjustments */
+html.high-contrast .button {
+  border: 2px solid var(--color-text-primary);
+}
+
+html.high-contrast .default {
+  background-color: var(--color-text-primary);
+  color: var(--color-bg-primary);
+}
+
+html.high-contrast .outline {
+  border: 2px solid var(--color-text-primary);
+  background-color: var(--color-bg-primary);
+  color: var(--color-text-primary);
+}
+
+html.high-contrast .outline:hover {
+  background-color: var(--color-text-primary);
+  color: var(--color-bg-primary);
+}
+
+html.high-contrast .secondary {
+  background-color: var(--color-bg-primary);
+  color: var(--color-text-primary);
+  border: 2px solid var(--color-text-primary);
+}
+
+html.high-contrast .ghost {
+  background-color: transparent;
+  color: var(--color-text-primary);
+  border: 1px solid var(--color-text-primary);
+}
+
+html.high-contrast .ghost:hover {
+  background-color: var(--color-text-primary);
+  color: var(--color-bg-primary);
+}
+
+/* Large screen optimizations */
+@media (min-width: 1440px) {
+  .button {
+    font-size: clamp(0.9375rem, 1vw, 1.125rem);
+  }
+  
+  .default {
+    height: clamp(36px, 3vw, 42px);
+    padding: clamp(8px, 1vw, 10px) clamp(16px, 2vw, 20px);
+  }
+  
+  .sm {
+    height: clamp(32px, 2.5vw, 36px);
+    padding: 0 clamp(12px, 1.5vw, 16px);
+    font-size: clamp(0.8125rem, 0.9vw, 1rem);
+  }
+  
+  .lg {
+    height: clamp(42px, 3.5vw, 48px);
+    padding: 0 clamp(28px, 3vw, 32px);
+    font-size: clamp(1rem, 1.1vw, 1.25rem);
+  }
+  
+  .icon {
+    height: clamp(36px, 3vw, 42px);
+    width: clamp(36px, 3vw, 42px);
+  }
+  
+  .button svg {
+    width: clamp(16px, 1.5vw, 20px);
+    height: clamp(16px, 1.5vw, 20px);
+  }
+}
+
+@media (min-width: 1920px) {
+  .button {
+    font-size: clamp(1rem, 1.1vw, 1.25rem);
+  }
+  
+  .default {
+    height: clamp(42px, 3.5vw, 48px);
+    padding: clamp(10px, 1.2vw, 12px) clamp(20px, 2.5vw, 24px);
+  }
+  
+  .sm {
+    height: clamp(36px, 3vw, 42px);
+    padding: 0 clamp(16px, 2vw, 20px);
+    font-size: clamp(0.9375rem, 1vw, 1.125rem);
+  }
+  
+  .lg {
+    height: clamp(48px, 4vw, 56px);
+    padding: 0 clamp(32px, 3.5vw, 40px);
+    font-size: clamp(1.125rem, 1.2vw, 1.5rem);
+  }
+  
+  .icon {
+    height: clamp(42px, 3.5vw, 48px);
+    width: clamp(42px, 3.5vw, 48px);
+  }
+  
+  .button svg {
+    width: clamp(18px, 1.75vw, 24px);
+    height: clamp(18px, 1.75vw, 24px);
+  }
+}
+
+@media (min-width: 2560px) {
+  .button {
+    font-size: clamp(1.125rem, 1.2vw, 1.5rem);
+  }
+  
+  .default {
+    height: clamp(48px, 4vw, 56px);
+    padding: clamp(12px, 1.5vw, 16px) clamp(24px, 3vw, 32px);
+  }
+  
+  .sm {
+    height: clamp(42px, 3.5vw, 48px);
+    padding: 0 clamp(20px, 2.5vw, 28px);
+    font-size: clamp(1rem, 1.1vw, 1.25rem);
+  }
+  
+  .lg {
+    height: clamp(56px, 4.5vw, 64px);
+    padding: 0 clamp(40px, 4vw, 48px);
+    font-size: clamp(1.25rem, 1.35vw, 1.75rem);
+  }
+  
+  .icon {
+    height: clamp(48px, 4vw, 56px);
+    width: clamp(48px, 4vw, 56px);
+  }
+  
+  .button svg {
+    width: clamp(22px, 2vw, 28px);
+    height: clamp(22px, 2vw, 28px);
+  }
+}

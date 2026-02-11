@@ -1,0 +1,519 @@
+/* Pelvic Floor Exercise Section - Horizontal Layout */
+
+.tryExerciseSection {
+  background: linear-gradient(135deg, #f8fafc 0%, #ffffff 100%);
+  padding: clamp(2rem, 4vw, 3rem) clamp(1rem, 5vw, 4rem);
+  position: relative;
+  overflow: hidden;
+  border-radius: 16px;
+}
+
+@media (min-width: 1920px) {
+  .tryExerciseSection {
+    max-width: 1920px;
+    margin: 0 auto;
+  }
+}
+
+.tryExerciseSection.darkMode {
+  background: transparent;
+}
+
+.tryExerciseSection::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: 
+    radial-gradient(circle at 80% 20%, rgba(74, 222, 128, 0.08) 0%, transparent 50%),
+    radial-gradient(circle at 20% 80%, rgba(253, 224, 71, 0.08) 0%, transparent 50%),
+    radial-gradient(circle at 50% 50%, rgba(59, 130, 246, 0.03) 0%, transparent 60%);
+  pointer-events: none;
+}
+
+.darkMode.tryExerciseSection::before {
+  background: transparent;
+}
+
+/* Container */
+.container {
+  max-width: 100%;
+  margin: 0;
+  padding: 0;
+  position: relative;
+  z-index: 2;
+}
+
+/* Content Grid - Horizontal Layout */
+.content {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(3rem, 6vw, 6rem);
+  align-items: center;
+}
+
+/* Image Content - Left Side */
+.imageContent {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  order: 1;
+}
+
+.imageWrapper {
+  position: relative;
+  max-width: 400px;
+  width: 100%;
+  padding: 1.5rem;
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.8);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(10px);
+  transition: all 0.3s ease;
+}
+
+.darkMode .imageWrapper {
+  background: rgba(30, 41, 59, 0.85);
+  backdrop-filter: blur(12px);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(148, 163, 184, 0.2);
+}
+
+.imageWrapper:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 25px 70px rgba(0, 0, 0, 0.15);
+}
+
+.darkMode .imageWrapper:hover {
+  box-shadow: 0 25px 70px rgba(147, 197, 253, 0.2);
+  border-color: rgba(147, 197, 253, 0.3);
+  background: rgba(30, 41, 59, 0.95);
+}
+
+.mainImage {
+  width: 100%;
+  height: auto;
+  border-radius: 16px;
+  display: block;
+  position: relative;
+  z-index: 2;
+}
+
+/* Decorative circles */
+.decorativeCircle1 {
+  position: absolute;
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, rgba(74, 222, 128, 0.3), rgba(253, 224, 71, 0.3));
+  filter: blur(40px);
+  top: -20px;
+  right: -20px;
+  z-index: 1;
+  animation: float 6s ease-in-out infinite;
+}
+
+.decorativeCircle2 {
+  position: absolute;
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, rgba(253, 224, 71, 0.3), rgba(74, 222, 128, 0.3));
+  filter: blur(30px);
+  bottom: -10px;
+  left: -10px;
+  z-index: 1;
+  animation: float 8s ease-in-out infinite reverse;
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0) scale(1);
+  }
+  50% {
+    transform: translateY(-10px) scale(1.05);
+  }
+}
+
+/* Text Content - Right Side */
+.textContent {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  order: 2;
+}
+
+.title {
+  font-size: clamp(1.75rem, 3.5vw, 2.5rem);
+  font-weight: 700;
+  margin: 0;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  color: var(--color-primary);
+}
+
+.darkMode .title {
+  color: #f1f5f9;
+}
+
+.subtitle {
+  font-size: clamp(1.125rem, 2vw, 1.5rem);
+  margin: 0;
+  font-weight: 500;
+  line-height: 1.4;
+  color: var(--color-text-secondary);
+}
+
+.darkMode .subtitle {
+  color: #cbd5e1;
+}
+
+.description {
+  font-size: clamp(1rem, 1.6vw, 1.125rem);
+  margin: 0;
+  line-height: 1.6;
+  color: var(--color-text-secondary);
+  opacity: 0.9;
+}
+
+.darkMode .description {
+  color: #cbd5e1;
+}
+
+/* Feature Cards */
+.features {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.75rem;
+  margin: 0.75rem 0;
+}
+
+.featureCard {
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(59, 130, 246, 0.1);
+  border-radius: 16px;
+  padding: 1rem;
+  text-align: center;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.darkMode .featureCard {
+  background: rgba(30, 41, 59, 0.8);
+  backdrop-filter: blur(8px);
+  border-color: rgba(148, 163, 184, 0.2);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.featureCard:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(74, 222, 128, 0.2);
+  border-color: rgba(74, 222, 128, 0.4);
+  background: linear-gradient(135deg, rgba(74, 222, 128, 0.05) 0%, rgba(253, 224, 71, 0.05) 100%), rgba(255, 255, 255, 0.8);
+}
+
+.darkMode .featureCard:hover {
+  background: rgba(30, 41, 59, 0.95);
+  border-color: rgba(147, 197, 253, 0.3);
+  box-shadow: 0 8px 20px rgba(147, 197, 253, 0.2);
+}
+
+.featureIcon {
+  font-size: 2rem;
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+.featureTitle {
+  font-size: 0.95rem;
+  font-weight: 600;
+  margin: 0.5rem 0 0.25rem 0;
+  color: var(--color-text-primary);
+}
+
+.darkMode .featureTitle {
+  color: #f1f5f9;
+}
+
+.featureDescription {
+  font-size: 0.85rem;
+  margin: 0;
+  color: var(--color-text-secondary);
+  opacity: 0.8;
+  line-height: 1.4;
+}
+
+.darkMode .featureDescription {
+  color: #cbd5e1;
+}
+
+/* Button Group */
+.buttonGroup {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+/* Button Group */
+.buttonGroup {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+/* Start Button */
+.startButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  background: var(--color-primary);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  padding: 1rem 2rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+}
+
+.startButton:hover {
+  background: var(--color-primary-dark, #1d4ed8);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(59, 130, 246, 0.4);
+}
+
+.startButton:active {
+  transform: translateY(0);
+}
+
+.buttonArrow {
+  font-size: 1.2rem;
+  transition: transform 0.3s ease;
+}
+
+.startButton:hover .buttonArrow {
+  transform: translateX(4px);
+}
+
+/* Physiotherapy Button */
+.physioButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: rgba(74, 222, 128, 0.1);
+  color: #059669;
+  border: 2px solid #4ade80;
+  border-radius: 12px;
+  padding: 1rem 2rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  box-shadow: 0 4px 15px rgba(74, 222, 128, 0.2);
+}
+
+.physioButton:hover {
+  background: #4ade80;
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(74, 222, 128, 0.4);
+}
+
+.physioButton:active {
+  transform: translateY(0);
+}
+
+.physioButton svg {
+  transition: transform 0.3s ease;
+}
+
+.physioButton:hover svg {
+  transform: translate(2px, -2px);
+}
+
+.darkMode .physioButton {
+  background: rgba(59, 130, 246, 0.2);
+  color: #93c5fd;
+  border-color: rgba(147, 197, 253, 0.3);
+}
+
+.darkMode .physioButton:hover {
+  background: #3b82f6;
+  color: #ffffff;
+  border-color: rgba(147, 197, 253, 0.5);
+  box-shadow: 0 6px 16px rgba(59, 130, 246, 0.4);
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .content {
+    grid-template-columns: 1fr;
+    gap: 3rem;
+  }
+
+  .imageContent {
+    order: 1;
+  }
+
+  .textContent {
+    order: 2;
+    text-align: center;
+    align-items: center;
+  }
+
+  .features {
+    grid-template-columns: repeat(3, 1fr);
+    max-width: 600px;
+  }
+
+  .buttonGroup {
+    justify-content: center;
+  }
+  
+  .startButton,
+  .physioButton {
+    flex: 0 1 auto;
+  }
+}
+
+@media (max-width: 768px) {
+  .tryExerciseSection {
+    padding: clamp(2rem, 4vw, 2.5rem) clamp(1rem, 5vw, 4rem);
+  }
+  
+  .container {
+    padding: 0;
+  }
+
+  .content {
+    gap: 2rem;
+  }
+
+  .imageWrapper {
+    padding: 1.25rem;
+    max-width: 350px;
+  }
+
+  .features {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+
+  .featureCard {
+    padding: 1rem;
+  }
+
+  .decorativeCircle1 {
+    width: 80px;
+    height: 80px;
+  }
+
+  .decorativeCircle2 {
+    width: 60px;
+    height: 60px;
+  }
+}
+
+@media (max-width: 480px) {
+  .tryExerciseSection {
+    padding: clamp(1.5rem, 3vw, 2rem) clamp(1rem, 5vw, 4rem);
+  }
+  
+  .container {
+    padding: 0;
+  }
+
+  .content {
+    gap: 1.5rem;
+  }
+
+  .imageWrapper {
+    padding: 1rem;
+    max-width: 100%;
+  }
+
+  .features {
+    gap: 0.5rem;
+  }
+
+  .featureCard {
+    padding: 0.75rem;
+  }
+
+  .featureIcon {
+    font-size: 1.5rem;
+  }
+
+  .featureTitle {
+    font-size: 0.875rem;
+  }
+
+  .featureDescription {
+    font-size: 0.75rem;
+  }
+
+  .buttonGroup {
+    flex-direction: column;
+    width: 100%;
+  }
+  
+  .startButton,
+  .physioButton {
+    width: 100%;
+    justify-content: center;
+    padding: 0.875rem 1.5rem;
+    font-size: 1rem;
+  }
+
+  .decorativeCircle1,
+  .decorativeCircle2 {
+    display: none;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .featureCard {
+    border: 2px solid var(--color-text-primary);
+    background: var(--color-bg-primary);
+  }
+
+  .startButton {
+    border: 2px solid var(--color-bg-primary);
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .imageWrapper,
+  .featureCard,
+  .startButton,
+  .decorativeCircle1,
+  .decorativeCircle2 {
+    transition: none;
+    animation: none;
+  }
+
+  .imageWrapper:hover,
+  .featureCard:hover,
+  .startButton:hover {
+    transform: none;
+  }
+
+  .buttonArrow {
+    transition: none;
+  }
+
+  .startButton:hover .buttonArrow {
+    transform: none;
+  }
+}

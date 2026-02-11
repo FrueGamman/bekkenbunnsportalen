@@ -1,0 +1,19 @@
+{
+  "total_conditions": 6,
+  "total_additional_pages": 3,
+  "conditions_scraped": [
+    "urinary-incontinence",
+    "urinary-retention",
+    "fecal-incontinence",
+    "constipation",
+    "pelvic-pain",
+    "pregnancy"
+  ],
+  "additional_pages_scraped": [
+    "patient-education",
+    "user-organizations",
+    "resources"
+  ],
+  "scraped_at": "2025-09-27 20:24:44",
+  "total_pages_scraped": 74
+}

@@ -1,0 +1,2 @@
+# Use shared requirements from parent directory
+-r ../requirements.txt

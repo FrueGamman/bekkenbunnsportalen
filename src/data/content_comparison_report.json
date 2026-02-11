@@ -1,0 +1,505 @@
+{
+  "timestamp": "2025-09-27 22:52:39",
+  "summary": {
+    "total_conditions": 6,
+    "total_local_files": 81,
+    "conditions_with_missing_content": 1,
+    "total_recommendations": 1
+  },
+  "conditions": [
+    {
+      "condition_id": "urinary-incontinence",
+      "local_content": {
+        "components": [
+          "diagnosis.tsx",
+          "enhanced-intro.tsx",
+          "normal-functions.tsx",
+          "resources.tsx",
+          "causes.tsx",
+          "references.tsx",
+          "condition-page.tsx",
+          "symptoms.tsx",
+          "treatment.tsx",
+          "exercises.tsx"
+        ],
+        "content_files": [
+          "links.json",
+          "intro.json",
+          "media.json"
+        ],
+        "hooks": [
+          "useContent.ts"
+        ],
+        "total_files": 14
+      },
+      "original_sections": [],
+      "original_links": [],
+      "reference_sections": [
+        {
+          "tag": "section",
+          "text": "På disse sidene finner du informasjon om urinlekkasje, også kalt urininkontinens.Her er beskrivelse av normalfunksjon til urinveiene, symptomer på urinlekkasje, utredning og behandling av slike plager...",
+          "id": "",
+          "class": "elementor-section elementor-top-section elementor-element elementor-element-65e5fcb elementor-section-boxed elementor-section-height-default elementor-section-height-default"
+        },
+        {
+          "tag": "section",
+          "text": "Urinlekkasje- det er hjelp å få",
+          "id": "",
+          "class": "elementor-section elementor-top-section elementor-element elementor-element-f2f8a16 elementor-section-boxed elementor-section-height-default elementor-section-height-default"
+        }
+      ],
+      "reference_links": [
+        {
+          "url": "https://nekib.helsekompetanse.no/urinlekkasje/#main",
+          "text": "Skip to content",
+          "href": "#main"
+        },
+        {
+          "url": "https://nekib.helsekompetanse.no/urinlekkasje/",
+          "text": "Tilstander",
+          "href": "#"
+        },
+        {
+          "url": "https://nekib.helsekompetanse.no/urinlekkasje/",
+          "text": "Urinlekkasje",
+          "href": "https://nekib.helsekompetanse.no/urinlekkasje/"
+        },
+        {
+          "url": "https://nekib.helsekompetanse.no/urinlekkasje/normalfunksjon/",
+          "text": "Normalfunksjon",
+          "href": "https://nekib.helsekompetanse.no/urinlekkasje/normalfunksjon/"
+        },
+        {
+          "url": "https://nekib.helsekompetanse.no/urinlekkasje/symptomer/",
+          "text": "Symptomer",
+          "href": "https://nekib.helsekompetanse.no/urinlekkasje/symptomer/"
+        },
+        {
+          "url": "https://nekib.helsekompetanse.no/urinlekkasje/arsaker/",
+          "text": "Årsaker",
+          "href": "https://nekib.helsekompetanse.no/urinlekkasje/arsaker/"
+        },
+        {
+          "url": "https://nekib.helsekompetanse.no/urinlekkasje/arsaker/midlertidige-arsaker/",
+          "text": "Midlertidige årsaker",
+          "href": "https://nekib.helsekompetanse.no/urinlekkasje/arsaker/midlertidige-arsaker/"
+        },
+        {
+          "url": "https://nekib.helsekompetanse.no/urinlekkasje/arsaker/svangerskap-aldersforandringer-og-sykdom/",
+          "text": "Svangerskap, aldersforandringer og sykdom",
+          "href": "https://nekib.helsekompetanse.no/urinlekkasje/arsaker/svangerskap-aldersforandringer-og-sykdom/"
+        },
+        {
+          "url": "https://nekib.helsekompetanse.no/urinlekkasje/utredning/",
+          "text": "Utredning",
+          "href": "https://nekib.helsekompetanse.no/urinlekkasje/utredning/"
+        },
+        {
+          "url": "https://nekib.helsekompetanse.no/urinlekkasje/utredning/hva-skal-jeg-gjore/",
+          "text": "Hva skal jeg gjøre?",
+          "href": "https://nekib.helsekompetanse.no/urinlekkasje/utredning/hva-skal-jeg-gjore/"
+        }
+      ],
+      "recommendations": []
+    },
+    {
+      "condition_id": "urinary-retention",
+      "local_content": {
+        "components": [
+          "diagnosis.tsx",
+          "normal-functions.tsx",
+          "resources.tsx",
+          "causes.tsx",
+          "references.tsx",
+          "condition-page.tsx",
+          "symptoms.tsx",
+          "treatment.tsx",
+          "exercises.tsx"
+        ],
+        "content_files": [],
+        "hooks": [],
+        "total_files": 9
+      },
+      "original_sections": [],
+      "original_links": [],
+      "reference_sections": [],
+      "reference_links": [],
+      "recommendations": [
+        "No content JSON files found - consider adding structured content"
+      ]
+    },
+    {
+      "condition_id": "fecal-incontinence",
+      "local_content": {
+        "components": [
+          "diagnosis.tsx",
+          "enhanced-intro.tsx",
+          "normal-functions.tsx",
+          "resources.tsx",
+          "causes.tsx",
+          "references.tsx",
+          "condition-page.tsx",
+          "symptoms.tsx",
+          "treatment.tsx",
+          "exercises.tsx"
+        ],
+        "content_files": [
+          "links.json",
+          "intro.json",
+          "media.json"
+        ],
+        "hooks": [
+          "useContent.ts"
+        ],
+        "total_files": 14
+      },
+      "original_sections": [],
+      "original_links": [],
+      "reference_sections": [
+        {
+          "tag": "section",
+          "text": "På disse sidene finner du informasjon om avføringslekkasje, også kalt fekal eller anal inkontinens. Her er beskrivelse av normalfunksjon til tarmen, symptomer på avføringslekkasje, utredning og behand...",
+          "id": "",
+          "class": "elementor-section elementor-top-section elementor-element elementor-element-63fc603 elementor-section-boxed elementor-section-height-default elementor-section-height-default"
+        },
+        {
+          "tag": "section",
+          "text": "Våg å snakk om avføringslekkasje",
+          "id": "",
+          "class": "elementor-section elementor-top-section elementor-element elementor-element-6007d18 elementor-section-boxed elementor-section-height-default elementor-section-height-default"
+        }
+      ],
+      "reference_links": [
+        {
+          "url": "https://nekib.helsekompetanse.no/avforingslekkasje/#main",
+          "text": "Skip to content",
+          "href": "#main"
+        },
+        {
+          "url": "https://nekib.helsekompetanse.no/avforingslekkasje/",
+          "text": "Tilstander",
+          "href": "#"
+        },
+        {
+          "url": "https://nekib.helsekompetanse.no/urinlekkasje/",
+          "text": "Urinlekkasje",
+          "href": "https://nekib.helsekompetanse.no/urinlekkasje/"
+        },
+        {
+          "url": "https://nekib.helsekompetanse.no/urinlekkasje/normalfunksjon/",
+          "text": "Normalfunksjon",
+          "href": "https://nekib.helsekompetanse.no/urinlekkasje/normalfunksjon/"
+        },
+        {
+          "url": "https://nekib.helsekompetanse.no/urinlekkasje/symptomer/",
+          "text": "Symptomer",
+          "href": "https://nekib.helsekompetanse.no/urinlekkasje/symptomer/"
+        },
+        {
+          "url": "https://nekib.helsekompetanse.no/urinlekkasje/arsaker/",
+          "text": "Årsaker",
+          "href": "https://nekib.helsekompetanse.no/urinlekkasje/arsaker/"
+        },
+        {
+          "url": "https://nekib.helsekompetanse.no/urinlekkasje/arsaker/midlertidige-arsaker/",
+          "text": "Midlertidige årsaker",
+          "href": "https://nekib.helsekompetanse.no/urinlekkasje/arsaker/midlertidige-arsaker/"
+        },
+        {
+          "url": "https://nekib.helsekompetanse.no/urinlekkasje/arsaker/svangerskap-aldersforandringer-og-sykdom/",
+          "text": "Svangerskap, aldersforandringer og sykdom",
+          "href": "https://nekib.helsekompetanse.no/urinlekkasje/arsaker/svangerskap-aldersforandringer-og-sykdom/"
+        },
+        {
+          "url": "https://nekib.helsekompetanse.no/urinlekkasje/utredning/",
+          "text": "Utredning",
+          "href": "https://nekib.helsekompetanse.no/urinlekkasje/utredning/"
+        },
+        {
+          "url": "https://nekib.helsekompetanse.no/urinlekkasje/utredning/hva-skal-jeg-gjore/",
+          "text": "Hva skal jeg gjøre?",
+          "href": "https://nekib.helsekompetanse.no/urinlekkasje/utredning/hva-skal-jeg-gjore/"
+        }
+      ],
+      "recommendations": []
+    },
+    {
+      "condition_id": "constipation",
+      "local_content": {
+        "components": [
+          "diagnosis.tsx",
+          "enhanced-intro.tsx",
+          "normal-functions.tsx",
+          "resources.tsx",
+          "causes.tsx",
+          "references.tsx",
+          "condition-page.tsx",
+          "symptoms.tsx",
+          "treatment.tsx",
+          "exercises.tsx"
+        ],
+        "content_files": [
+          "links.json",
+          "intro.json",
+          "media.json"
+        ],
+        "hooks": [
+          "useContent.ts"
+        ],
+        "total_files": 14
+      },
+      "original_sections": [],
+      "original_links": [],
+      "reference_sections": [
+        {
+          "tag": "section",
+          "text": "På disse sidene finner du informasjon om tømmingsproblemer for avføring og forstoppelse. Her er informasjon om symptomer på, utredning og behandling av slike plager. Kanskje har du slike problemer sel...",
+          "id": "",
+          "class": "elementor-section elementor-top-section elementor-element elementor-element-bc637a4 elementor-section-boxed elementor-section-height-default elementor-section-height-default"
+        }
+      ],
+      "reference_links": [
+        {
+          "url": "https://nekib.helsekompetanse.no/tommingsproblemer-og-forstoppelse-for-avforing/#main",
+          "text": "Skip to content",
+          "href": "#main"
+        },
+        {
+          "url": "https://nekib.helsekompetanse.no/tommingsproblemer-og-forstoppelse-for-avforing/",
+          "text": "Tilstander",
+          "href": "#"
+        },
+        {
+          "url": "https://nekib.helsekompetanse.no/urinlekkasje/",
+          "text": "Urinlekkasje",
+          "href": "https://nekib.helsekompetanse.no/urinlekkasje/"
+        },
+        {
+          "url": "https://nekib.helsekompetanse.no/urinlekkasje/normalfunksjon/",
+          "text": "Normalfunksjon",
+          "href": "https://nekib.helsekompetanse.no/urinlekkasje/normalfunksjon/"
+        },
+        {
+          "url": "https://nekib.helsekompetanse.no/urinlekkasje/symptomer/",
+          "text": "Symptomer",
+          "href": "https://nekib.helsekompetanse.no/urinlekkasje/symptomer/"
+        },
+        {
+          "url": "https://nekib.helsekompetanse.no/urinlekkasje/arsaker/",
+          "text": "Årsaker",
+          "href": "https://nekib.helsekompetanse.no/urinlekkasje/arsaker/"
+        },
+        {
+          "url": "https://nekib.helsekompetanse.no/urinlekkasje/arsaker/midlertidige-arsaker/",
+          "text": "Midlertidige årsaker",
+          "href": "https://nekib.helsekompetanse.no/urinlekkasje/arsaker/midlertidige-arsaker/"
+        },
+        {
+          "url": "https://nekib.helsekompetanse.no/urinlekkasje/arsaker/svangerskap-aldersforandringer-og-sykdom/",
+          "text": "Svangerskap, aldersforandringer og sykdom",
+          "href": "https://nekib.helsekompetanse.no/urinlekkasje/arsaker/svangerskap-aldersforandringer-og-sykdom/"
+        },
+        {
+          "url": "https://nekib.helsekompetanse.no/urinlekkasje/utredning/",
+          "text": "Utredning",
+          "href": "https://nekib.helsekompetanse.no/urinlekkasje/utredning/"
+        },
+        {
+          "url": "https://nekib.helsekompetanse.no/urinlekkasje/utredning/hva-skal-jeg-gjore/",
+          "text": "Hva skal jeg gjøre?",
+          "href": "https://nekib.helsekompetanse.no/urinlekkasje/utredning/hva-skal-jeg-gjore/"
+        }
+      ],
+      "recommendations": []
+    },
+    {
+      "condition_id": "pelvic-pain",
+      "local_content": {
+        "components": [
+          "data-driven-content.tsx",
+          "diagnosis.tsx",
+          "enhanced-intro.tsx",
+          "normal-functions.tsx",
+          "resources.tsx",
+          "causes.tsx",
+          "references.tsx",
+          "condition-page.tsx",
+          "symptoms.tsx",
+          "treatment.tsx",
+          "test-data-loading.tsx",
+          "exercises.tsx"
+        ],
+        "content_files": [
+          "links.json",
+          "intro.json",
+          "media.json"
+        ],
+        "hooks": [
+          "useContent.ts"
+        ],
+        "total_files": 16
+      },
+      "original_sections": [],
+      "original_links": [],
+      "reference_sections": [
+        {
+          "tag": "section",
+          "text": "Langvarige underlivssmerter, er en vanlig tilstand som rammer både kvinner og menn. Tilstanden gir mange ulike plager i daglige aktiviteter, som for eksempel problemer med tømning av tarm/blære, smert...",
+          "id": "",
+          "class": "elementor-section elementor-top-section elementor-element elementor-element-5d84fd2d elementor-section-boxed elementor-section-height-default elementor-section-height-default"
+        }
+      ],
+      "reference_links": [
+        {
+          "url": "https://nekib.helsekompetanse.no/langvarige-underlivssmerter/#main",
+          "text": "Skip to content",
+          "href": "#main"
+        },
+        {
+          "url": "https://nekib.helsekompetanse.no/langvarige-underlivssmerter/",
+          "text": "Tilstander",
+          "href": "#"
+        },
+        {
+          "url": "https://nekib.helsekompetanse.no/urinlekkasje/",
+          "text": "Urinlekkasje",
+          "href": "https://nekib.helsekompetanse.no/urinlekkasje/"
+        },
+        {
+          "url": "https://nekib.helsekompetanse.no/urinlekkasje/normalfunksjon/",
+          "text": "Normalfunksjon",
+          "href": "https://nekib.helsekompetanse.no/urinlekkasje/normalfunksjon/"
+        },
+        {
+          "url": "https://nekib.helsekompetanse.no/urinlekkasje/symptomer/",
+          "text": "Symptomer",
+          "href": "https://nekib.helsekompetanse.no/urinlekkasje/symptomer/"
+        },
+        {
+          "url": "https://nekib.helsekompetanse.no/urinlekkasje/arsaker/",
+          "text": "Årsaker",
+          "href": "https://nekib.helsekompetanse.no/urinlekkasje/arsaker/"
+        },
+        {
+          "url": "https://nekib.helsekompetanse.no/urinlekkasje/arsaker/midlertidige-arsaker/",
+          "text": "Midlertidige årsaker",
+          "href": "https://nekib.helsekompetanse.no/urinlekkasje/arsaker/midlertidige-arsaker/"
+        },
+        {
+          "url": "https://nekib.helsekompetanse.no/urinlekkasje/arsaker/svangerskap-aldersforandringer-og-sykdom/",
+          "text": "Svangerskap, aldersforandringer og sykdom",
+          "href": "https://nekib.helsekompetanse.no/urinlekkasje/arsaker/svangerskap-aldersforandringer-og-sykdom/"
+        },
+        {
+          "url": "https://nekib.helsekompetanse.no/urinlekkasje/utredning/",
+          "text": "Utredning",
+          "href": "https://nekib.helsekompetanse.no/urinlekkasje/utredning/"
+        },
+        {
+          "url": "https://nekib.helsekompetanse.no/urinlekkasje/utredning/hva-skal-jeg-gjore/",
+          "text": "Hva skal jeg gjøre?",
+          "href": "https://nekib.helsekompetanse.no/urinlekkasje/utredning/hva-skal-jeg-gjore/"
+        }
+      ],
+      "recommendations": []
+    },
+    {
+      "condition_id": "pregnancy",
+      "local_content": {
+        "components": [
+          "diagnosis.tsx",
+          "enhanced-intro.tsx",
+          "normal-functions.tsx",
+          "resources.tsx",
+          "causes.tsx",
+          "references.tsx",
+          "condition-page.tsx",
+          "symptoms.tsx",
+          "treatment.tsx",
+          "exercises.tsx"
+        ],
+        "content_files": [
+          "links.json",
+          "intro.json",
+          "media.json"
+        ],
+        "hooks": [
+          "useContent.ts"
+        ],
+        "total_files": 14
+      },
+      "original_sections": [],
+      "original_links": [],
+      "reference_sections": [
+        {
+          "tag": "section",
+          "text": "Under graviditet og fødsel skjer det endringer i bekkenbunnen som kan påvirke naturlige funksjoner som vannlatning, avføring og seksualfunksjon.De fleste endringene er vanlige og vil normalisere seg s...",
+          "id": "",
+          "class": "elementor-section elementor-top-section elementor-element elementor-element-59f2172f elementor-section-boxed elementor-section-height-default elementor-section-height-default"
+        },
+        {
+          "tag": "section",
+          "text": "Under graviditet og fødsel skjer det endringer i bekkenbunnen som kan påvirke naturlige funksjoner som vannlatning, avføring og seksualfunksjon.De fleste endringene er vanlige og vil normalisere seg s...",
+          "id": "",
+          "class": "elementor-section elementor-inner-section elementor-element elementor-element-8e7f1ae elementor-section-boxed elementor-section-height-default elementor-section-height-default"
+        }
+      ],
+      "reference_links": [
+        {
+          "url": "https://nekib.helsekompetanse.no/plager-under-graviditet-og-etter-fodsel/#main",
+          "text": "Skip to content",
+          "href": "#main"
+        },
+        {
+          "url": "https://nekib.helsekompetanse.no/plager-under-graviditet-og-etter-fodsel/",
+          "text": "Tilstander",
+          "href": "#"
+        },
+        {
+          "url": "https://nekib.helsekompetanse.no/urinlekkasje/",
+          "text": "Urinlekkasje",
+          "href": "https://nekib.helsekompetanse.no/urinlekkasje/"
+        },
+        {
+          "url": "https://nekib.helsekompetanse.no/urinlekkasje/normalfunksjon/",
+          "text": "Normalfunksjon",
+          "href": "https://nekib.helsekompetanse.no/urinlekkasje/normalfunksjon/"
+        },
+        {
+          "url": "https://nekib.helsekompetanse.no/urinlekkasje/symptomer/",
+          "text": "Symptomer",
+          "href": "https://nekib.helsekompetanse.no/urinlekkasje/symptomer/"
+        },
+        {
+          "url": "https://nekib.helsekompetanse.no/urinlekkasje/arsaker/",
+          "text": "Årsaker",
+          "href": "https://nekib.helsekompetanse.no/urinlekkasje/arsaker/"
+        },
+        {
+          "url": "https://nekib.helsekompetanse.no/urinlekkasje/arsaker/midlertidige-arsaker/",
+          "text": "Midlertidige årsaker",
+          "href": "https://nekib.helsekompetanse.no/urinlekkasje/arsaker/midlertidige-arsaker/"
+        },
+        {
+          "url": "https://nekib.helsekompetanse.no/urinlekkasje/arsaker/svangerskap-aldersforandringer-og-sykdom/",
+          "text": "Svangerskap, aldersforandringer og sykdom",
+          "href": "https://nekib.helsekompetanse.no/urinlekkasje/arsaker/svangerskap-aldersforandringer-og-sykdom/"
+        },
+        {
+          "url": "https://nekib.helsekompetanse.no/urinlekkasje/utredning/",
+          "text": "Utredning",
+          "href": "https://nekib.helsekompetanse.no/urinlekkasje/utredning/"
+        },
+        {
+          "url": "https://nekib.helsekompetanse.no/urinlekkasje/utredning/hva-skal-jeg-gjore/",
+          "text": "Hva skal jeg gjøre?",
+          "href": "https://nekib.helsekompetanse.no/urinlekkasje/utredning/hva-skal-jeg-gjore/"
+        }
+      ],
+      "recommendations": []
+    }
+  ],
+  "overall_recommendations": [
+    "1 conditions have potential missing content"
+  ]
+}

@@ -1,0 +1,17 @@
+User-agent: *
+Allow: /
+
+# Specific rules for AI agents
+User-agent: GPTBot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+Sitemap: https://bekkenbunnsportalen.no/sitemap.xml

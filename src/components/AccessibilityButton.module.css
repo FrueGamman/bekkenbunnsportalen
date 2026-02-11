@@ -1,0 +1,181 @@
+.wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+}
+
+.fab {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  /* Glassmorphism */
+  background: rgba(255, 255, 255, 0.01);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  -webkit-backdrop-filter: blur(12px) saturate(140%);
+  backdrop-filter: blur(12px) saturate(140%);
+  color: var(--brand-navy);
+  cursor: pointer;
+  font-size: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+.fab:hover {
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+  background: rgba(255, 255, 255, 0.32);
+  transform: scale(1.05);
+}
+
+.fabIcon {
+  width: 24px;
+  height: 24px;
+}
+
+.fab:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+/* Dark theme glass adjustments */
+::global(html.dark) :local(.fab) {
+  background: rgba(17, 24, 39, 0.45);
+  border-color: rgba(255, 255, 255, 0.18);
+  color: #e5e7eb;
+}
+
+::global(html.dark) :local(.fab:hover) {
+  background: rgba(17, 24, 39, 0.6);
+}
+
+/* High contrast: fall back to solid for visibility */
+@media (prefers-contrast: high) {
+  :global(html.high-contrast) :local(.fab) {
+    background: var(--color-text-primary);
+    color: var(--color-bg-primary);
+    border: 2px solid var(--color-text-primary);
+    box-shadow: var(--shadow-xl);
+  }
+}
+
+.panel {
+  position: absolute;
+  top: calc(100% + 12px);
+  right: 0;
+  width: 300px;
+  background: var(--color-card-bg);
+  border: 1px solid var(--color-card-border);
+  border-radius: 12px;
+  box-shadow: var(--shadow-xl);
+  padding: 12px;
+  z-index: 1000;
+}
+
+/* Mobile positioning for panel */
+@media (max-width: 768px) {
+  .panel {
+    position: fixed;
+    top: auto;
+    bottom: 80px;
+    right: 16px;
+    left: 16px;
+    width: auto;
+  }
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.sectionTitle {
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.row {
+  display: flex;
+  gap: 8px;
+}
+
+.control {
+  padding: 6px 10px;
+  border-radius: 8px;
+  border: 1px solid var(--color-card-border);
+  background: var(--color-secondary-light);
+  cursor: pointer;
+}
+
+.control:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+.active {
+  border-color: var(--color-primary);
+  background: var(--color-secondary);
+  color: var(--color-text-inverse);
+}
+
+.checkboxLabel {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.iconPrimary {
+  color: var(--color-primary);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.inlineFlex {
+  display: inline-flex;
+}
+
+/* Keep the accessibility panel styling stable when high contrast is enabled */
+:global(html.high-contrast) :local(.panel) {
+  background: var(--color-bg-primary);
+  color: #1a1a1a;
+  border-color: #e5e7eb;
+}
+
+:global(html.high-contrast) :local(.control) {
+  background: #e6f2ff;
+  border-color: #cce6ff;
+  color: var(--brand-navy);
+}
+
+:global(html.high-contrast) :local(.active) {
+  background: #66b3ff;
+  border-color: #0066cc;
+  color: var(--color-bg-primary);
+}
+
+/* Dark theme + high contrast: keep panel on brand dark instead of HC */
+:global(html.dark.high-contrast) :local(.panel) {
+  background: #111827;
+  color: #e5e7eb;
+  border-color: #374151;
+}
+
+:global(html.dark.high-contrast) :local(.control) {
+  background: #1f2937;
+  border-color: #374151;
+  color: #93c5fd;
+}
+
+:global(html.dark.high-contrast) :local(.active) {
+  background: #2459a7;
+  border-color: #93c5fd;
+  color: var(--color-bg-primary);
+}
+
+

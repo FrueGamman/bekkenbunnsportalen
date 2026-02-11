@@ -1,0 +1,504 @@
+/* Anatomy Component Styles */
+.anatomyComponent {
+  padding: 3rem;
+}
+
+/* Header Section */
+.header {
+  text-align: center;
+  margin-bottom: 3rem;
+  padding-bottom: 2rem;
+  border-bottom: 2px solid var(--color-border-primary);
+}
+
+.title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--brand-navy);
+  margin-bottom: 1rem;
+  line-height: 1.2;
+}
+
+.subtitle {
+  font-size: 1.25rem;
+  color: var(--color-text-secondary);
+  line-height: 1.6;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+/* Main Anatomy Section */
+.anatomySection {
+  margin-bottom: 4rem;
+}
+
+.anatomyGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3rem;
+  align-items: start;
+}
+
+.anatomyContent h3 {
+  font-size: 1.75rem;
+  font-weight: 600;
+  color: var(--brand-navy);
+  margin-bottom: 1.5rem;
+}
+
+.anatomyContent p {
+  font-size: 1.125rem;
+  color: var(--color-text-secondary);
+  line-height: 1.7;
+  margin-bottom: 2rem;
+}
+
+/* Structure List */
+.structureList {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.structureItem {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  padding: 1.5rem;
+  background: var(--color-bg-secondary);
+  border-radius: 1rem;
+  border: 1px solid var(--color-border-primary);
+}
+
+.structureIcon {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  overflow: hidden;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-bg-primary);
+  box-shadow: var(--shadow-sm);
+}
+
+.structureIcon img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.structureInfo h4 {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--brand-navy);
+  margin-bottom: 0.5rem;
+}
+
+.structureInfo p {
+  font-size: 1rem;
+  color: var(--color-text-secondary);
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* Anatomy Image */
+.anatomyImage {
+  text-align: center;
+}
+
+.anatomyImage img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 1rem;
+  box-shadow: var(--shadow-lg);
+}
+
+.imageCaption {
+  font-size: 0.9rem;
+  color: var(--color-text-secondary);
+  margin-top: 1rem;
+  font-style: italic;
+}
+
+/* Detail Section */
+.detailSection {
+  margin: 4rem 0;
+}
+
+.detailSection h3 {
+  font-size: 1.75rem;
+  font-weight: 600;
+  color: var(--brand-navy);
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.muscleGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+}
+
+.muscleCard {
+  background: var(--color-bg-secondary);
+  padding: 2rem;
+  border-radius: 1rem;
+  border: 1px solid var(--color-border-primary);
+  text-align: center;
+  transition: var(--transition-normal);
+}
+
+.muscleCard:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+  border-color: var(--color-primary);
+}
+
+.muscleCard h4 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--brand-navy);
+  margin-bottom: 1rem;
+}
+
+.muscleCard p {
+  font-size: 1rem;
+  color: var(--color-text-secondary);
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* Function Section */
+.functionSection {
+  margin: 4rem 0;
+  background: linear-gradient(135deg, var(--color-bg-secondary) 0%, var(--color-bg-primary) 100%);
+  padding: 3rem;
+  border-radius: 1.5rem;
+  border: 1px solid var(--color-border-primary);
+}
+
+.functionSection h3 {
+  font-size: 1.75rem;
+  font-weight: 600;
+  color: var(--brand-navy);
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.functionContent {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.functionStep {
+  display: flex;
+  align-items: flex-start;
+  gap: 1.5rem;
+}
+
+.stepNumber {
+  width: 50px;
+  height: 50px;
+  background: linear-gradient(135deg, var(--brand-navy) 0%, var(--brand-sky) 100%);
+  color: var(--color-text-inverse);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.stepContent h4 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--brand-navy);
+  margin-bottom: 0.5rem;
+}
+
+.stepContent p {
+  font-size: 1rem;
+  color: var(--color-text-secondary);
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* Bristol Scale Section */
+.bristolSection {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  align-items: center;
+}
+
+.bristolImage img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 1rem;
+  box-shadow: var(--shadow-md);
+}
+
+.bristolContent p {
+  font-size: 1.125rem;
+  color: var(--color-text-secondary);
+  line-height: 1.7;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .anatomyComponent {
+    padding: 2rem 1.5rem;
+  }
+
+  .title {
+    font-size: 2rem;
+  }
+
+  .subtitle {
+    font-size: 1rem;
+  }
+
+  .anatomyGrid {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+
+  .anatomyContent h3 {
+    font-size: 1.5rem;
+  }
+
+  .structureItem {
+    padding: 1rem;
+  }
+
+  .structureIcon {
+    width: 50px;
+    height: 50px;
+  }
+
+  .muscleGrid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .muscleCard {
+    padding: 1.5rem;
+  }
+
+  .functionSection {
+    padding: 2rem 1.5rem;
+  }
+
+  .functionStep {
+    flex-direction: column;
+    text-align: center;
+    gap: 1rem;
+  }
+
+  .stepNumber {
+    align-self: center;
+  }
+
+  .bristolSection {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .detailSection h3,
+  .functionSection h3 {
+    font-size: 1.5rem;
+  }
+}
+
+/* Dark Mode Styles */
+.darkMode {
+  background: var(--color-bg-primary);
+}
+
+.darkMode .header {
+  border-bottom-color: var(--color-border-primary);
+}
+
+.darkMode .title {
+  color: var(--color-text-primary);
+}
+
+.darkMode .subtitle {
+  color: var(--color-text-secondary);
+}
+
+.darkMode .anatomyContent h3 {
+  color: var(--color-text-primary);
+}
+
+.darkMode .anatomyContent p {
+  color: var(--color-text-secondary);
+}
+
+.darkMode .structureItem {
+  background: var(--color-bg-secondary);
+  border-color: var(--color-border-primary);
+}
+
+.darkMode .structureIcon {
+  background: var(--color-bg-tertiary);
+}
+
+.darkMode .structureInfo h4 {
+  color: var(--color-text-primary);
+}
+
+.darkMode .structureInfo p {
+  color: var(--color-text-secondary);
+}
+
+.darkMode .detailSection {
+  background: var(--color-bg-secondary);
+  border-color: var(--color-border-primary);
+}
+
+.darkMode .detailSection h3,
+.darkMode .detailSection h4 {
+  color: var(--color-text-primary);
+}
+
+.darkMode .detailSection p,
+.darkMode .detailSection li {
+  color: var(--color-text-secondary);
+}
+
+.darkMode .muscleCard {
+  background: var(--color-bg-secondary);
+  border-color: var(--color-border-primary);
+}
+
+.darkMode .muscleCard:hover {
+  border-color: var(--color-primary);
+}
+
+.darkMode .muscleCard h4 {
+  color: var(--color-text-primary);
+}
+
+.darkMode .muscleCard p {
+  color: var(--color-text-secondary);
+}
+
+.darkMode .functionSection {
+  background: rgba(5, 56, 112, 0.85);
+  border-color: rgba(73, 147, 193, 0.3);
+}
+
+.darkMode .functionSection h3 {
+  color: #93c5fd;
+}
+
+.darkMode .stepNumber {
+  background: #4993C1;
+  color: #ffffff;
+}
+
+.darkMode .stepContent h4 {
+  color: var(--color-text-primary);
+}
+
+.darkMode .stepContent p {
+  color: var(--color-text-secondary);
+}
+
+.darkMode .imageCaption {
+  color: var(--color-text-secondary);
+}
+
+.darkMode .bristolContent p {
+  color: var(--color-text-secondary);
+}
+
+/* Additional Dark Mode Styles for Gradients */
+:global(:root[data-theme="dark"]) .title {
+  color: #93c5fd;
+}
+
+:global(:root[data-theme="dark"]) .subtitle {
+  color: #c0c0c0;
+}
+
+:global(:root[data-theme="dark"]) .header {
+  border-bottom-color: rgba(73, 147, 193, 0.3);
+}
+
+:global(:root[data-theme="dark"]) .anatomyContent h3,
+:global(:root[data-theme="dark"]) .detailSection h3 {
+  color: #93c5fd;
+}
+
+:global(:root[data-theme="dark"]) .anatomyContent p,
+:global(:root[data-theme="dark"]) .detailSection p,
+:global(:root[data-theme="dark"]) .bristolContent p {
+  color: #c0c0c0;
+}
+
+:global(:root[data-theme="dark"]) .structureItem {
+  background: rgba(5, 56, 112, 0.7);
+  border-color: rgba(73, 147, 193, 0.3);
+}
+
+:global(:root[data-theme="dark"]) .structureIcon {
+  background: rgba(73, 147, 193, 0.2);
+}
+
+:global(:root[data-theme="dark"]) .structureInfo h4 {
+  color: #93c5fd;
+}
+
+:global(:root[data-theme="dark"]) .structureInfo p {
+  color: #c0c0c0;
+}
+
+:global(:root[data-theme="dark"]) .muscleCard {
+  background: rgba(5, 56, 112, 0.7);
+  border-color: rgba(73, 147, 193, 0.3);
+}
+
+:global(:root[data-theme="dark"]) .muscleCard:hover {
+  background: rgba(5, 56, 112, 0.85);
+  border-color: #4993C1;
+}
+
+:global(:root[data-theme="dark"]) .muscleCard h4 {
+  color: #93c5fd;
+}
+
+:global(:root[data-theme="dark"]) .muscleCard p {
+  color: #c0c0c0;
+}
+
+:global(:root[data-theme="dark"]) .functionSection {
+  background: rgba(5, 56, 112, 0.85);
+  border-color: rgba(73, 147, 193, 0.3);
+}
+
+:global(:root[data-theme="dark"]) .functionSection h3 {
+  color: #93c5fd;
+}
+
+:global(:root[data-theme="dark"]) .stepNumber {
+  background: #4993C1;
+  color: #ffffff;
+}
+
+:global(:root[data-theme="dark"]) .stepContent h4 {
+  color: #93c5fd;
+}
+
+:global(:root[data-theme="dark"]) .stepContent p {
+  color: #c0c0c0;
+}
+
+:global(:root[data-theme="dark"]) .imageCaption {
+  color: #b0b0b0;
+}

@@ -1,0 +1,60 @@
+.wrapper {
+  position: relative;
+  z-index: 1; /* sit above any page background overlays */
+  isolation: isolate; /* create a new stacking context */
+  border-radius: 16px;
+  overflow: hidden;
+  padding: clamp(2rem, 4vw, 3rem) clamp(1rem, 5vw, 4rem);
+  background: rgba(0, 0, 0, 0.02);
+  min-height: 80vh;
+}
+
+.background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 100%;
+  width: 100%;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+  border-radius: 16px;
+}
+
+.backgroundIframe {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 100vw;
+  height: 56.25vw; /* 16:9 aspect ratio */
+  min-height: 100%;
+  min-width: 100%;
+  transform: translate(-50%, -50%);
+  border: none;
+  object-fit: cover;
+}
+
+@media (max-width: 768px) {
+  .wrapper {
+    padding: clamp(0.75rem, 2vw, 1rem);
+    min-height: 60vh;
+  }
+}
+
+.content {
+  position: relative;
+  z-index: 1;
+  background: transparent ;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(1.5rem, 3vw, 2.5rem);
+}
+
+/* Spacer for initial offset if needed */
+.spacer {
+  /* height controlled by inline style from initialSpacer prop */
+  display: block;
+}
+

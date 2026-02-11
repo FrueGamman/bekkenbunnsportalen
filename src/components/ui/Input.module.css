@@ -1,0 +1,61 @@
+/* src/components/ui/Input.module.css */
+.input {
+  display: flex;
+  height: 36px;
+  width: 100%;
+  border-radius: 6px;
+  border: 1px solid var(--color-input-border);
+  background-color: var(--color-input-bg);
+  color: var(--color-input-text);
+  padding: 4px 12px;
+  font-size: 16px;
+  box-shadow: var(--shadow-sm);
+  transition: all 0.2s ease-in-out;
+}
+
+.input::file-selector-button {
+  border: 0;
+  background-color: transparent;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-text-primary);
+}
+
+.input::placeholder {
+  color: var(--color-input-placeholder);
+}
+
+.input:focus-visible {
+  outline: none;
+  border-color: var(--color-input-border-focus);
+  box-shadow: 0 0 0 2px var(--color-focus-ring);
+}
+
+.input:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+  background-color: var(--color-bg-tertiary);
+}
+
+@media (min-width: 768px) {
+  .input {
+    font-size: 14px;
+  }
+}
+
+/* High contrast mode adjustments */
+html.high-contrast .input {
+  border: 2px solid var(--color-border-primary);
+  background-color: var(--color-bg-primary);
+  color: var(--color-text-primary);
+}
+
+html.high-contrast .input:focus-visible {
+  border: 3px solid var(--color-focus);
+  box-shadow: none;
+}
+
+html.high-contrast .input::placeholder {
+  color: var(--color-text-secondary);
+  opacity: 0.8;
+}

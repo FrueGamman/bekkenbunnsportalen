@@ -1,0 +1,84 @@
+{
+  "timestamp": "2025-09-27",
+  "description": "Maps scraped content files to their intended sections",
+  "conditions": {
+    "pregnancy": {
+      "content_files": [
+        {
+          "file": "vanlige-plager_complete.json",
+          "section": "symptoms",
+          "description": "Common complaints during pregnancy",
+          "file_path": "src/conditions/pregnancy/content/vanlige-plager_complete.json"
+        },
+        {
+          "file": "laerebok-bekkenbunnen_complete.json",
+          "section": "intro",
+          "description": "Pelvic floor textbook",
+          "file_path": "src/conditions/pregnancy/content/laerebok-bekkenbunnen_complete.json"
+        }
+      ],
+      "sections": [
+        {
+          "name": "symptoms",
+          "files": 1
+        },
+        {
+          "name": "intro",
+          "files": 1
+        }
+      ]
+    },
+    "pelvic-pain": {
+      "content_files": [
+        {
+          "file": "utredning_complete.json",
+          "section": "diagnosis",
+          "description": "Diagnostic procedures",
+          "file_path": "src/conditions/pelvic-pain/content/utredning_complete.json"
+        },
+        {
+          "file": "behandling_complete.json",
+          "section": "treatment",
+          "description": "Treatment options",
+          "file_path": "src/conditions/pelvic-pain/content/behandling_complete.json"
+        },
+        {
+          "file": "symptomer_complete.json",
+          "section": "symptoms",
+          "description": "Symptoms and signs",
+          "file_path": "src/conditions/pelvic-pain/content/symptomer_complete.json"
+        }
+      ],
+      "sections": [
+        {
+          "name": "diagnosis",
+          "files": 1
+        },
+        {
+          "name": "treatment",
+          "files": 1
+        },
+        {
+          "name": "symptoms",
+          "files": 1
+        }
+      ]
+    },
+    "fecal-incontinence": {
+      "content_files": [
+        {
+          "file": "normalfunksjon_complete.json",
+          "section": "intro",
+          "description": "Normal function explanation",
+          "file_path": "src/conditions/fecal-incontinence/content/normalfunksjon_complete.json"
+        }
+      ],
+      "sections": [
+        {
+          "name": "intro",
+          "files": 1
+        }
+      ]
+    }
+  }
+}

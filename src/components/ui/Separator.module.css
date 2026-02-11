@@ -1,0 +1,18 @@
+/* /pelvic-react/src/components/ui/Separator.module.css */
+.separator {
+  flex-shrink: 0;
+  background-color: var(--brand-sky);
+  width: 192px;
+  margin-top: 21px;
+  
+}
+
+.horizontal {
+  height: 1px;
+  width: 100%;
+}
+
+.vertical {
+  height: 100%;
+  width: 1px;
+}

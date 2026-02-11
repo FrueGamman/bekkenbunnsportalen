@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="no">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/image-8.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script>
+      // Early redirect for in-app browsers and Android webviews (e.g., Facebook IAB)
+      (function () {
+        try {
+          var ua = navigator.userAgent || "";
+          var isIAB = /FBAN|FBAV|Instagram|IG|Snapchat|TTWebView|TikTok|Twitter|LinkedInApp|Reddit|Telegram|WhatsApp/i.test(ua);
+          var isWV = /; wv\)|\bwv\b/i.test(ua);
+          var isSamsung = /SamsungBrowser/i.test(ua);
+          var needsHash = isIAB || isWV || isSamsung;
+          if (needsHash && !location.hash && (location.pathname !== "/" || location.search)) {
+            var target = "/#" + location.pathname + location.search + location.hash;
+            location.replace(target);
+          }
+        } catch (e) { /* noop */ }
+      })();
+    </script>
+    <meta name="theme-color" content="#0b2740" />
+    <meta name="robots" content="index,follow,max-snippet:-1,max-image-preview:large,max-video-preview:-1" />
+    <link rel="canonical" href="https://bekkenbunnsportalen.no/" />
+    <!-- AI-related metadata -->
+    <link rel="ai-content" href="/ai.txt" />
+    
+    <link rel="alternate" href="https://bekkenbunnsportalen.no/" hreflang="no" />
+    <link rel="alternate" href="https://bekkenbunnsportalen.no/" hreflang="en" />
+    <link rel="alternate" href="https://bekkenbunnsportalen.no/" hreflang="x-default" />
+    <meta name="description" content="Kunnskapsbasert informasjon om bekkenbunnshelse for pasienter og helsepersonell. Bekkenbunnsportalen tilbyr evidensbasert kunnskap om urinlekkasje, forstoppelse, smerter og mer." />
+    <meta property="og:site_name" content="Bekkenbunnsportalen" />
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="nb_NO" />
+    <meta property="og:title" content="Bekkenbunnsportalen | Kunnskapsbasert bekkenbunnshelse" />
+    <meta property="og:description" content="Kunnskapsbasert informasjon om bekkenbunnshelse for pasienter og helsepersonell. Lær om urinlekkasje, avføringslekkasje, bekkenbunnsøvelser og behandling." />
+    <meta property="og:image" content="/logopelvic.png" />
+    <meta property="og:url" content="https://bekkenbunnsportalen.no/" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="@bekkenbunnsportalen" />
+    
+    <!-- Search engine verification (Fill in content values after registering with the services) -->
+    <!-- Google Search Console: https://search.google.com/search-console -->
+    <meta name="google-site-verification" content="ADD_YOUR_GOOGLE_VERIFICATION_CODE_HERE" />
+    <!-- Bing Webmaster Tools: https://www.bing.com/webmasters -->
+    <meta name="msvalidate.01" content="ADD_YOUR_BING_VERIFICATION_CODE_HERE" />
+    
+    <meta name="twitter:title" content="Bekkenbunnsportalen | Kunnskapsbasert bekkenbunnshelse" />
+    <meta name="twitter:description" content="Kunnskapsbasert informasjon om bekkenbunnshelse for pasienter og helsepersonell. Lær om urinlekkasje, avføringslekkasje, bekkenbunnsøvelser og behandling." />
+    <meta name="twitter:image" content="/logopelvic.png" />
+    <!-- fonnt needed bellow -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap"
+      rel="stylesheet"
+    />
+
+    <title>Bekkenbunnsportalen</title>
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "Bekkenbunnsportalen",
+      "alternateName": "Pelvic Floor Portal",
+      "url": "https://bekkenbunnsportalen.no/",
+      "inLanguage": "nb-NO",
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://bekkenbunnsportalen.no/search?q={search_term_string}",
+        "query-input": "required name=search_term_string"
+      }
+    }
+    </script>
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "Nasjonalt senter for bekkenbunnshelse (NBH)",
+      "alternateName": "National Center for Pelvic Floor Health (NBH)",
+      "url": "https://bekkenbunnsportalen.no/",
+      "logo": "https://bekkenbunnsportalen.no/logopelvic.png",
+      "inLanguage": "nb-NO",
+      "sameAs": [
+        "https://www.unn.no/nbh",
+        "https://www.facebook.com/nbh.unn/"
+      ]
+    }
+    </script>
+  </head>
+  <body class="animated-gradient-bg animate-gradient with-mesh-orbs">
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

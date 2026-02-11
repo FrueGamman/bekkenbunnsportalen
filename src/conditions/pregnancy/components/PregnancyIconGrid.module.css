@@ -1,0 +1,227 @@
+/* Pregnancy Icon Grid Component */
+.iconGrid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+  gap: 1.5rem;
+  margin: 2rem 0;
+  padding: 0;
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.iconCard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1.5rem 1rem;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  color: inherit;
+  min-height: 160px;
+  justify-content: center;
+}
+
+.iconCard:hover {
+  background: #f8fafc;
+  border-color: #3b82f6;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(59, 130, 246, 0.15);
+}
+
+.iconCard.selected {
+  background: #eff6ff;
+  border-color: #3b82f6;
+  border-width: 2px;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(59, 130, 246, 0.2);
+}
+
+.iconCard.selected .iconContainer {
+  background: #dbeafe;
+}
+
+.iconCard.selected .iconLabel {
+  color: #1e40af;
+  font-weight: 700;
+}
+
+.iconContainer {
+  width: 70px;
+  height: 70px;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f8fafc;
+  border-radius: 0.75rem;
+  padding: 0.5rem;
+  flex-shrink: 0;
+}
+
+.iconImage {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+/* Apply dark blue color to all SVG icons - uses CSS filter to convert any color to #053870 */
+.iconImage[src$=".svg"] {
+  filter: brightness(0) saturate(100%) invert(15%) sepia(88%) saturate(2421%) hue-rotate(194deg) brightness(95%) contrast(97%);
+}
+
+/* Keep PNG/JPG images with original colors */
+.iconImage[src$=".png"],
+.iconImage[src$=".jpg"],
+.iconImage[src$=".jpeg"] {
+  filter: none;
+}
+
+/* Dark mode - lighter blue for better contrast */
+.darkMode .iconImage[src$=".svg"] {
+  filter: invert(77%) sepia(27%) saturate(1085%) hue-rotate(176deg) brightness(103%) contrast(96%);
+}
+
+.darkMode .iconImage[src$=".png"],
+.darkMode .iconImage[src$=".jpg"],
+.darkMode .iconImage[src$=".jpeg"] {
+  filter: brightness(1.1);
+}
+
+.iconLabel {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #374151;
+  text-align: center;
+  line-height: 1.3;
+  margin: 0;
+  word-break: break-word;
+  hyphens: auto;
+}
+
+/* Dark Mode */
+.darkMode .iconCard {
+  background: #0f172a;
+  border-color: #334155;
+}
+
+.darkMode .iconCard:hover {
+  background: #1e293b;
+  border-color: #3b82f6;
+  box-shadow: 0 8px 25px rgba(59, 130, 246, 0.25);
+}
+
+.darkMode .iconCard.selected {
+  background: #1e3a8a;
+  border-color: #60a5fa;
+  border-width: 2px;
+  box-shadow: 0 8px 25px rgba(96, 165, 250, 0.3);
+}
+
+.darkMode .iconCard.selected .iconContainer {
+  background: #1e40af;
+}
+
+.darkMode .iconCard.selected .iconLabel {
+  color: #93c5fd;
+  font-weight: 700;
+}
+
+.darkMode .iconContainer {
+  background: #1e293b;
+}
+
+.darkMode .iconLabel {
+  color: #e2e8f0;
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+  .iconGrid {
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+    gap: 1rem;
+    margin: 1.5rem 0;
+    max-width: 1000px;
+  }
+}
+
+@media (max-width: 768px) {
+  .iconGrid {
+    grid-template-columns: repeat(5, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+    gap: 0.5rem;
+    margin: 1.5rem 0;
+  }
+
+  .iconCard {
+    padding: 0.6rem 0.4rem;
+    min-height: 100px;
+  }
+
+  .iconContainer {
+    width: 40px;
+    height: 40px;
+    margin-bottom: 0.4rem;
+    padding: 0.25rem;
+  }
+
+  .iconLabel {
+    font-size: 0.65rem;
+    line-height: 1.15;
+  }
+}
+
+@media (max-width: 480px) {
+  .iconGrid {
+    grid-template-columns: repeat(5, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+    gap: 0.4rem;
+  }
+
+  .iconCard {
+    padding: 0.4rem 0.2rem;
+    min-height: 85px;
+  }
+
+  .iconContainer {
+    width: 32px;
+    height: 32px;
+    margin-bottom: 0.3rem;
+    padding: 0.2rem;
+  }
+
+  .iconLabel {
+    font-size: 0.575rem;
+    line-height: 1.1;
+  }
+}
+
+/* Focus states for accessibility */
+.iconCard:focus-visible {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+}
+
+/* Animation for smooth interactions */
+@media (prefers-reduced-motion: no-preference) {
+  .iconCard {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .iconCard:hover .iconContainer {
+    transform: scale(1.05);
+    transition: transform 0.2s ease;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .iconCard {
+    transition: none;
+  }
+}

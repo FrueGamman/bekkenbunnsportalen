@@ -1,0 +1,754 @@
+/* /pelvic-react/src/pages/About.module.css */
+.container {
+  position: relative;
+  width: 100%;
+  max-width: 1920px;
+  margin: 0 auto;
+  min-height: 100vh;
+  min-height: calc(var(--vh, 1vh) * 100);
+  background: transparent;
+  overflow: hidden;
+  padding-top: 60px; /* Account for fixed header */
+}
+
+@supports (min-height: 100dvh) {
+  .container {
+    min-height: 100dvh;
+  }
+}
+
+.main {
+  max-width: 100%;
+  margin: 0;
+  padding: 16px clamp(1rem, 4vw, 4rem);
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding-top: 56px; /* Account for mobile header */
+  }
+}
+
+/* Specific styling for Personvern page */
+.personvernWrapper {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 0 16px;
+}
+
+@media (max-width: 768px) {
+  .personvernWrapper {
+    max-width: 100%;
+    padding: 0 16px;
+  }
+}
+
+@media (min-width: 640px) {
+  .main {
+    padding: 24px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .main {
+    padding: 32px;
+  }
+}
+
+@media (min-width: 1280px) {
+  .main {
+    padding: 48px;
+  }
+}
+
+
+/* Hero Section */
+.heroSection {
+  text-align: center;
+  margin-bottom: 48px;
+  margin-top: 40px;
+  padding: 40px 20px;
+  background: #ffffff;
+  backdrop-filter: none;
+  border-radius: 16px;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+.heroSectionPersonel {
+  text-align: center;
+  margin-bottom: 48px;
+  margin-top: 120px;
+  padding: 40px 20px;
+  background: #ffffff;
+  backdrop-filter: none;
+  border-radius: 16px;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  max-width: 800px;
+  width:600px;
+  margin-left: auto;
+  margin-right: auto;
+
+}
+
+@media (min-width: 1024px) {
+  .heroSection {
+    margin-bottom: 64px;
+    padding: 60px 40px;
+  }
+}
+
+.heroLogo {
+  width: auto;
+  height: auto;
+  background: transparent;
+  border-radius: 0;
+  margin: 0 auto 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: none;
+  border: none;
+}
+
+@media (min-width: 1024px) {
+  .heroLogo {
+    width: 650px;
+    height: 150px;
+    margin-bottom: 40px;
+  }
+}
+
+.logoImage {
+  width: clamp(580px, 70vw, 720px);
+  height: auto;
+  max-width: 100%;
+  object-fit: contain;
+}
+
+@media (min-width: 1024px) {
+  .logoImage {
+    width: clamp(580px, 70vw, 800px);
+    height: auto;
+  }
+}
+
+.heroTitle {
+  font-size: 24px;
+  font-weight: bold;
+  color: var(--color-primary-dark);
+  margin-bottom: 16px;
+}
+
+@media (min-width: 1024px) {
+  .heroTitle {
+    font-size: 32px;
+  }
+}
+
+.heroSubtitle {
+  font-size: 16px;
+  color: var(--color-primary-light);
+  margin-bottom: 24px;
+}
+
+@media (min-width: 1024px) {
+  .heroSubtitle {
+    font-size: 20px;
+  }
+}
+
+.heroDescription {
+  color: var(--color-text-tertiary);
+  max-width: 768px;
+  margin: 0 auto;
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+@media (min-width: 1024px) {
+  .heroDescription {
+    font-size: 18px;
+  }
+}
+
+.sectionTitle {
+  font-size: 24px;
+  font-weight: bold;
+  color: var(--color-primary-dark);
+  margin-bottom: 32px;
+  text-align: center;
+}
+
+@media (min-width: 1024px) {
+  .sectionTitle {
+    font-size: 30px;
+  }
+}
+
+/* About Portal */
+.aboutPortalSection {
+  margin-bottom: 48px;
+}
+
+@media (min-width: 1024px) {
+  .aboutPortalSection {
+    margin-bottom: 64px;
+  }
+}
+
+.aboutPortalCard {
+  background-color: rgba(255, 255, 255, 0.6);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+}
+
+.aboutPortalCard:hover {
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+  transform: translateY(-2px);
+}
+
+.aboutPortalContent {
+  padding: 24px;
+}
+
+@media (min-width: 1024px) {
+  .aboutPortalContent {
+    padding: 32px;
+  }
+}
+
+.aboutPortalDescription {
+  color: var(--color-text-tertiary);
+  margin-bottom: 24px;
+  font-size: 18px;
+  line-height: 1.6;
+}
+
+.aboutPortalPurpose {
+  color: var(--color-text-tertiary);
+  margin-bottom: 24px;
+  font-size: 18px;
+  line-height: 1.6;
+}
+
+.aboutPortalDisclaimer {
+  background-color: var(--color-warning-bg);
+  border: 1px solid var(--color-warning-border);
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 24px;
+}
+
+.disclaimerText {
+  color: var(--color-warning-text);
+  font-size: 16px;
+  line-height: 1.5;
+  margin: 0;
+  font-weight: 500;
+}
+
+.aboutPortalContact {
+  color: var(--color-text-tertiary);
+  font-size: 18px;
+  line-height: 1.6;
+  font-weight: 500;
+}
+
+
+/* Contact */
+.contactSection {
+  margin-bottom: 48px;
+}
+
+@media (min-width: 1024px) {
+  .contactSection {
+    margin-bottom: 64px;
+  }
+}
+
+.contactCard {
+  background-color: rgba(255, 255, 255, 0.6);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+}
+
+.contactCard:hover {
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+  transform: translateY(-2px);
+}
+
+.contactContent {
+  padding: 24px;
+}
+
+@media (min-width: 1024px) {
+  .contactContent {
+    padding: 32px;
+  }
+}
+
+.contactGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
+  margin-top: 24px;
+}
+
+@media (min-width: 768px) {
+  .contactGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .contactGrid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.contactItem {
+  text-align: center;
+  padding: 20px;
+  background-color: var(--color-bg-secondary);
+  border-radius: 8px;
+  border: 1px solid var(--color-border-primary);
+}
+
+.contactIcon {
+  font-size: 32px;
+  margin-bottom: 12px;
+}
+
+.contactItemTitle {
+  font-weight: 600;
+  font-size: 18px;
+  margin-bottom: 12px;
+  color: var(--color-primary-dark);
+}
+
+.contactItemText {
+  color: var(--color-text-tertiary);
+  line-height: 1.5;
+}
+
+.contactItemText a {
+  color: var(--color-primary);
+  text-decoration: none;
+}
+
+.contactItemText a:hover {
+  color: var(--color-primary-hover);
+  text-decoration: underline;
+}
+
+/* Contributors */
+.contributorsSection {
+  margin-bottom: 48px;
+}
+
+@media (min-width: 1024px) {
+  .contributorsSection {
+    margin-bottom: 64px;
+  }
+}
+
+.contributorsCard {
+  background-color: rgba(255, 255, 255, 0.6);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+}
+
+.contributorsCard:hover {
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+  transform: translateY(-2px);
+}
+
+.contributorsContent {
+  padding: 24px;
+}
+
+@media (min-width: 1024px) {
+  .contributorsContent {
+    padding: 32px;
+  }
+}
+
+.contributorsDescription {
+  color: var(--color-text-tertiary);
+  margin-bottom: 24px;
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+.contributorsSubtitle {
+  color: var(--color-text-tertiary);
+  margin-bottom: 24px;
+  font-size: 16px;
+  line-height: 1.6;
+  font-weight: 500;
+}
+
+.contributorsList {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+}
+
+@media (min-width: 768px) {
+  .contributorsList {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .contributorsList {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.contributorItem {
+  padding: 12px 16px;
+  background-color: var(--color-bg-secondary);
+  border-radius: 6px;
+  border: 1px solid var(--color-border-primary);
+  color: var(--color-text-tertiary);
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.contributorItem strong {
+  color: var(--color-primary-dark);
+  font-weight: 600;
+}
+
+/* Resources */
+.resourcesSection {
+  margin-bottom: 48px;
+}
+
+@media (min-width: 1024px) {
+  .resourcesSection {
+    margin-bottom: 64px;
+  }
+}
+
+.resourcesCard {
+  background-color: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+}
+
+.resourcesCard:hover {
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+  transform: translateY(-2px);
+}
+
+.resourcesContent {
+  padding: 24px;
+}
+
+@media (min-width: 1024px) {
+  .resourcesContent {
+    padding: 32px;
+  }
+}
+
+.resourcesDescription {
+  color: var(--color-text-tertiary);
+  margin-bottom: 24px;
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+.resourceLink {
+  margin-bottom: 16px;
+}
+
+.downloadLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 20px;
+  background-color: var(--color-primary);
+  color: white;
+  text-decoration: none;
+  border-radius: 8px;
+  font-weight: 500;
+  transition: background-color 0.2s ease;
+}
+
+.downloadLink:hover {
+  background-color: var(--color-primary-hover);
+  color: white;
+  text-decoration: none;
+}
+
+.resourcesNote {
+  color: var(--color-text-tertiary);
+  font-size: 14px;
+  font-style: italic;
+}
+
+/* Dark mode specific adjustments */
+html.dark .heroTitle,
+html.dark .sectionTitle {
+  color: var(--color-primary);
+}
+
+html.dark .heroLogo {
+  background: var(--color-bg-tertiary);
+  border-color: var(--color-primary);
+}
+
+/* High contrast mode adjustments */
+html.high-contrast .container {
+  background: var(--color-bg-primary);
+}
+
+html.high-contrast .heroTitle,
+html.high-contrast .sectionTitle {
+  color: var(--color-text-primary);
+}
+
+html.high-contrast .heroSubtitle,
+html.high-contrast .heroDescription,
+html.high-contrast .aboutPortalDescription,
+html.high-contrast .resourcesDescription,
+html.high-contrast .contactItemText,
+html.high-contrast .resourcesNote {
+  color: var(--color-text-primary);
+}
+
+html.high-contrast .heroLogo {
+  background: var(--color-bg-primary);
+  border: 3px solid var(--color-text-primary);
+}
+
+html.high-contrast .aboutPortalCard,
+html.high-contrast .contactCard,
+html.high-contrast .contributorsCard,
+html.high-contrast .resourcesCard {
+  background: var(--color-bg-primary);
+  border: 2px solid var(--color-text-primary);
+  box-shadow: none;
+}
+
+html.high-contrast .contributorItem {
+  background: var(--color-bg-primary);
+  border: 2px solid var(--color-text-primary);
+}
+
+/* Focus states for accessibility */
+
+.teamMember:focus-within {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+/* Dark Mode Styles */
+.darkMode {
+  background: var(--color-bg-primary);
+}
+
+.darkMode .heroSection {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.darkMode .heroTitle {
+  color: var(--color-primary-dark);
+}
+
+.darkMode .heroSubtitle {
+  color: var(--color-primary-light);
+}
+
+.darkMode .heroDescription {
+  color: var(--color-text-tertiary);
+}
+
+.darkMode .sectionTitle {
+  color: var(--color-text-primary);
+}
+
+.darkMode .aboutPortalCard,
+.darkMode .contactCard,
+.darkMode .contributorsCard,
+.darkMode .resourcesCard {
+  background: var(--color-card-bg);
+  border-color: var(--color-border-primary);
+  box-shadow: var(--shadow-md);
+}
+
+.darkMode .aboutPortalDescription,
+.darkMode .aboutPortalPurpose,
+.darkMode .aboutPortalContact,
+.darkMode .contactItemText,
+.darkMode .contributorsDescription,
+.darkMode .contributorsSubtitle,
+.darkMode .resourcesDescription,
+.darkMode .resourcesNote {
+  color: var(--color-text-secondary);
+}
+
+.darkMode .contactItem {
+  background: var(--color-bg-secondary);
+  border-color: var(--color-border-primary);
+}
+
+.darkMode .contactItemTitle {
+  color: var(--color-text-primary);
+}
+
+.darkMode .contributorItem {
+  background: var(--color-bg-secondary);
+  border-color: var(--color-border-primary);
+  color: var(--color-text-secondary);
+}
+
+.darkMode .contributorItem strong {
+  color: var(--color-text-primary);
+}
+
+.darkMode .disclaimerText {
+  color: var(--color-warning-text);
+}
+
+.darkMode .downloadLink {
+  background: var(--color-primary);
+  color: white;
+}
+
+.darkMode .downloadLink:hover {
+  background: var(--color-primary-hover);
+  color: white;
+}
+
+/* Dark Mode Styles for Animated Gradient Backgrounds */
+:global(:root[data-theme="dark"]) .heroSection,
+html.dark .heroSection {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+:global(:root[data-theme="dark"]) .heroTitle,
+:global(:root[data-theme="dark"]) .sectionTitle,
+html.dark .heroTitle,
+html.dark .sectionTitle {
+  color: var(--color-primary-dark);
+}
+
+:global(:root[data-theme="dark"]) .heroSubtitle,
+html.dark .heroSubtitle {
+  color: var(--color-primary-light);
+}
+
+:global(:root[data-theme="dark"]) .heroDescription,
+html.dark .heroDescription {
+  color: var(--color-text-tertiary);
+}
+
+:global(:root[data-theme="dark"]) .heroLogo,
+html.dark .heroLogo {
+  background: rgba(30, 41, 59, 0.8);
+  border-color: rgba(147, 197, 253, 0.3);
+}
+
+:global(:root[data-theme="dark"]) .aboutPortalCard,
+:global(:root[data-theme="dark"]) .contactCard,
+:global(:root[data-theme="dark"]) .contributorsCard,
+:global(:root[data-theme="dark"]) .resourcesCard,
+html.dark .aboutPortalCard,
+html.dark .contactCard,
+html.dark .contributorsCard,
+html.dark .resourcesCard {
+  background-color: rgba(30, 41, 59, 0.8);
+  backdrop-filter: blur(12px);
+  border-color: rgba(148, 163, 184, 0.2);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+:global(:root[data-theme="dark"]) .aboutPortalCard:hover,
+:global(:root[data-theme="dark"]) .contactCard:hover,
+:global(:root[data-theme="dark"]) .contributorsCard:hover,
+:global(:root[data-theme="dark"]) .resourcesCard:hover,
+html.dark .aboutPortalCard:hover,
+html.dark .contactCard:hover,
+html.dark .contributorsCard:hover,
+html.dark .resourcesCard:hover {
+  background-color: rgba(30, 41, 59, 0.95);
+  border-color: rgba(147, 197, 253, 0.3);
+  box-shadow: 0 8px 32px rgba(147, 197, 253, 0.2);
+}
+
+:global(:root[data-theme="dark"]) .aboutPortalDescription,
+:global(:root[data-theme="dark"]) .aboutPortalPurpose,
+:global(:root[data-theme="dark"]) .aboutPortalContact,
+:global(:root[data-theme="dark"]) .contactItemText,
+:global(:root[data-theme="dark"]) .contributorsDescription,
+:global(:root[data-theme="dark"]) .contributorsSubtitle,
+:global(:root[data-theme="dark"]) .resourcesDescription,
+:global(:root[data-theme="dark"]) .resourcesNote,
+html.dark .aboutPortalDescription,
+html.dark .aboutPortalPurpose,
+html.dark .aboutPortalContact,
+html.dark .contactItemText,
+html.dark .contributorsDescription,
+html.dark .contributorsSubtitle,
+html.dark .resourcesDescription,
+html.dark .resourcesNote {
+  color: #cbd5e1;
+}
+
+:global(:root[data-theme="dark"]) .contactItem,
+html.dark .contactItem {
+  background: rgba(51, 65, 85, 0.6);
+  border-color: rgba(148, 163, 184, 0.2);
+}
+
+:global(:root[data-theme="dark"]) .contactItemTitle,
+html.dark .contactItemTitle {
+  color: #f1f5f9;
+}
+
+:global(:root[data-theme="dark"]) .contributorItem,
+html.dark .contributorItem {
+  background: rgba(51, 65, 85, 0.6);
+  border-color: rgba(148, 163, 184, 0.2);
+  color: #cbd5e1;
+}
+
+:global(:root[data-theme="dark"]) .contributorItem strong,
+html.dark .contributorItem strong {
+  color: #f1f5f9;
+}
+
+:global(:root[data-theme="dark"]) .downloadLink {
+  background: #4993C1;
+  color: #ffffff;
+}
+
+:global(:root[data-theme="dark"]) .downloadLink:hover {
+  background: #5aa3d1;
+  color: #ffffff;
+}

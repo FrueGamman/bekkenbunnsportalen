@@ -1,0 +1,396 @@
+/* Gynekologi page styles */
+.container {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  min-height: calc(var(--vh, 1vh) * 100);
+  background: var(--color-bg-primary);
+  overflow: hidden;
+}
+
+@supports (min-height: 100dvh) {
+  .container {
+    min-height: 100dvh;
+  }
+}
+
+.main {
+  position: inherit;
+  top: -100px;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 16px;
+}
+
+@media (min-width: 640px) {
+  .main {
+    padding: 24px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .main {
+    padding: 32px;
+  }
+}
+
+@media (min-width: 1280px) {
+  .main {
+    padding: 48px;
+  }
+}
+
+/* Hero Section */
+.heroSection {
+  text-align: center;
+  margin-bottom: 40px;
+  padding: 32px 0;
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+  border-radius: 16px;
+  color: var(--color-text-inverse);
+}
+
+.heroTitle {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 16px;
+  color: var(--color-text-inverse);
+}
+
+.heroDescription {
+  font-size: 1.125rem;
+  line-height: 1.6;
+  max-width: 800px;
+  margin: 0 auto;
+  color: var(--color-text-inverse);
+  opacity: 0.9;
+}
+
+/* Tabs */
+.tabsContainer {
+  margin-bottom: 32px;
+}
+
+.tabsList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+  background: var(--color-bg-secondary);
+  padding: 8px;
+  border-radius: 12px;
+  border: 1px solid var(--color-border-primary);
+}
+
+.tabButton {
+  padding: 12px 24px;
+  border: none;
+  background: transparent;
+  color: var(--color-text-primary);
+  font-weight: 500;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 0.875rem;
+}
+
+.tabButton:hover {
+  background: var(--color-bg-primary);
+  color: var(--color-primary);
+}
+
+.tabButtonActive {
+  background: var(--color-primary) !important;
+  color: var(--color-text-inverse) !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Content */
+.contentContainer {
+  margin-bottom: 48px;
+}
+
+.tabPanel {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.contentCard {
+  background: var(--color-bg-primary);
+  border: 1px solid var(--color-border-primary);
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+}
+
+.contentCard:hover {
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px);
+}
+
+.cardContent {
+  padding: 32px;
+}
+
+.sectionTitle {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--color-primary);
+  margin-bottom: 16px;
+  border-bottom: 3px solid var(--color-primary);
+  padding-bottom: 8px;
+}
+
+.sectionDescription {
+  font-size: 1.125rem;
+  line-height: 1.6;
+  color: var(--color-text-secondary);
+  margin-bottom: 32px;
+}
+
+/* Highlight Box */
+.highlightBox {
+  background: linear-gradient(135deg, var(--color-bg-secondary) 0%, var(--color-bg-primary) 100%);
+  border: 1px solid var(--color-border-primary);
+  border-radius: 12px;
+  padding: 24px;
+  margin: 24px 0;
+}
+
+.highlightTitle {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--color-primary);
+  margin-bottom: 16px;
+}
+
+.highlightList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.highlightList li {
+  padding: 8px 0;
+  padding-left: 24px;
+  position: relative;
+  color: var(--color-text-primary);
+  font-weight: 500;
+}
+
+.highlightList li::before {
+  content: "✓";
+  position: absolute;
+  left: 0;
+  color: var(--color-primary);
+  font-weight: bold;
+}
+
+/* Subsections */
+.diagnosisSection,
+.treatmentSection,
+.pregnancySection,
+.prolapseSection,
+.resourcesSection {
+  margin: 32px 0;
+  padding: 24px;
+  background: var(--color-bg-secondary);
+  border-radius: 12px;
+  border-left: 4px solid var(--color-primary);
+}
+
+.subsectionTitle {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--color-primary);
+  margin-bottom: 16px;
+}
+
+.diagnosisList,
+.treatmentList,
+.pregnancyList,
+.prolapseList,
+.resourcesList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.diagnosisList li,
+.treatmentList li,
+.pregnancyList li,
+.prolapseList li,
+.resourcesList li {
+  padding: 12px 0;
+  padding-left: 28px;
+  position: relative;
+  color: var(--color-text-primary);
+  line-height: 1.5;
+  border-bottom: 1px solid var(--color-border-primary);
+}
+
+.diagnosisList li:last-child,
+.treatmentList li:last-child,
+.pregnancyList li:last-child,
+.prolapseList li:last-child,
+.resourcesList li:last-child {
+  border-bottom: none;
+}
+
+.diagnosisList li::before,
+.treatmentList li::before,
+.pregnancyList li::before,
+.prolapseList li::before,
+.resourcesList li::before {
+  content: "•";
+  position: absolute;
+  left: 0;
+  color: var(--color-primary);
+  font-weight: bold;
+  font-size: 1.2rem;
+}
+
+/* Links */
+.resourcesList a {
+  color: var(--color-primary);
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s ease;
+}
+
+.resourcesList a:hover {
+  color: var(--color-primary-dark);
+  text-decoration: underline;
+}
+
+/* Dark Mode Styles for Animated Gradient Backgrounds */
+:global(:root[data-theme="dark"]) .heroSection {
+  background: linear-gradient(135deg, #4993C1 0%, #5aa3d1 100%);
+}
+
+:global(:root[data-theme="dark"]) .heroTitle,
+:global(:root[data-theme="dark"]) .heroDescription {
+  color: #ffffff;
+}
+
+:global(:root[data-theme="dark"]) .tabsList {
+  background: rgba(5, 56, 112, 0.85);
+  border-color: rgba(73, 147, 193, 0.3);
+}
+
+:global(:root[data-theme="dark"]) .tabButton {
+  color: #e5e7eb;
+}
+
+:global(:root[data-theme="dark"]) .tabButton:hover {
+  background: rgba(5, 56, 112, 0.6);
+  color: #93c5fd;
+}
+
+:global(:root[data-theme="dark"]) .tabButtonActive {
+  background: #4993C1 !important;
+  color: #ffffff !important;
+}
+
+:global(:root[data-theme="dark"]) .contentCard {
+  background: rgba(5, 56, 112, 0.85);
+  border-color: rgba(73, 147, 193, 0.3);
+}
+
+:global(:root[data-theme="dark"]) .contentCard:hover {
+  background: rgba(5, 56, 112, 0.9);
+  border-color: #4993C1;
+}
+
+:global(:root[data-theme="dark"]) .sectionTitle {
+  color: #93c5fd;
+  border-bottom-color: #4993C1;
+}
+
+:global(:root[data-theme="dark"]) .sectionDescription {
+  color: #c0c0c0;
+}
+
+:global(:root[data-theme="dark"]) .highlightBox {
+  background: rgba(5, 56, 112, 0.7);
+  border-color: rgba(73, 147, 193, 0.3);
+}
+
+:global(:root[data-theme="dark"]) .highlightTitle {
+  color: #93c5fd;
+}
+
+:global(:root[data-theme="dark"]) .highlightList li {
+  color: #e5e7eb;
+}
+
+:global(:root[data-theme="dark"]) .highlightList li::before {
+  color: #4993C1;
+}
+
+:global(:root[data-theme="dark"]) .diagnosisSection,
+:global(:root[data-theme="dark"]) .treatmentSection,
+:global(:root[data-theme="dark"]) .pregnancySection,
+:global(:root[data-theme="dark"]) .prolapseSection,
+:global(:root[data-theme="dark"]) .resourcesSection {
+  background: rgba(5, 56, 112, 0.7);
+  border-color: #4993C1;
+}
+
+:global(:root[data-theme="dark"]) .subsectionTitle {
+  color: #93c5fd;
+}
+
+:global(:root[data-theme="dark"]) .diagnosisList li,
+:global(:root[data-theme="dark"]) .treatmentList li,
+:global(:root[data-theme="dark"]) .pregnancyList li,
+:global(:root[data-theme="dark"]) .prolapseList li,
+:global(:root[data-theme="dark"]) .resourcesList li {
+  color: #e5e7eb;
+  border-bottom-color: rgba(73, 147, 193, 0.2);
+}
+
+:global(:root[data-theme="dark"]) .diagnosisList li::before,
+:global(:root[data-theme="dark"]) .treatmentList li::before,
+:global(:root[data-theme="dark"]) .pregnancyList li::before,
+:global(:root[data-theme="dark"]) .prolapseList li::before,
+:global(:root[data-theme="dark"]) .resourcesList li::before {
+  color: #4993C1;
+}
+
+:global(:root[data-theme="dark"]) .resourcesList a {
+  color: #93c5fd;
+}
+
+:global(:root[data-theme="dark"]) .resourcesList a:hover {
+  color: #bfdbfe;
+}
+
+/* High contrast mode */
+@media (prefers-contrast: high) {
+  .contentCard {
+    border-width: 2px;
+  }
+  
+  .highlightBox {
+    border-width: 2px;
+  }
+  
+  .diagnosisSection,
+  .treatmentSection,
+  .pregnancySection,
+  .prolapseSection,
+  .resourcesSection {
+    border-left-width: 6px;
+  }
+}

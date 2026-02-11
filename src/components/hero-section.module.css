@@ -1,0 +1,1160 @@
+/* Glass Container - Handles glassmorphism styling */
+.glassContainer {
+  background: rgba(255, 255, 255, 0.12);
+  -webkit-backdrop-filter: blur(24px);
+  backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 28px;
+  box-shadow: 
+    0 12px 40px rgba(0, 0, 0, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.25);
+  position: relative;
+  overflow: hidden;
+}
+
+.glassContainer::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
+  border-radius: 28px;
+  pointer-events: none;
+}
+
+/* Dark mode glassmorphism */
+:root[data-theme="dark"] .glassContainer,
+:global(html.dark) .glassContainer {
+  background: rgba(30, 41, 59, 0.4);
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  box-shadow: 
+    0 12px 40px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(148, 163, 184, 0.1);
+}
+
+:root[data-theme="dark"] .glassContainer::before,
+:global(html.dark) .glassContainer::before {
+  background: linear-gradient(135deg, rgba(148, 163, 184, 0.15) 0%, rgba(148, 163, 184, 0.05) 100%);
+}
+
+/* Hero Wrapper - Container with proper spacing from navbar */
+.heroWrapper {
+  margin-top: 120px; /* Space from navbar */
+  padding: 0 clamp(1rem, 5vw, 4rem);
+  max-width: 1920px;
+  margin-left: auto;
+  margin-right: auto;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Clean Hero Section Styles - No glass container */
+.heroSection {
+  padding: clamp(1rem, 4vw, 3rem);
+  min-height: calc(100vh - 180px); /* Adjusted for navbar + wrapper margin */
+  min-height: calc((var(--vh, 1vh) * 100) - 180px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2rem;
+  position: relative;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+@supports (min-height: 100dvh) {
+  .heroSection {
+    min-height: calc(100dvh - 180px);
+  }
+}
+
+/* Mobile */
+@media (max-width: 767px) {
+  .glassContainer {
+    border-radius: 24px;
+  }
+  
+  .glassContainer::before {
+    border-radius: 24px;
+  }
+  
+  .heroWrapper {
+    margin-top: 100px; /* Less space on mobile */
+    padding: 0 1rem; /* Reduced padding to prevent overflow */
+  }
+  
+  .heroSection {
+    padding: 1.5rem 0.5rem; /* Reduced padding to prevent overlap */
+    gap: 1.5rem; /* Reduced gap to prevent overlap */
+    min-height: auto;
+  }
+  
+  /* Fix card grid on mobile to prevent overlap */
+  .heroCardsGrid {
+    grid-template-columns: 1fr; /* Single column on mobile */
+    gap: 12px; /* Reduced gap */
+    padding: 12px; /* Reduced padding */
+    padding-top: 16px;
+  }
+  
+  .heroCard {
+    height: auto; /* Auto height to prevent overlap */
+    min-height: 200px; /* Minimum height for content */
+    max-height: 280px; /* Maximum height to prevent overlap */
+    padding: 1rem;
+    margin-bottom: 8px; /* Extra margin to prevent overlap */
+  }
+}
+
+
+/* Large screen improvements */
+@media (min-width: 1440px) {
+  .heroWrapper {
+    margin-top: 140px; /* More space on large screens */
+  }
+  
+  .heroSection {
+    padding: 2rem;
+    gap: 3rem;
+  }
+}
+
+@media (min-width: 1920px) {
+  .heroWrapper {
+    margin-top: 160px; /* Even more space on ultra-large screens */
+  }
+  
+  .heroSection {
+    padding: 3rem;
+    gap: 4rem;
+  }
+}
+
+/* Logo Styles */
+.heroHeader {
+  display: flex;
+  align-items: center; 
+  justify-content: flex-start;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.heroTitleGroup {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  grid-auto-rows: auto;
+  column-gap: clamp(0.5rem, 1vw, 1rem);
+  align-items: start; /* Align items to the top */
+  margin-bottom: 1.5rem;
+}
+
+.heroTitleRow { 
+  display: contents; 
+}
+
+.heroTitle {
+  display: contents; /* Allow spans to participate in grid */
+}
+
+.heroTitleLine1 {
+  font-size: clamp(1.5rem, 3vw, 2.2rem);
+  font-weight: 800;
+  color: var(--brand-navy);
+  line-height: 1.3;
+  margin: 0;
+  letter-spacing: -0.02em;
+  grid-column: 2;
+  grid-row: 1;
+  white-space: nowrap;
+  align-self: center;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.heroTitleLine2 {
+  font-size: clamp(1.5rem, 3vw, 2.2rem);
+  font-weight: 800;
+  color: var(--brand-navy);
+  line-height: 1.3;
+  margin: 0;
+  letter-spacing: -0.025em;
+  grid-column: 1 / span 2;
+  grid-row: 2;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Dark mode for title lines */
+:global(html.dark) .heroTitleLine1,
+:global(html.dark) .heroTitleLine2 {
+  color: var(--color-text-primary);
+}
+
+/* Grid handles alignment; no extra padding needed on larger screens */
+
+.logo {
+  height: 50px; /* Reduced logo size */
+  width: auto;
+  object-fit: contain;
+  flex-shrink: 0;
+  grid-column: 1;
+  grid-row: 1; /* Logo only on first row with first line */
+  align-self: center; /* Center with first line */
+}
+
+/* Logo sizes are now defined in the title responsive breakpoints above */
+
+/* Enhanced responsive breakpoints */
+@media (min-width: 480px) {
+  .heroSection {
+    padding: clamp(0.4rem, 1.2vw, 0.8rem) clamp(0.75rem, 2vw, 1rem);
+    padding-top: calc(56px + 2rem + clamp(0.08rem, 0.4vw, 0.3rem));
+    gap: clamp(0.5rem, 1.2vw, 0.8rem);
+  }
+}
+
+/* Tablet - Mobile-like wrapped layout */
+@media (min-width: 768px) {
+  .heroWrapper {
+    margin-top: 120px;
+    padding: 0 clamp(1rem, 2vw, 2rem);
+  }
+  
+  .heroSection {
+    flex-direction: column; /* Stack vertically like mobile */
+    padding: 1.75rem;
+    gap: 2.5rem;
+    align-items: center;
+    min-height: auto;
+  }
+  
+  .heroContent {
+    flex: none;
+    max-width: 100%;
+    width: 100%;
+    align-items: center;
+    text-align: center;
+    padding-top: 60px;
+  }
+  
+  .heroCards {
+    flex: none;
+    max-width: 100%;
+    width: 100%;
+    margin-top: 0;
+  }
+}
+
+/* Mobile-like layout for 1024px - wrapped/stacked */
+@media (min-width: 1024px) {
+  .heroWrapper {
+    margin-top: 130px;
+    padding: 0 clamp(1rem, 2vw, 2rem);
+  }
+  
+  .heroSection {
+    flex-direction: column; /* Stack vertically like mobile */
+    padding: 2rem;
+    gap: 3rem;
+    align-items: center;
+    min-height: auto;
+  }
+  
+  .heroContent {
+    flex: none; /* Remove flex growth */
+    max-width: 100%;
+    width: 100%;
+    align-items: center; /* Center content */
+    text-align: center; /* Center text */
+  }
+  
+  .heroCards {
+    flex: none; /* Remove flex growth */
+    max-width: 100%;
+    width: 100%;
+    margin-top: 0;
+  }
+  
+  .heroCardsGrid {
+    grid-template-columns: repeat(3, 1fr);
+    max-width: 1000px;
+    margin: 0 auto;
+    gap: 8px;
+    padding: 8px;
+  }
+}
+
+/* Return to horizontal layout at 1200px+ */
+@media (min-width: 1200px) {
+  .heroWrapper {
+    margin-top: 140px;
+    padding: 0 clamp(1rem, 2vw, 2rem);
+  }
+  
+  .heroSection {
+    flex-direction: row; /* Back to horizontal layout */
+    padding: 3rem;
+    gap: 6rem;
+    align-items: flex-start;
+  }
+  
+  .heroContent {
+    flex: 1;
+    max-width: none; /* Remove width restriction */
+    gap: clamp(1.75rem, 3.2vw, 2.25rem);
+    align-items: flex-start;
+    text-align: left;
+  }
+  
+  .heroCards {
+    flex: 1.2;
+    max-width: none; /* Remove width restriction */
+  }
+  
+  .heroCardsGrid {
+    max-width: none;
+    gap: 8px;
+    padding: 8px;
+  }
+}
+
+/* Enhanced layout for larger intermediate screens */
+@media (min-width: 1280px) {
+  .heroWrapper {
+    margin-top: 150px;
+  }
+  
+  .heroSection {
+    gap: 6.5rem;
+  }
+  
+  .heroContent {
+    max-width: none;
+  }
+  
+  .heroCards {
+    max-width: none;
+  }
+
+  .heroCardsGrid {
+    max-width: none;
+    gap: 24px;
+    padding: 24px;
+  }
+}
+
+/* Large screen card improvements */
+@media (min-width: 1440px) {
+  .heroCards {
+    margin-top: 2rem;
+    width: 100%;
+    max-width: none;
+  }
+
+  .heroCardsGrid {
+    gap: 28px;
+    padding: 28px;
+    max-width: none;
+    margin: 0;
+  }
+}
+
+@media (min-width: 1920px) {
+  .heroCards {
+    margin-top: 3rem;
+    max-width: none;
+  }
+
+  .heroCardsGrid {
+    gap: 32px;
+    padding: 32px;
+    max-width: none;
+  }
+}
+
+@media (min-width: 2560px) {
+  .heroCards {
+    margin-top: 4rem;
+    max-width: none;
+  }
+
+  .heroCardsGrid {
+    gap: clamp(2rem, 3vw, 3rem);
+    padding: clamp(2.5rem, 4vw, 4rem);
+    max-width: none;
+  }
+}
+
+/* Hero Content */
+.heroContent {
+  flex: 1;
+  max-width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  z-index: 2;
+  width: 100%;
+  box-sizing: border-box;
+  align-items: flex-start; /* Align everything to the left */
+}
+
+@media (min-width: 768px) {
+  .heroContent {
+    flex: 1;
+    max-width: 500px;
+    align-items: flex-start;
+    text-align: left;
+  }
+}
+
+@media (min-width: 1024px) {
+  .heroContent {
+    flex: 1; /* Balanced flex for text content */
+    max-width: 600px; /* Adjusted width for better balance */
+    align-items: flex-start;
+    text-align: left;
+    gap: clamp(1.5rem, 3vw, 2.5rem); /* Responsive spacing */
+    overflow: hidden; /* Prevent text overflow */
+  }
+}
+
+@media (min-width: 1440px) {
+  .heroContent {
+    max-width: clamp(700px, 55vw, 900px); /* Enhanced responsive max-width */
+    gap: clamp(2rem, 3.5vw, 3rem); /* Enhanced responsive spacing */
+  }
+}
+
+@media (min-width: 1920px) {
+  .heroContent {
+    max-width: clamp(800px, 60vw, 1000px); /* Enhanced responsive max-width */
+    gap: clamp(2.5rem, 4vw, 3.5rem); /* Enhanced responsive spacing */
+  }
+}
+
+
+/* Audio Control Button - Removed */
+
+/* Hero Header - Title styling is defined in .heroTitleLine1 and .heroTitleLine2 above */
+
+@media (min-width: 768px) {
+  .heroTitleLine1,
+  .heroTitleLine2 {
+    font-size: clamp(1.75rem, 3.2vw, 2.4rem); /* Better tablet sizing */
+  }
+  
+  .logo {
+    height: 60px; /* Increase logo size on tablet */
+  }
+}
+
+@media (min-width: 1024px) {
+  .heroTitleLine1,
+  .heroTitleLine2 {
+    font-size: clamp(1.9rem, 3.3vw, 2.6rem); /* Reasonable 1024px sizing */
+  }
+}
+
+@media (min-width: 1200px) {
+  .heroTitleLine1,
+  .heroTitleLine2 {
+    font-size: clamp(2rem, 2.8vw, 2.5rem);
+    max-width: 600px;
+  }
+}
+
+@media (min-width: 1440px) {
+  .heroTitleLine1,
+  .heroTitleLine2 {
+    font-size: clamp(2.2rem, 2.5vw, 2.8rem);
+    max-width: 700px;
+  }
+  
+  .logo {
+    height: 70px;
+  }
+}
+
+@media (min-width: 1920px) {
+  .heroTitleLine1,
+  .heroTitleLine2 {
+    font-size: clamp(2.5rem, 2.8vw, 3rem);
+    max-width: 800px;
+  }
+  
+  .logo {
+    height: 80px;
+  }
+}
+
+@media (min-width: 2560px) {
+  .heroTitleLine1,
+  .heroTitleLine2 {
+    font-size: clamp(3rem, 3vw, 3.5rem);
+    max-width: 1000px;
+  }
+  
+  .logo {
+    height: 90px;
+  }
+}
+
+/* Hero Description */
+.heroDescription {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem; /* more spacing between description and subtitle on small screens */
+}
+
+.heroTextLogo {
+  height: clamp(40px, 4.5vw, 72px);
+  width: auto;
+  object-fit: contain;
+  align-self: flex-start;
+  filter: none;
+}
+
+@media (min-width: 1024px) {
+  .heroTextLogo {
+    height: clamp(48px, 4vw, 80px);
+  }
+}
+
+:global(html.dark) .heroTextLogo {
+  filter: brightness(0) invert(1);
+}
+
+@media (min-width: 1024px) {
+  .heroDescription {
+    gap: 0.75rem; /* increase spacing on desktop as requested */
+  }
+}
+
+.heroDescriptionText {
+  font-size: clamp(0.9rem, 2vw, 1.1rem); /* Responsive scaling */
+  color: var(--color-text-primary);
+  font-weight: 400;
+  line-height: 1.55;
+  margin: 0;
+  max-width: 50ch;
+  text-align: left; /* Ensure left alignment */
+}
+
+@media (min-width: 768px) {
+  .heroDescriptionText {
+    font-size: clamp(1rem, 2.2vw, 1.25rem); /* Progressive scaling */
+  }
+}
+
+@media (min-width: 1440px) {
+  .heroDescriptionText {
+    font-size: clamp(1.25rem, 2.5vw, 1.5rem); /* Large screen scaling */
+    max-width: 60ch;
+    line-height: 1.6;
+  }
+}
+
+@media (min-width: 1920px) {
+  .heroDescriptionText {
+    font-size: clamp(1.375rem, 2.8vw, 1.75rem); /* Ultra-large screen scaling */
+    max-width: 65ch;
+    line-height: 1.65;
+  }
+}
+
+.heroSubtitle {
+  font-size: clamp(14px, 2vw, 18px);
+  color: var(--brand-navy); /* Match title color */
+  font-weight: 600;
+  line-height: 1.45;
+  margin: 0;
+  margin-top: clamp(0.6rem, 1.2vw, 1rem); /* add more space above the subtitle */
+  text-align: left; /* Ensure left alignment */
+}
+
+/* Dark mode: keep hero texts white while icons use theme filter */
+::global(html.dark) .heroTitle,
+::global(html.dark) .heroDescriptionText,
+::global(html.dark) .heroSubtitle,
+::global(html.dark) .heroCardTitleText {
+  color: var(--color-text-primary) !important;
+}
+
+/* Ensure hover/active states remain white in dark mode */
+::global(html.dark) .heroCard:hover .heroCardTitleText,
+::global(html.dark) .heroCard.hovered .heroCardTitleText {
+  color: var(--color-text-primary) !important;
+}
+
+
+/* Hero Cards Container */
+.heroCards {
+  flex: 1;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  margin-top: 2rem;
+}
+
+@media (min-width: 1024px) {
+  .heroCards {
+    flex: 1.2; /* Give more space to cards */
+    max-width: 800px; /* Increased width for better card display */
+    margin-top: 0;
+    display: flex;
+    justify-content: center; /* Center the cards grid */
+    overflow: hidden; /* Prevent cards from overflowing */
+  }
+}
+
+.heroCardsGrid {
+  display: grid;
+  grid-template-columns: 1fr; /* single column on very small phones */
+  gap: clamp(8px, 1.2vw, 16px);
+  padding: clamp(8px, 1.4vw, 16px);
+  padding-top: clamp(12px, 1.8vw, 20px);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(5, 56, 112, 0.08);
+  border-radius: clamp(10px, 1.2vw, 16px);
+  box-shadow: var(--shadow-sm);
+  transition: all 0.3s ease;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  align-items: start;
+  grid-auto-rows: auto;
+  justify-items: center;
+  overflow: hidden;
+}
+
+/* Very small screens - ensure single column and no overlap */
+@media (max-width: 480px) {
+  .heroWrapper {
+    padding: 0 0.5rem; /* Minimal padding on very small screens */
+  }
+  
+  .heroSection {
+    padding: 1rem 0.25rem; /* Minimal padding */
+    gap: 1rem; /* Minimal gap */
+  }
+  
+  .heroCardsGrid {
+    gap: 8px; /* Minimal gap */
+    padding: 8px; /* Minimal padding */
+    padding-top: 12px;
+  }
+  
+  .heroCard {
+    min-height: 180px; /* Smaller minimum height */
+    max-height: 240px; /* Smaller maximum height */
+    padding: 0.75rem; /* Smaller padding */
+    margin-bottom: 6px; /* Smaller margin */
+  }
+}
+
+@media (min-width: 640px) {
+  .heroCardsGrid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (min-width: 768px) {
+  .heroCardsGrid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: clamp(18px, 2.8vw, 26px); /* Increased gap for better tablet spacing */
+    padding: clamp(18px, 2.8vw, 26px); /* Increased padding */
+    padding-top: clamp(22px, 3.2vw, 34px);
+    border-radius: clamp(12px, 1.4vw, 16px);
+    max-width: 1200px; /* Added max-width for tablet control */
+    margin: 0 auto; /* Center the grid */
+    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.08);
+  }
+  
+  /* Dark mode for tablet wrapped layout */
+  :global(html.dark) .heroCardsGrid {
+    background: rgba(30, 41, 59, 0.5);
+    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.25);
+  }
+}
+
+@media (min-width: 1024px) {
+  .heroCardsGrid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    padding: 20px;
+    padding-top: 24px;
+    border-radius: 16px;
+    max-width: 720px;
+    margin: 0 auto;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+  }
+  
+  :global(html.dark) .heroCardsGrid {
+    background: rgba(30, 41, 59, 0.6);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  }
+}
+
+/* Individual Cards */
+.heroCard {
+  background: rgba(255, 255, 255, 0.75);
+  -webkit-backdrop-filter: blur(4px);
+  backdrop-filter: blur(4px);
+  border: 1px solid rgba(5, 56, 112, 0.1);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 6px 18px rgba(5, 56, 112, 0.08);
+  height: 300px;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  max-width: clamp(420px, 38vw, 640px);
+}
+
+/* Welcome Card spanning two columns */
+/* Removed welcome card styles (reverted to original layout) */
+
+.heroCard::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  /* removed gradient overlay */
+  background: transparent;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.heroCard:hover::before,
+.heroCard.hovered::before {
+  opacity: 1;
+}
+
+.heroCard:hover,
+.heroCard.hovered {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 28px rgba(5, 56, 112, 0.12);
+  border-color: rgba(5, 56, 112, 0.18);
+}
+
+@media (min-width: 768px) {
+  .heroCard {
+    height: 280px;
+    min-width: 0;
+    border-radius: 11px;
+    padding: 1.25rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .heroCard {
+    height: 300px;
+    min-width: 0;
+    border-radius: 12px;
+    padding: 1.5rem;
+    background: rgba(255, 255, 255, 0.98);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+  }
+}
+
+@media (min-width: 1440px) {
+  .heroCard {
+    height: 320px;
+    padding: 1.75rem;
+  }
+}
+
+@media (min-width: 1920px) {
+  .heroCard {
+    height: 340px;
+    padding: 2rem;
+  }
+}
+
+.heroCardContent {
+  padding: 16px 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: start;
+  gap: 8px;
+  height: 100%;
+  width: 100%;
+  text-align: center;
+  position: relative;
+  z-index: 1;
+}
+
+@media (min-width: 768px) {
+  .heroCardContent {
+    padding: 18px 10px;
+    gap: 10px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .heroCardContent {
+    padding: 20px 12px;
+    gap: 12px;
+  }
+}
+
+@media (min-width: 1440px) {
+  .heroCardContent {
+    padding: 22px 14px;
+    gap: 14px;
+  }
+}
+
+@media (min-width: 1920px) {
+  .heroCardContent {
+    padding: 24px 16px;
+    gap: 16px;
+  }
+}
+
+/* Card Icons */
+.heroCardIcon {
+  width: 96px;
+  height: 96px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  transition: all 0.3s ease;
+  flex-shrink: 0;
+  position: relative;
+  border-radius: 16px;
+  background: #E5E7EB; /* gray-200 */
+  overflow: hidden;
+  transform: translateZ(0);
+}
+
+/* Soft glow background (non-circular, subtle) */
+.heroCardIcon::before { content: none; }
+
+/* Soft ground shadow (oval), not a circle */
+.heroCardIcon::after { content: none; }
+
+/* Wrap icon + caption semantically */
+.heroCardFigure {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px; /* slightly larger gap for readability */
+  height: auto;
+  margin: 0;
+}
+
+@media (min-width: 768px) {
+  .heroCardIcon {
+    width: 100px;
+    height: 100px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .heroCardIcon {
+    width: 104px;
+    height: 104px;
+  }
+}
+
+@media (min-width: 1440px) {
+  .heroCardIcon {
+    width: 108px;
+    height: 108px;
+  }
+}
+
+@media (min-width: 1920px) {
+  .heroCardIcon {
+    width: 112px;
+    height: 112px;
+  }
+}
+
+.heroCardImage {
+  width: 72px !important;
+  height: 72px !important;
+  object-fit: contain;
+  /* In light mode, show native blue; in dark, invert via global vars */
+  filter: var(--health-icon-filter);
+  transition: all 0.3s ease;
+  position: relative;
+  z-index: 1;
+}
+
+@media (min-width: 768px) {
+  .heroCardImage {
+    width: 76px !important;
+    height: 76px !important;
+  }
+}
+
+@media (min-width: 1024px) {
+  .heroCardImage {
+    width: 80px !important;
+    height: 80px !important;
+  }
+}
+
+@media (min-width: 1440px) {
+  .heroCardImage {
+    width: 84px !important;
+    height: 84px !important;
+  }
+}
+
+@media (min-width: 1920px) {
+  .heroCardImage {
+    width: 88px !important;
+    height: 88px !important;
+  }
+}
+
+.heroCard:hover .heroCardImage,
+.heroCard.hovered .heroCardImage {
+  transform: scale(1.1);
+  filter: var(--health-icon-filter);
+}
+
+/* Lift icon and strengthen shadow on hover for more pop */
+.heroCard:hover .heroCardIcon,
+.heroCard.hovered .heroCardIcon {
+  transform: translateY(-3px) scale(1.05);
+}
+
+
+
+.heroCardImageContainer {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+}
+
+.heroCardSecondaryImage {
+  width: 12px;
+  height: 12px;
+  object-fit: contain;
+  filter: var(--health-icon-filter);
+  transition: all 0.3s ease;
+}
+
+@media (min-width: 1024px) {
+  .heroCardSecondaryImage {
+    width: 14px;
+    height: 14px;
+  }
+}
+
+/* Card Separator */
+.heroCardSeparator {
+  width: 64%;
+  height: 2px;
+  background: var(--color-border-accent);
+  border: none;
+  margin: 4px 0;
+  border-radius: 1px;
+  transition: all 0.3s ease;
+}
+
+.heroCard:hover .heroCardSeparator,
+.heroCard.hovered .heroCardSeparator {
+  width: 80%;
+  background: var(--color-primary-light);
+}
+
+/* Card Titles */
+/* Remove extra wrapper; figcaption styles below */
+
+.heroCardTitleText {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--brand-navy);
+  text-align: center;
+  line-height: 1.35; /* improve multi‑line readability */
+  margin: 0;
+  padding-top: 0.35rem; /* Add padding under title */
+  word-break: keep-all;
+  overflow-wrap: normal;
+  white-space: normal;
+  -webkit-hyphens: none;
+  hyphens: none;
+  transition: all 0.3s ease;
+  min-height: calc(1.35em * 3); /* reserve space for up to 3 lines */
+  letter-spacing: 0.01em; /* slight tracking for clarity */
+  text-wrap: balance; /* try to balance line breaks where supported */
+  max-width: 96%; /* allow more width for long words */
+}
+
+/* Ensure nested spans also do not hyphenate or break inside words */
+.heroCardTitleText span {
+  word-break: keep-all;
+  overflow-wrap: normal;
+  -webkit-hyphens: none;
+  hyphens: none;
+}
+
+@media (min-width: 768px) {
+  .heroCardTitleText {
+    font-size: 16px;
+    white-space: normal;
+    padding-top: 0.5rem;
+    line-height: 1.4; /* Better line height for tablet */
+  }
+}
+
+@media (min-width: 1024px) {
+  .heroCardTitleText {
+    font-size: 17px;
+    white-space: normal;
+    padding-top: 0.5rem;
+    line-height: 1.4; /* Better line height for readability */
+    font-weight: 600; /* Slightly lighter weight for better readability */
+  }
+}
+
+@media (min-width: 1440px) {
+  .heroCardTitleText {
+    font-size: 18px;
+  }
+}
+
+@media (min-width: 1920px) {
+  .heroCardTitleText {
+    font-size: 19px;
+    line-height: 1.45;
+  }
+}
+
+.heroCard:hover .heroCardTitleText,
+.heroCard.hovered .heroCardTitleText {
+  color: var(--color-primary-light);
+  transform: translateY(-1px);
+}
+
+/* Focus States for Accessibility */
+.heroCard:focus {
+  outline: 3px solid var(--color-focus);
+  outline-offset: 2px;
+  border-color: var(--color-focus);
+}
+
+
+/* Reduced Motion Support */
+@media (prefers-reduced-motion: reduce) {
+  .heroCard,
+  .heroCardImage,
+  .heroCardSeparator,
+  .heroCardTitleText {
+    transition: none;
+  }
+
+  .heroCard:hover,
+  .heroCard.hovered {
+    transform: none;
+  }
+}
+
+/* High Contrast Mode Support */
+@media (prefers-contrast: high) {
+  .heroCard {
+    border: 2px solid var(--color-text-primary);
+  }
+
+  .heroCardTitleText {
+    color: var(--brand-navy);
+    font-weight: 700;
+  }
+}
+
+
+/* Dark mode hero cards */
+:root[data-theme="dark"] .heroCard,
+:global(html.dark) .heroCard {
+  background: rgba(30, 41, 59, 0.8);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.3);
+}
+
+:root[data-theme="dark"] .heroCard:hover,
+:global(html.dark) .heroCard:hover,
+:root[data-theme="dark"] .heroCard.hovered,
+:global(html.dark) .heroCard.hovered {
+  background: rgba(30, 41, 59, 0.95);
+  border-color: rgba(148, 163, 184, 0.3);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.5);
+}
+
+:root[data-theme="dark"] .heroCardsGrid,
+:global(html.dark) .heroCardsGrid {
+  background: transparent;
+  border: 1px solid rgba(148, 163, 184, 0.15);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+:root[data-theme="dark"] .heroCardIcon,
+:global(html.dark) .heroCardIcon {
+  background: rgba(51, 65, 85, 0.6);
+}
+
+:root[data-theme="dark"] .heroCardSeparator,
+:global(html.dark) .heroCardSeparator {
+  background: rgba(148, 163, 184, 0.3);
+}
+
+:root[data-theme="dark"] .heroCard:hover .heroCardSeparator,
+:global(html.dark) .heroCard:hover .heroCardSeparator,
+:root[data-theme="dark"] .heroCard.hovered .heroCardSeparator,
+:global(html.dark) .heroCard.hovered .heroCardSeparator {
+  background: rgba(147, 197, 253, 0.5);
+}
+
+@media (max-width: 1400px) {
+  .heroContent {
+    flex: 0.75;
+  }
+  
+  .heroCards {
+    flex: 1.25;
+  }
+}
+
+@media (max-width: 1400px) {
+  .glassContainer {
+    
+    padding-left: clamp(2rem, 0.1vw, 0.02rem);
+    padding-right: clamp(0.2rem, 0.1vw, 0.02rem);
+  }
+  
+  .heroSection {
+    
+    padding-left: clamp(0.5rem, 1vw, 1rem);
+    padding-right: clamp(0.5rem, 1vw, 1rem);
+  }
+  .heroContent {
+    flex: 1;
+  }
+}

@@ -1,0 +1,116 @@
+.imageWrapper {
+  position: relative;
+  display: inline-block;
+  max-width: 100%;
+  background: #ffffff;
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+  margin: 0 auto;
+}
+
+.imageWrapper.clickable {
+  cursor: zoom-in;
+  transition: all 0.3s ease;
+}
+
+.imageWrapper.clickable:hover {
+  opacity: 1;
+  transform: scale(1.05);
+}
+
+.imageWrapper.clickable:hover .enlargeIcon {
+  opacity: 1;
+  transform: scale(1.1);
+}
+
+.imageWrapper.clickable:focus-visible {
+  outline: 2px solid var(--color-focus, #4993C1);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+.image {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 0.5rem;
+  transition: transform 0.3s ease;
+}
+
+/* Apply dark blue color to all SVG icons - uses CSS filter to convert any color to #053870 */
+.image[src$=".svg"] {
+  filter: brightness(0) saturate(100%) invert(15%) sepia(88%) saturate(2421%) hue-rotate(194deg) brightness(95%) contrast(97%);
+}
+
+/* Keep PNG/JPG images with original colors */
+.image[src$=".png"],
+.image[src$=".jpg"],
+.image[src$=".jpeg"] {
+  filter: none;
+}
+
+.enlargeIcon {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  background: rgba(5, 56, 112, 0.85);
+  backdrop-filter: blur(8px);
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  opacity: 0;
+  transition: all 0.3s ease;
+  pointer-events: none;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+@media (hover: none) {
+  /* Always show enlarge icon on touch devices */
+  .enlargeIcon {
+    opacity: 0.8;
+  }
+}
+
+.caption {
+  margin: 0.5rem 0 0;
+  font-size: 0.875rem;
+  color: var(--color-text-secondary);
+  text-align: center;
+  font-style: italic;
+}
+
+/* Dark mode */
+:global(.dark) .enlargeIcon {
+  background: rgba(73, 147, 193, 0.85);
+}
+
+:global(.dark) .caption {
+  color: var(--color-text-secondary);
+}
+
+/* Dark mode - lighter blue for better contrast */
+:global(.dark) .image[src$=".svg"] {
+  filter: brightness(0) saturate(100%) invert(77%) sepia(27%) saturate(1085%) hue-rotate(176deg) brightness(103%) contrast(96%);
+}
+
+:global(.dark) .image[src$=".png"],
+:global(.dark) .image[src$=".jpg"],
+:global(.dark) .image[src$=".jpeg"] {
+  filter: brightness(1.1);
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .imageWrapper.clickable:hover {
+    opacity: 1;
+  }
+  
+  .enlargeIcon {
+    transition: none;
+  }
+}
+

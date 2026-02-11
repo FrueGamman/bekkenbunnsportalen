@@ -1,0 +1,227 @@
+{
+  "scraped_data": {
+    "national": [
+      {
+        "name": "NSFs Faggruppe av Sykepleiere i Urologi",
+        "link": "https://www.nsf.no/faggrupper/urologi",
+        "logo": null,
+        "category": "national",
+        "matched_name": "NSFs Faggruppe av Sykepleiere i Urologi"
+      },
+      {
+        "name": "Uroterapeutisk Forening",
+        "link": "https://www.utfnordic.org/",
+        "logo": null,
+        "category": "national",
+        "matched_name": "Uroterapeutisk Forening"
+      },
+      {
+        "name": "Sykepleiere i Stomiomsorg",
+        "link": "https://www.nsf.no/faggrupper/stomiomsorg",
+        "logo": null,
+        "category": "national",
+        "matched_name": "Sykepleiere i Stomiomsorg"
+      },
+      {
+        "name": "Norsk Fysioterapiforbund Faggruppe for Kvinnehelse",
+        "link": "https://fysio.no/kvinnehelse",
+        "logo": null,
+        "category": "national",
+        "matched_name": "Norsk Fysioterapiforbund Faggruppe for Kvinnehelse"
+      },
+      {
+        "name": "Vulvaforum",
+        "link": "https://vulva.no/om-oss/om-vulvaforum/",
+        "logo": null,
+        "category": "national",
+        "matched_name": "Vulvaforum"
+      },
+      {
+        "name": "Smertenettverk",
+        "link": "https://www.smertenettverk.no/",
+        "logo": null,
+        "category": "national",
+        "matched_name": "Smertenettverk"
+      }
+    ],
+    "international": [
+      {
+        "name": "European Association of Urology",
+        "link": "https://uroweb.org/",
+        "logo": null,
+        "category": "international",
+        "matched_name": "European Association of Urology"
+      },
+      {
+        "name": "International Continence Society",
+        "link": "https://www.ics.org/",
+        "logo": null,
+        "category": "international",
+        "matched_name": "International Continence Society"
+      },
+      {
+        "name": "International Urogynecological Association",
+        "link": "https://www.iuga.org/",
+        "logo": null,
+        "category": "international",
+        "matched_name": "International Urogynecological Association"
+      },
+      {
+        "name": "European Society of Coloproctology",
+        "link": "https://www.escp.eu.com/",
+        "logo": null,
+        "category": "international",
+        "matched_name": "European Society of Coloproctology"
+      },
+      {
+        "name": "American Urological Association",
+        "link": "https://www.auanet.org/",
+        "logo": null,
+        "category": "international",
+        "matched_name": "American Urological Association"
+      },
+      {
+        "name": "International Pelvic Pain Society",
+        "link": "https://pelvicpain.org/",
+        "logo": null,
+        "category": "international",
+        "matched_name": "International Pelvic Pain Society"
+      },
+      {
+        "name": "International Painful Bladder Foundation (painful-bladder.org)",
+        "link": "http://www.painful-bladder.org/",
+        "logo": null,
+        "category": "international",
+        "matched_name": "International Painful Bladder Foundation"
+      },
+      {
+        "name": "Pelvic, Obstetric and Gynaecological Physiotherapy (POGP)",
+        "link": "https://thepogp.co.uk/default.aspx",
+        "logo": null,
+        "category": "international",
+        "matched_name": "Pelvic, Obstetric and Gynaecological Physiotherapy"
+      },
+      {
+        "name": "The International Society for the Study of Vulvovaginal Disease (ISSVD)",
+        "link": "https://www.issvd.org/",
+        "logo": null,
+        "category": "international",
+        "matched_name": "The International Society for the Study of Vulvovaginal Disease"
+      }
+    ],
+    "unmatched": []
+  },
+  "component_data": {
+    "national": [
+      {
+        "id": "nsfs-faggruppe-av-sykepleiere-i-urologi",
+        "name": "NSFs Faggruppe av Sykepleiere i Urologi",
+        "link": "https://www.nsf.no/faggrupper/urologi",
+        "logo": null,
+        "scraped_name": "NSFs Faggruppe av Sykepleiere i Urologi"
+      },
+      {
+        "id": "uroterapeutisk-forening",
+        "name": "Uroterapeutisk Forening",
+        "link": "https://www.utfnordic.org/",
+        "logo": null,
+        "scraped_name": "Uroterapeutisk Forening"
+      },
+      {
+        "id": "sykepleiere-i-stomiomsorg",
+        "name": "Sykepleiere i Stomiomsorg",
+        "link": "https://www.nsf.no/faggrupper/stomiomsorg",
+        "logo": null,
+        "scraped_name": "Sykepleiere i Stomiomsorg"
+      },
+      {
+        "id": "norsk-fysioterapiforbund-faggruppe-for-kvinnehelse",
+        "name": "Norsk Fysioterapiforbund Faggruppe for Kvinnehelse",
+        "link": "https://fysio.no/kvinnehelse",
+        "logo": null,
+        "scraped_name": "Norsk Fysioterapiforbund Faggruppe for Kvinnehelse"
+      },
+      {
+        "id": "vulvaforum",
+        "name": "Vulvaforum",
+        "link": "https://vulva.no/om-oss/om-vulvaforum/",
+        "logo": null,
+        "scraped_name": "Vulvaforum"
+      },
+      {
+        "id": "smertenettverk",
+        "name": "Smertenettverk",
+        "link": "https://www.smertenettverk.no/",
+        "logo": null,
+        "scraped_name": "Smertenettverk"
+      }
+    ],
+    "international": [
+      {
+        "id": "european-association-of-urology",
+        "name": "European Association of Urology",
+        "link": "https://uroweb.org/",
+        "logo": null,
+        "scraped_name": "European Association of Urology"
+      },
+      {
+        "id": "international-continence-society",
+        "name": "International Continence Society",
+        "link": "https://www.ics.org/",
+        "logo": null,
+        "scraped_name": "International Continence Society"
+      },
+      {
+        "id": "international-urogynecological-association",
+        "name": "International Urogynecological Association",
+        "link": "https://www.iuga.org/",
+        "logo": null,
+        "scraped_name": "International Urogynecological Association"
+      },
+      {
+        "id": "european-society-of-coloproctology",
+        "name": "European Society of Coloproctology",
+        "link": "https://www.escp.eu.com/",
+        "logo": null,
+        "scraped_name": "European Society of Coloproctology"
+      },
+      {
+        "id": "american-urological-association",
+        "name": "American Urological Association",
+        "link": "https://www.auanet.org/",
+        "logo": null,
+        "scraped_name": "American Urological Association"
+      },
+      {
+        "id": "international-pelvic-pain-society",
+        "name": "International Pelvic Pain Society",
+        "link": "https://pelvicpain.org/",
+        "logo": null,
+        "scraped_name": "International Pelvic Pain Society"
+      },
+      {
+        "id": "international-painful-bladder-foundation",
+        "name": "International Painful Bladder Foundation",
+        "link": "http://www.painful-bladder.org/",
+        "logo": null,
+        "scraped_name": "International Painful Bladder Foundation (painful-bladder.org)"
+      },
+      {
+        "id": "pelvic-obstetric-and-gynaecological-physiotherapy",
+        "name": "Pelvic, Obstetric and Gynaecological Physiotherapy",
+        "link": "https://thepogp.co.uk/default.aspx",
+        "logo": null,
+        "scraped_name": "Pelvic, Obstetric and Gynaecological Physiotherapy (POGP)"
+      },
+      {
+        "id": "the-international-society-for-the-study-of-vulvovaginal-disease",
+        "name": "The International Society for the Study of Vulvovaginal Disease",
+        "link": "https://www.issvd.org/",
+        "logo": null,
+        "scraped_name": "The International Society for the Study of Vulvovaginal Disease (ISSVD)"
+      }
+    ]
+  },
+  "scrape_timestamp": 1758645265.505274,
+  "source_url": "https://nekib.helsekompetanse.no/for-helsepersonell/organisasjoner/"
+}

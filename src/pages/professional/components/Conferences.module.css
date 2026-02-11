@@ -1,0 +1,270 @@
+.container {
+  background: var(--color-bg-primary);
+  border-radius: 16px;
+  padding: 24px;
+  margin-bottom: 24px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.header {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.iconContainer {
+  flex-shrink: 0;
+}
+
+.icon {
+  width: 48px;
+  height: 48px;
+  background: #0d47a1;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.icon img {
+  width: 24px;
+  height: 24px;
+  filter: brightness(0) invert(1);
+}
+
+.content {
+  flex: 1;
+}
+
+.title {
+  font-family: "Outfit", sans-serif;
+  font-size: 24px;
+  font-weight: 600;
+  color: #0d47a1;
+  margin: 0 0 8px 0;
+}
+
+.subtitle {
+  font-family: "Outfit", sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  color: #666;
+  margin: 0;
+  line-height: 1.5;
+}
+
+.conferencesList {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.conferenceItem {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 20px;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  transition: all 0.2s ease;
+}
+
+.conferenceItem:hover {
+  border-color: #4e83d9;
+  box-shadow: 0 4px 12px rgba(78, 131, 217, 0.1);
+}
+
+.featured {
+  border-color: #4e83d9;
+  background: #f0f7ff;
+}
+
+.learnMoreBtn {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  background: #0d47a1;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-family: "Outfit", sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.learnMoreBtn:hover {
+  background: #0b3d90;
+}
+
+.learnMoreIcon {
+  font-size: 14px;
+}
+
+.conferenceIcon {
+  flex-shrink: 0;
+  width: 48px;
+  height: 48px;
+  background: #0d47a1;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.conferenceIcon img {
+  width: 24px;
+  height: 24px;
+  filter: brightness(0) invert(1);
+}
+
+.conferenceInfo {
+  flex: 1;
+}
+
+.conferenceTitle {
+  font-family: "Outfit", sans-serif;
+  font-size: 18px;
+  font-weight: 600;
+  color: #08488a;
+  margin: 0 0 12px 0;
+}
+
+.conferenceDetails {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 8px;
+}
+
+.conferenceDate,
+.conferenceLocation {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: "Outfit", sans-serif;
+  font-size: 14px;
+  color: #666;
+}
+
+.dateIcon,
+.locationIcon {
+  font-size: 16px;
+}
+
+.conferenceDescription {
+  font-family: "Outfit", sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  color: #666;
+  margin: 0;
+  line-height: 1.4;
+}
+
+.linkBtn {
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  background: #0d47a1;
+  border: none;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.linkBtn:hover {
+  background: #0b3d90;
+  transform: translateY(-1px);
+}
+
+.linkIcon img {
+  width: 20px;
+  height: 20px;
+  filter: brightness(0) invert(1);
+}
+
+@media (max-width: 768px) {
+  .conferenceItem {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .conferenceDetails {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .linkBtn {
+    align-self: stretch;
+    width: auto;
+    height: 40px;
+  }
+}
+
+/* Dark Mode Styles */
+:global(:root[data-theme="dark"]) .container {
+  background: rgba(5, 56, 112, 0.95);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+}
+
+:global(:root[data-theme="dark"]) .title {
+  color: #93c5fd;
+}
+
+:global(:root[data-theme="dark"]) .subtitle {
+  color: #c0c0c0;
+}
+
+:global(:root[data-theme="dark"]) .conferenceItem {
+  background: rgba(5, 56, 112, 0.6);
+  border-color: rgba(73, 147, 193, 0.3);
+}
+
+:global(:root[data-theme="dark"]) .conferenceItem:hover {
+  border-color: #4993C1;
+  box-shadow: 0 4px 12px rgba(73, 147, 193, 0.3);
+}
+
+:global(:root[data-theme="dark"]) .featured {
+  background: rgba(5, 56, 112, 0.8);
+  border-color: #4993C1;
+}
+
+:global(:root[data-theme="dark"]) .conferenceTitle {
+  color: #93c5fd;
+}
+
+:global(:root[data-theme="dark"]) .conferenceDescription,
+:global(:root[data-theme="dark"]) .conferenceDate,
+:global(:root[data-theme="dark"]) .conferenceLocation {
+  color: #c0c0c0;
+}
+
+:global(:root[data-theme="dark"]) .learnMoreBtn {
+  background: #4993C1;
+}
+
+:global(:root[data-theme="dark"]) .learnMoreBtn:hover {
+  background: #5aa3d1;
+}
+
+:global(:root[data-theme="dark"]) .conferenceIcon,
+:global(:root[data-theme="dark"]) .linkBtn {
+  background: #4993C1;
+}
+
+:global(:root[data-theme="dark"]) .linkBtn:hover {
+  background: #5aa3d1;
+}
+/* /home/nzela37/Pictures/pelvic-react/src/pages/professional/components/Conferences.module.css */
