@@ -8,6 +8,7 @@ import { ConferenceSection } from "../../components/conference-section"
 import Footer from "../../components/Footer"
 // import { PelvicFloorCourseSection } from "../../components/PelvicFloorCourseSection"
 import styles from "./Helsepersonell.module.css"
+import Organisasjoner from "../professional/components/Organisasjoner"
 
 // Define types for the new content structure
 interface ContentItem {

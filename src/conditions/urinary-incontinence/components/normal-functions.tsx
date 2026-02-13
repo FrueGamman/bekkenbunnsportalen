@@ -9,41 +9,42 @@ import { ImageModal } from "../../../components/ui/ImageModal"
 import styles from "./section-content.module.css"
 
 // Content data structure
-type ContentItem = 
+type ContentItem =
   | {
-      id: string
-      type: "video-intro"
-      title: string
-      description: string
-      videoSrc: string
-      thumbnailSrc: string
-      videoTitle: string
-    }
+    id: string
+    type: "video-intro"
+    title: string
+    description: string
+    videoSrc: string
+    thumbnailSrc: string
+    videoTitle: string
+  }
   | {
-      id: string
-      type: "section-with-anatomy"
-      title: string
-      description: string
-      anatomyImages: ReadonlyArray<{
-        src: string
-        alt: string
-        caption: string
-      }>
-    }
+    id: string
+    type: "section-with-anatomy"
+    title: string
+    description: string
+    anatomyImages: ReadonlyArray<{
+      src: string
+      alt: string
+      caption: string
+    }>
+  }
   | {
-      id: string
-      type: "section"
-      title: string
-      description: string
-    }
+    id: string
+    type: "section"
+    title: string
+    description: string
+  }
   | {
-      id: string
-      type: "section-with-highlight"
-      title: string
-      description: string
-      highlightBox: string
-    }
+    id: string
+    type: "section-with-highlight"
+    title: string
+    description: string
+    highlightBox: string
+  }
 
+/*
 const NORMAL_FUNCTIONS_DATA = {
   no: {
     pageTitle: "Funksjon",
@@ -144,6 +145,8 @@ const NORMAL_FUNCTIONS_DATA = {
     ]
   }
 } as const
+*/
+const NORMAL_FUNCTIONS_DATA = { no: { pageTitle: "Funksjon", content: [] as ContentItem[] }, en: { pageTitle: "Normal Functions", content: [] as ContentItem[] } };
 
 export const NormalFunctions = () => {
   const { language } = useLanguage()
@@ -155,9 +158,9 @@ export const NormalFunctions = () => {
   const renderContent = (item: ContentItem) => {
     if (item.type === "section-with-anatomy") {
       return (
-        <SectionAccordion 
+        <SectionAccordion
           key={item.id}
-          title={item.title} 
+          title={item.title}
           isDarkMode={resolvedTheme === 'dark'}
           defaultOpen={false}
         >
@@ -166,9 +169,9 @@ export const NormalFunctions = () => {
             <div className={styles.anatomyGrid}>
               {item.anatomyImages.map((image) => (
                 <div key={image.src} className={styles.anatomyItem}>
-                  <img 
-                    src={image.src} 
-                    alt={image.alt} 
+                  <img
+                    src={image.src}
+                    alt={image.alt}
                     className={styles.anatomyImage}
                     onClick={() => setSelectedImage({ src: image.src, alt: image.alt })}
                     style={{ cursor: 'pointer' }}
@@ -184,9 +187,9 @@ export const NormalFunctions = () => {
 
     if (item.type === "section-with-highlight") {
       return (
-        <SectionAccordion 
+        <SectionAccordion
           key={item.id}
-          title={item.title} 
+          title={item.title}
           isDarkMode={resolvedTheme === 'dark'}
           defaultOpen={false}
         >
@@ -199,9 +202,9 @@ export const NormalFunctions = () => {
     }
 
     return (
-      <SectionAccordion 
+      <SectionAccordion
         key={item.id}
-        title={item.title} 
+        title={item.title}
         isDarkMode={resolvedTheme === 'dark'}
         defaultOpen={false}
       >
@@ -212,34 +215,34 @@ export const NormalFunctions = () => {
 
   return (
     <>
-    {/* Introduction Section */}
-    <UrinaryIncontinenceIntroduction />
+      {/* Introduction Section */}
+      <UrinaryIncontinenceIntroduction />
 
-    <div className={`${styles.sectionContainer} ${resolvedTheme === 'dark' ? styles.darkMode : ''}`}>
-      <div className={styles.sectionHeader}>
-        <div className={styles.sectionIcon}>
-          <img src="/inNormal.svg" alt="Normal Functions" width="24" height="24" />
-        </div>
-        <h2 className={styles.sectionTitle}>{pageTitle}</h2>
-      </div>
-
-      <div className={styles.sectionContent}>
-        {content.map((item) => (
-          <div key={item.id}>
-            {renderContent(item)}
+      <div className={`${styles.sectionContainer} ${resolvedTheme === 'dark' ? styles.darkMode : ''}`}>
+        <div className={styles.sectionHeader}>
+          <div className={styles.sectionIcon}>
+            <img src="/inNormal.svg" alt="Normal Functions" width="24" height="24" />
           </div>
-        ))}
-      </div>
-    </div>
+          <h2 className={styles.sectionTitle}>{pageTitle}</h2>
+        </div>
 
-    {selectedImage && (
-      <ImageModal
-        isOpen={!!selectedImage}
-        imageSrc={selectedImage.src}
-        imageAlt={selectedImage.alt}
-        onClose={() => setSelectedImage(null)}
-      />
-    )}
+        <div className={styles.sectionContent}>
+          {content.map((item) => (
+            <div key={item.id}>
+              {renderContent(item)}
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {selectedImage && (
+        <ImageModal
+          isOpen={!!selectedImage}
+          imageSrc={selectedImage.src}
+          imageAlt={selectedImage.alt}
+          onClose={() => setSelectedImage(null)}
+        />
+      )}
     </>
   )
 }

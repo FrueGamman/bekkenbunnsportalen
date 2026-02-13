@@ -54,6 +54,56 @@ export interface Event {
   translations: EventTranslation[];
 }
 
+export interface Hjemmeside {
+  id: number;
+  hero_tittel: string;
+  hero_beskrivelse: string;
+  hero_undertekst: string;
+  ovelser_tittel: string;
+  ovelser_undertittel: string;
+  ovelser_beskrivelse: string;
+  ovelser_knapp_tekst: string;
+  video_tittel: string;
+  video_id: string;
+  video_type: string;
+  historier_tittel: string;
+  historier_beskrivelse: string;
+  historier_knapp_tekst: string;
+  undervisning_tittel: string;
+  undervisning_beskrivelse: string;
+  elaring_tittel: string;
+  elaring_beskrivelse: string;
+  elaring_lenke: string;
+  konferanse_tittel: string;
+  konferanse_beskrivelse: string;
+  konferanse_undertekst: string;
+  konferanse_dato: string;
+  konferanse_sted: string;
+  konferanse_lenke?: string;
+  organisasjoner_tittel: string;
+  organisasjoner_beskrivelse: string;
+}
+
+
+export interface Fagorganisasjon {
+  id: number;
+  navn: string;
+  logo: string | null;
+  lenke: string;
+  kategori: string; // 'national' | 'international'
+  rekkefølge: number;
+  aktiv: boolean;
+}
+
+export interface Pasientorganisasjon {
+  id: number;
+  navn: string;
+  logo: string | null;
+  lenke: string;
+  rekkefølge: number;
+  aktiv: boolean;
+}
+
 export interface OrganizationTranslation {
   languages_code: string;
   name: string;
@@ -96,7 +146,7 @@ export interface ConditionSectionTranslation {
 export interface ConditionSection {
   id: string;
   status: string;
-  section_type: "overview" | "normal-functions" | "symptoms" | "causes" | "diagnosis" | "treatment" | "exercises" | "resources" | "references" | "textbook";
+  slug: string;
   icon?: string;
   translations: ConditionSectionTranslation[];
   accordion_items?: AccordionItem[];
@@ -148,4 +198,73 @@ export interface HomepageData {
     slug: string;
     icon: string;
   }[];
+}
+export interface TilstandAccordionLink {
+  tekst: string;
+  url: string;
+}
+
+export interface TilstandAccordionItem {
+  tittel: string;
+  tittel_en?: string;
+  innhold: string;
+  innhold_en?: string;
+  bilde_url?: string;
+  bilde_id?: string;
+  bilde_alt?: string;
+  bilde_caption?: string;
+  bilde_posisjon?: 'none' | 'under' | 'side';
+  lenker?: TilstandAccordionLink[];
+}
+
+export interface Tilstand {
+  id: number;
+  status: string;
+  navn: string;
+  slug: string;
+  ikon: string | null;
+  side_tittel: string;
+  side_undertittel: string;
+  side_beskrivelse: string;
+  side_intro: string | null;
+
+  funksjon_tittel: string;
+  funksjon_intro: string;
+  funksjon_forekomst_tittel: string | null;
+  funksjon_forekomst_innhold: string | null;
+  funksjon_video_id: string | null;
+  funksjon_video_tittel: string | null;
+  funksjon_trekkspill: TilstandAccordionItem[] | null;
+
+  symptomer_tittel: string;
+  symptomer_intro: string;
+  symptomer_sitat: string;
+  symptomer_sitat_kilde: string;
+  symptomer_trekkspill: TilstandAccordionItem[] | null;
+
+  arsaker_tittel: string;
+  arsaker_intro: string;
+  arsaker_sitat: string;
+  arsaker_sitat_kilde: string;
+  arsaker_trekkspill: TilstandAccordionItem[] | null;
+
+  utredning_tittel: string;
+  utredning_intro: string;
+  utredning_trekkspill: TilstandAccordionItem[] | null;
+
+  behandling_tittel: string;
+  behandling_intro: string;
+  behandling_trekkspill: TilstandAccordionItem[] | null;
+
+  ovelse_tittel: string;
+  ovelse_intro: string;
+  ovelse_trekkspill: TilstandAccordionItem[] | null;
+
+  ressurser_tittel: string;
+  ressurser_intro: string;
+  ressurser_trekkspill: TilstandAccordionItem[] | null;
+
+  referanser_tittel: string;
+  referanser_intro: string;
+  referanser_trekkspill: TilstandAccordionItem[] | null;
 }

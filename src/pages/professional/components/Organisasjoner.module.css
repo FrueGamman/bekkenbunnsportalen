@@ -26,7 +26,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 2px 8px rgba(13,71,161,0.2);
+  box-shadow: 0 2px 8px rgba(13, 71, 161, 0.2);
 }
 
 .icon img {
@@ -196,7 +196,9 @@
   overflow: hidden;
 }
 
-.userOrganizationsSection::before { content: none; }
+.userOrganizationsSection::before {
+  content: none;
+}
 
 .userOrgTitle {
   font-family: "Outfit", sans-serif;

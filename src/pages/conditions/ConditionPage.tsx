@@ -8,66 +8,11 @@ import Footer from "../../components/Footer";
 import styles from "./ConditionPage.module.css";
 import { useConditionDetails } from "../../hooks/useConditionDetails";
 import { DynamicConditionSection } from "../../components/DynamicConditionSection";
-
-// Import urinary incontinence components
-import { NormalFunctions } from "../../conditions/urinary-incontinence/components/normal-functions";
-import { Symptoms } from "../../conditions/urinary-incontinence/components/symptoms";
-import { Causes } from "../../conditions/urinary-incontinence/components/causes";
-import { Treatment } from "../../conditions/urinary-incontinence/components/treatment";
-import { Exercises } from "../../conditions/urinary-incontinence/components/exercises";
-import { Diagnosis } from "../../conditions/urinary-incontinence/components/diagnosis";
-import { Resources } from "../../conditions/urinary-incontinence/components/resources";
-import { References } from "../../conditions/urinary-incontinence/components/references";
-
-// Import urinary retention components
-import { NormalFunctions as UrinaryRetentionNormal } from "../../conditions/urinary-retention/components/normal-functions";
-import { Symptoms as UrinaryRetentionSymptoms } from "../../conditions/urinary-retention/components/symptoms";
-import { Causes as UrinaryRetentionCauses } from "../../conditions/urinary-retention/components/causes";
-import { Diagnosis as UrinaryRetentionDiagnosis } from "../../conditions/urinary-retention/components/diagnosis";
-import { Treatment as UrinaryRetentionTreatment } from "../../conditions/urinary-retention/components/treatment";
-import { Exercises as UrinaryRetentionExercises } from "../../conditions/urinary-retention/components/exercises";
-import { Resources as UrinaryRetentionResources } from "../../conditions/urinary-retention/components/resources";
-import { References as UrinaryRetentionReferences } from "../../conditions/urinary-retention/components/references";
-
-// Import fecal incontinence components
-import { NormalFunctions as FecalNormal } from "../../conditions/fecal-incontinence/components/normal-functions";
-import { Symptoms as FecalSymptoms } from "../../conditions/fecal-incontinence/components/symptoms";
-import { Causes as FecalCauses } from "../../conditions/fecal-incontinence/components/causes";
-import { Diagnosis as FecalDiagnosis } from "../../conditions/fecal-incontinence/components/diagnosis";
-import { Treatment as FecalTreatment } from "../../conditions/fecal-incontinence/components/treatment";
-import { Exercises as FecalExercises } from "../../conditions/fecal-incontinence/components/exercises";
-import { Resources as FecalResources } from "../../conditions/fecal-incontinence/components/resources";
-import { References as FecalReferences } from "../../conditions/fecal-incontinence/components/references";
-
-// Import constipation components
-import { Symptoms as ConstipationSymptoms } from "../../conditions/constipation/components/symptoms";
-import { Causes as ConstipationCauses } from "../../conditions/constipation/components/causes";
-import { Diagnosis as ConstipationDiagnosis } from "../../conditions/constipation/components/diagnosis";
-import { Treatment as ConstipationTreatment } from "../../conditions/constipation/components/treatment";
-import { Exercises as ConstipationExercises } from "../../conditions/constipation/components/exercises";
-import { Resources as ConstipationResources } from "../../conditions/constipation/components/resources";
-import { References as ConstipationReferences } from "../../conditions/constipation/components/references";
-
-// Import pelvic pain components
-import { NormalFunctions as PelvicPainNormal } from "../../conditions/pelvic-pain/components/normal-functions";
-import { Symptoms as PelvicPainSymptoms } from "../../conditions/pelvic-pain/components/symptoms";
-import { Causes as PelvicPainCauses } from "../../conditions/pelvic-pain/components/causes";
-import { Diagnosis as PelvicPainDiagnosis } from "../../conditions/pelvic-pain/components/diagnosis";
-import { Treatment as PelvicPainTreatment } from "../../conditions/pelvic-pain/components/treatment";
-import { Exercises as PelvicPainExercises } from "../../conditions/pelvic-pain/components/exercises";
-import { Resources as PelvicPainResources } from "../../conditions/pelvic-pain/components/resources";
-import { References as PelvicPainReferences } from "../../conditions/pelvic-pain/components/references";
+import { TilstandDynamicSection } from "../../components/TilstandDynamicSection";
+import { TilstandIntroduction } from "../../components/TilstandIntroduction";
 
 // Import pregnancy components
 import { NormalFunctions as PregnancyNormalFunctions } from "../../conditions/pregnancy/components/normal-functions";
-import { Symptoms as PregnancySymptoms } from "../../conditions/pregnancy/components/symptoms";
-import { Causes as PregnancyCauses } from "../../conditions/pregnancy/components/causes";
-import { Diagnosis as PregnancyDiagnosis } from "../../conditions/pregnancy/components/diagnosis";
-import { Treatment as PregnancyTreatment } from "../../conditions/pregnancy/components/treatment";
-import { Exercises as PregnancyExercises } from "../../conditions/pregnancy/components/exercises";
-import { Textbook as PregnancyTextbook } from "../../conditions/pregnancy/components/textbook";
-import { Resources as PregnancyResources } from "../../conditions/pregnancy/components/resources";
-import { ReferencesSection as PregnancyReferences } from "../../conditions/pregnancy/components/ReferencesSection";
 import { UpgradedPregnancyContent } from "../../conditions/pregnancy/components/UpgradedPregnancyContent";
 
 const PREGNANCY_SECTION_CARDS = {
@@ -319,6 +264,7 @@ const CONDITION_SECTIONS_MAP = {
   },
   "constipation": {
     no: [
+      { id: "normal-functions", title: "Funksjon", icon: "/normal.png" },
       { id: "symptoms", title: "Symptomer", icon: "/symptoms.png" },
       { id: "causes", title: "Årsaker", icon: "/couse.png" },
       { id: "diagnosis", title: "Utredning", icon: "/solae.png" },
@@ -328,6 +274,7 @@ const CONDITION_SECTIONS_MAP = {
       { id: "references", title: "Referanser", icon: "/resource.png" },
     ],
     en: [
+      { id: "normal-functions", title: "Normal Functions", icon: "/normal.png" },
       { id: "symptoms", title: "Symptoms", icon: "/symptoms.png" },
       { id: "causes", title: "Causes", icon: "/couse.png" },
       { id: "diagnosis", title: "Diagnosis", icon: "/solae.png" },
@@ -339,6 +286,7 @@ const CONDITION_SECTIONS_MAP = {
   },
   "pelvic-pain": {
     no: [
+      { id: "normal-functions", title: "Funksjon", icon: "/normal.png" },
       { id: "symptoms", title: "Symptomer", icon: "/symptoms.png" },
       { id: "causes", title: "Årsaker", icon: "/couse.png" },
       { id: "diagnosis", title: "Utredning", icon: "/solae.png" },
@@ -348,6 +296,7 @@ const CONDITION_SECTIONS_MAP = {
       { id: "references", title: "Referanser", icon: "/resource.png" },
     ],
     en: [
+      { id: "normal-functions", title: "Normal Functions", icon: "/normal.png" },
       { id: "symptoms", title: "Symptoms", icon: "/symptoms.png" },
       { id: "causes", title: "Causes", icon: "/couse.png" },
       { id: "diagnosis", title: "Diagnosis", icon: "/solae.png" },
@@ -386,8 +335,22 @@ export default function ConditionPage() {
   );
   const [activeSection, setActiveSection] = useState("overview");
 
+  // Map activeSection to tilstand field prefixes for fallback check
+  const sectionMap: Record<string, string> = {
+    "normal-functions": "funksjon",
+    "symptoms": "symptomer",
+    "causes": "arsaker",
+    "diagnosis": "utredning",
+    "treatment": "behandling",
+    "exercises": "ovelse",
+    "resources": "ressurser",
+    "references": "referanser",
+    "textbook": "funksjon"
+  };
+
   // Fetch CMS data for the active condition
-  const { data: cmsData, loading: cmsLoading } = useConditionDetails(activeCondition, language);
+  const { data: cmsData, tilstand: cmsTilstand, loading: cmsLoading } = useConditionDetails(activeCondition, language);
+
 
   // Get language-specific data
   const cmsConditions = cmsData?.sections ? [] : []; // This isn't quite right, I need the list of all conditions for the top nav.
@@ -511,210 +474,97 @@ export default function ConditionPage() {
   // };
 
   const renderSectionContent = () => {
-    // Check if we have dynamic CMS data for the current section
-    const cmsSection = cmsData?.sections?.find(s => s.section_type === activeSection && s.status === 'published');
+    // Priority 1: New 'tilstander' collection (simplified Norwegian schema)
+    // Only use if it actually has content for the active section
+    const prefix = sectionMap[activeSection];
+    const hasTilstandContent = cmsTilstand && prefix && (
+      (cmsTilstand as any)[`${prefix}_tittel`] ||
+      (cmsTilstand as any)[`${prefix}_intro`] ||
+      (cmsTilstand as any)[`${prefix}_trekkspill`]?.length > 0
+    );
+
+    if (hasTilstandContent) {
+      return (
+        <>
+          {activeSection === "normal-functions" && (
+            <TilstandIntroduction tilstand={cmsTilstand} />
+          )}
+          <TilstandDynamicSection tilstand={cmsTilstand} activeSection={activeSection} />
+        </>
+      );
+    }
+
+    // Priority 2: Original 'conditions' collection (if any generic fallback is needed)
+    const cmsSection = cmsData?.sections?.find(s => s.slug === activeSection && s.status === 'published');
 
     if (cmsSection) {
       return <DynamicConditionSection section={cmsSection} />;
     }
 
-    // Fallback to existing local components if no CMS data is available for this section
-    // Handle urinary incontinence (urinlekkasje)
-    if (activeCondition === "urinary-incontinence") {
-      switch (activeSection) {
-        case "normal-functions":
-          return <NormalFunctions />;
-        case "symptoms":
-          return <Symptoms />;
-        case "causes":
-          return <Causes />;
-        case "diagnosis":
-          return <Diagnosis />;
-        case "treatment":
-          return <Treatment />;
-        case "exercises":
-          return <Exercises />;
-        case "resources":
-          return <Resources />;
-        case "references":
-          return <References />;
-        default:
-          return <div>Section under development</div>;
+    // Handle pregnancy special cases that don't map to standard trekkspill
+    if (activeCondition === "pregnancy") {
+      if (activeSection === "overview") {
+        return <UpgradedPregnancyContent />;
       }
-    }
-    // Handle urinary retention (tømmingsproblemer for urin)
-    else if (activeCondition === "urinary-retention") {
-      switch (activeSection) {
-        case "normal-functions":
-          return <UrinaryRetentionNormal />;
-        case "symptoms":
-          return <UrinaryRetentionSymptoms />;
-        case "causes":
-          return <UrinaryRetentionCauses />;
-        case "diagnosis":
-          return <UrinaryRetentionDiagnosis />;
-        case "treatment":
-          return <UrinaryRetentionTreatment />;
-        case "exercises":
-          return <UrinaryRetentionExercises />;
-        case "resources":
-          return <UrinaryRetentionResources />;
-        case "references":
-          return <UrinaryRetentionReferences />;
-        default:
-          return <div>Section under development</div>;
-      }
-    }
-    // Handle fecal incontinence (avføringslekkasje) - NEW!
-    else if (activeCondition === "fecal-incontinence") {
-      switch (activeSection) {
-        case "normal-functions":
-          return <FecalNormal />;
-        case "symptoms":
-          return <FecalSymptoms />;
-        case "causes":
-          return <FecalCauses />;
-        case "diagnosis":
-          return <FecalDiagnosis />;
-        case "treatment":
-          return <FecalTreatment />;
-        case "exercises":
-          return <FecalExercises />;
-        case "resources":
-          return <FecalResources />;
-        case "references":
-          return <FecalReferences />;
-        default:
-          return <div>Section under development</div>;
-      }
-    }
-    // Handle constipation (tømmingsproblemer og forstoppelse for avføring)
-    else if (activeCondition === "constipation") {
-      switch (activeSection) {
-        case "symptoms":
-          return <ConstipationSymptoms />;
-        case "causes":
-          return <ConstipationCauses />;
-        case "diagnosis":
-          return <ConstipationDiagnosis />;
-        case "treatment":
-          return <ConstipationTreatment />;
-        case "exercises":
-          return <ConstipationExercises />;
-        case "resources":
-          return <ConstipationResources />;
-        case "references":
-          return <ConstipationReferences />;
-        default:
-          return <div>Section under development</div>;
-      }
-    }
-    // forPelvic Pain
-    else if (activeCondition === "pelvic-pain") {
-      switch (activeSection) {
-        case "normal-functions":
-          return <PelvicPainNormal />;
-        case "symptoms":
-          return <PelvicPainSymptoms />;
-        case "causes":
-          return <PelvicPainCauses />;
-        case "diagnosis":
-          return <PelvicPainDiagnosis />;
-        case "treatment":
-          return <PelvicPainTreatment />;
-        case "exercises":
-          return <PelvicPainExercises />;
-        case "resources":
-          return <PelvicPainResources />;
-        case "references":
-          return <PelvicPainReferences />;
-        default:
-          return <div>Section under development</div>;
-      }
-    }
-    // for Pregnancy
-    else if (activeCondition === "pregnancy") {
-      switch (activeSection) {
-        case "overview":
-          return <UpgradedPregnancyContent />;
-
-        case "normal-functions":
-          return (
-            <>
-              <PregnancyNormalFunctions />
-              {pregnancyCards.length > 0 && (
-                <div
-                  className={`${styles.pregnancyCardGrid} ${resolvedTheme === "dark" ? styles.darkMode : styles.lightMode
-                    }`}
-                  role="navigation"
-                  aria-label={
-                    language === "no"
-                      ? "Utforsk flere temasider for graviditet"
-                      : "Explore additional pregnancy topics"
-                  }
-                >
-                  {pregnancyCards.map((card) => {
-                    const isActive = activeSection === (card.id as any);
-                    return (
-                      <button
-                        key={card.id}
-                        type="button"
-                        onClick={() => handleSectionChange(card.id)}
-                        className={`${styles.pregnancyCard} ${isActive ? styles.pregnancyCardActive : ""
-                          }`}
-                        aria-pressed={isActive}
-                        aria-label={`${card.title} - ${card.description}`}
-                      >
-                        <div className={styles.pregnancyCardHeader}>
-                          <div className={styles.pregnancyCardIconWrapper}>
-                            <img
-                              src={card.icon}
-                              alt=""
-                              role="presentation"
-                              className={styles.pregnancyCardIcon}
-                            />
-                          </div>
-                          <h3 className={styles.pregnancyCardTitle}>{card.title}</h3>
+      if (activeSection === "normal-functions") {
+        return (
+          <>
+            <PregnancyNormalFunctions />
+            {pregnancyCards.length > 0 && (
+              <div
+                className={`${styles.pregnancyCardGrid} ${resolvedTheme === "dark" ? styles.darkMode : styles.lightMode
+                  }`}
+                role="navigation"
+                aria-label={
+                  language === "no"
+                    ? "Utforsk flere temasider for graviditet"
+                    : "Explore additional pregnancy topics"
+                }
+              >
+                {pregnancyCards.map((card) => {
+                  const isActive = activeSection === (card.id as any);
+                  return (
+                    <button
+                      key={card.id}
+                      type="button"
+                      onClick={() => handleSectionChange(card.id)}
+                      className={`${styles.pregnancyCard} ${isActive ? styles.pregnancyCardActive : ""
+                        }`}
+                      aria-pressed={isActive}
+                      aria-label={`${card.title} - ${card.description}`}
+                    >
+                      <div className={styles.pregnancyCardHeader}>
+                        <div className={styles.pregnancyCardIconWrapper}>
+                          <img
+                            src={card.icon}
+                            alt=""
+                            role="presentation"
+                            className={styles.pregnancyCardIcon}
+                          />
                         </div>
-                        <p className={styles.pregnancyCardDescription}>
-                          {card.description}
-                        </p>
-                      </button>
-                    );
-                  })}
-                </div>
-              )}
-            </>
-          );
-        case "symptoms":
-          return <PregnancySymptoms />;
-        case "causes":
-          return <PregnancyCauses />;
-        case "diagnosis":
-          return <PregnancyDiagnosis />;
-        case "treatment":
-          return <PregnancyTreatment />;
-        case "exercises":
-          return <PregnancyExercises />;
-        case "textbook":
-          return <PregnancyTextbook />;
-        case "resources":
-          return <PregnancyResources />;
-        case "references":
-          return <PregnancyReferences />;
-        default:
-          return <div>Section under development</div>;
+                        <h3 className={styles.pregnancyCardTitle}>{card.title}</h3>
+                      </div>
+                      <p className={styles.pregnancyCardDescription}>
+                        {card.description}
+                      </p>
+                    </button>
+                  );
+                })}
+              </div>
+            )}
+          </>
+        );
       }
+      // References for pregnancy are handled via TilstandDynamicSection now (mapped to referanser)
     }
-    // Handle other conditions (not yet implemented)
-    else {
-      return (
-        <div className={styles.contentSection}>
-          <h2 className={styles.sectionTitle}>Content not available</h2>
-          <p>This condition content is not yet implemented.</p>
-        </div>
-      );
-    }
+
+    // Default Fallback
+    return (
+      <div className={styles.contentSection}>
+        <h2 className={styles.sectionTitle}>Content not available</h2>
+        <p>This condition content is not yet populated in CMS.</p>
+      </div>
+    );
   };
 
   return (

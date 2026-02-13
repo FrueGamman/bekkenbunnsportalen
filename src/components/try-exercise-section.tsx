@@ -25,6 +25,7 @@ interface TryExerciseSectionProps {
     title: string;
     subtitle: string;
     description: string;
+    buttonText: string;
   };
 }
 

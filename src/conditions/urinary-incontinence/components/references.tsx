@@ -6,20 +6,21 @@ import { SectionAccordion } from "../../../components/SectionAccordion"
 
 
 // Content data structure
-type ContentItem = 
+type ContentItem =
   | {
-      id: string
-      type: "intro"
-      intro: string
-      lastUpdated: string
-    }
+    id: string
+    type: "intro"
+    intro: string
+    lastUpdated: string
+  }
   | {
-      id: string
-      type: "references"
-      title: string
-      references: readonly string[]
-    }
+    id: string
+    type: "references"
+    title: string
+    references: readonly string[]
+  }
 
+/*
 const REFERENCES_DATA = {
   no: [
     {
@@ -86,6 +87,11 @@ const REFERENCES_DATA = {
     }
   ]
 } as const
+*/
+const REFERENCES_DATA = {
+  no: [] as ContentItem[],
+  en: [] as ContentItem[]
+} as const
 
 export const References = () => {
   const { language } = useLanguage()
@@ -101,7 +107,7 @@ export const References = () => {
             <p className={styles.enhancedParagraph}>
               {item.intro}
             </p>
-            
+
             <p className={styles.enhancedParagraph}>
               <strong>{item.lastUpdated}</strong>
             </p>
@@ -112,8 +118,8 @@ export const References = () => {
 
     if (item.type === "references") {
       return (
-        <SectionAccordion 
-          title={item.title} 
+        <SectionAccordion
+          title={item.title}
           isDarkMode={resolvedTheme === 'dark'}
           defaultOpen={false}
         >
