@@ -49,6 +49,18 @@ export const TilstandDynamicSection = ({ tilstand, activeSection }: TilstandDyna
         return (language === 'en' && item[enField]) ? String(item[enField]) : String(item[field]);
     };
 
+    // Helper to slugify title for deep linking
+    const slugify = (text: string) => {
+        return text
+            .toLowerCase()
+            .replace(/[ææ]/g, 'ae')
+            .replace(/[øø]/g, 'o')
+            .replace(/[åå]/g, 'a')
+            .replace(/[^\w\s-]/g, '')
+            .replace(/[\s_-]+/g, '-')
+            .replace(/^-+|-+$/g, '');
+    };
+
     // Render image based on positioning
     const renderImage = (item: TilstandAccordionItem) => {
         const imgSrc = item.bilde_id ? getImageUrl(item.bilde_id) : item.bilde_url;
@@ -129,14 +141,17 @@ export const TilstandDynamicSection = ({ tilstand, activeSection }: TilstandDyna
 
                 {trekkspill?.map((item: TilstandAccordionItem, index: number) => {
                     const itemTitle = getField(item, 'tittel');
+                    const itemTitleNo = item.tittel; // Use Norwegian title for persistent IDs
                     const itemContent = getField(item, 'innhold');
                     const imgSrc = item.bilde_id ? getImageUrl(item.bilde_id) : item.bilde_url;
                     const isSideBySide = item.bilde_posisjon === 'side' && imgSrc;
+                    const itemId = slugify(itemTitleNo);
 
                     return (
                         <SectionAccordion
                             key={index}
                             title={itemTitle}
+                            id={itemId}
                             isDarkMode={resolvedTheme === 'dark'}
                             defaultOpen={false}
                         >

@@ -349,27 +349,16 @@ export default function ConditionPage() {
   };
 
   // Fetch CMS data for the active condition
-  const { data: cmsData, tilstand: cmsTilstand, loading: cmsLoading } = useConditionDetails(activeCondition, language);
+  const { tilstand: cmsTilstand, loading: cmsLoading } = useConditionDetails(activeCondition, language);
 
-
-  // Get language-specific data
-  const cmsConditions = cmsData?.sections ? [] : []; // This isn't quite right, I need the list of all conditions for the top nav.
-
-  // Actually, I should probably fetch the list of all conditions separately if I want the top nav to be dynamic.
-  // But for now, let's just make the existing icons dynamic if they match.
-
-  const ALL_CONDITIONS = ALL_CONDITIONS_DATA[language].map(staticCond => {
-    // If the CMS has a matching condition, we could potentially use its icon/title
-    // But for the top nav, it's safer to keep the static list unless we want it fully dynamic.
-    // The user said "keep the UI as it is and arrange the data correctly as it's".
-    return staticCond;
-  });
+  const ALL_CONDITIONS = ALL_CONDITIONS_DATA[language];
   const CONDITION_SECTIONS = CONDITION_SECTIONS_MAP[activeCondition as keyof typeof CONDITION_SECTIONS_MAP]?.[language] || [];
   const pregnancyCards =
     activeCondition === "pregnancy"
       ? PREGNANCY_SECTION_CARDS[language]
       : [];
 
+  // ... (previous useEffects remain same)
   // Update active condition when URL parameter changes
   useEffect(() => {
     if (id) {
@@ -380,7 +369,6 @@ export default function ConditionPage() {
   // Sync section from query param and default when missing/invalid
   useEffect(() => {
     const sectionParam = searchParams.get("section");
-    // const subsectionParam = searchParams.get("subsection");
     const navigableSectionIds = new Set(
       CONDITION_SECTIONS.map((section) => section.id)
     );
@@ -392,9 +380,7 @@ export default function ConditionPage() {
       navigableSectionIds.add("overview");
     }
 
-    // Check if there's a hash in the URL - if so, default to "overview" for pregnancy
     const hasHash = window.location.hash && window.location.hash.length > 1;
-
     const validSection = sectionParam
       ? navigableSectionIds.has(sectionParam as any)
       : false;
@@ -403,28 +389,17 @@ export default function ConditionPage() {
       if (sectionParam !== activeSection) {
         setActiveSection(sectionParam);
       }
-
-      // Handle subsection if it exists (commented out for now)
-      // if (subsectionParam) {
-      //   const currentSection = CONDITION_SECTIONS.find((s) => s.id === sectionParam);
-      // } else {
-      //   setActiveSubsection(null);
-      // }
     } else {
-      // default if not present or invalid
-      // For pregnancy with hash, default to "overview" to show UpgradedPregnancyContent
       if (activeCondition === "pregnancy" && hasHash) {
         if (activeSection !== "overview") {
           setActiveSection("overview");
         }
       } else {
-        // Otherwise get first section for this condition
         const firstSection = CONDITION_SECTIONS[0]?.id || "overview";
         if (activeSection !== firstSection) {
           setActiveSection(firstSection);
         }
       }
-      // setActiveSubsection(null);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchParams, id, activeCondition]);
@@ -441,40 +416,23 @@ export default function ConditionPage() {
 
   const handleConditionClick = (conditionId: string) => {
     setActiveCondition(conditionId);
-    // Get first section for the new condition
     const newSections = CONDITION_SECTIONS_MAP[conditionId as keyof typeof CONDITION_SECTIONS_MAP]?.[language] || [];
     const firstSection = newSections[0]?.id || "normal-functions";
     setActiveSection(firstSection);
-    // setActiveSubsection(null);
-    // Navigate to the new condition and default section
     navigate(`/conditions/${conditionId}?section=${firstSection}`);
   };
 
   const handleSectionChange = (sectionId: string) => {
     setActiveSection(sectionId);
-    // setActiveSubsection(null);
-    // Update query param to support deep-linking and back/forward navigation
     if (id) {
       navigate(`/conditions/${id}?section=${sectionId}`);
     } else {
-      // Fallback if id is not present for some reason
       navigate(`/conditions/${activeCondition}?section=${sectionId}`);
     }
   };
 
-  // Subsection handling commented out for now
-  // const handleSubsectionChange = (subsectionId: string) => {
-  //   setActiveSubsection(subsectionId);
-  //   // Update query param to include subsection
-  //   if (id) {
-  //     navigate(`/conditions/${id}?section=${activeSection}&subsection=${subsectionId}`);
-  //   } else {
-  //     navigate(`/conditions/${activeCondition}?section=${activeSection}&subsection=${subsectionId}`);
-  //   }
-  // };
-
   const renderSectionContent = () => {
-    // Priority 1: New 'tilstander' collection (simplified Norwegian schema)
+    // New 'tilstander' collection (simplified Norwegian schema)
     // Only use if it actually has content for the active section
     const prefix = sectionMap[activeSection];
     const hasTilstandContent = cmsTilstand && prefix && (
@@ -492,13 +450,6 @@ export default function ConditionPage() {
           <TilstandDynamicSection tilstand={cmsTilstand} activeSection={activeSection} />
         </>
       );
-    }
-
-    // Priority 2: Original 'conditions' collection (if any generic fallback is needed)
-    const cmsSection = cmsData?.sections?.find(s => s.slug === activeSection && s.status === 'published');
-
-    if (cmsSection) {
-      return <DynamicConditionSection section={cmsSection} />;
     }
 
     // Handle pregnancy special cases that don't map to standard trekkspill

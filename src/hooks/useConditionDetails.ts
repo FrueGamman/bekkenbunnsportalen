@@ -13,21 +13,13 @@ export const useConditionDetails = (slug: string, language: string) => {
       try {
         setLoading(true);
 
-        // Fetch from original conditions collection (for structure/metadata)
-        const conditionResponse = await directusFetch<Condition[]>(
-          `/items/conditions?filter[slug][_eq]=${slug}&fields=*,translations.*,sections.*,sections.translations.*,sections.accordion_items.*,sections.accordion_items.translations.*,sections.accordion_items.images.*`
-        );
-
         // Fetch from new tilstander collection (for simple editing)
         const tilstandResponse = await directusFetch<Tilstand[]>(
           `/items/tilstander?filter[slug][_eq]=${slug}&fields=*`
         );
 
-        if (conditionResponse && conditionResponse.length > 0) {
-          setData(conditionResponse[0]);
-        } else {
-          setData(null);
-        }
+        // Always set legacy data to null as it's no longer used/available
+        setData(null);
 
         if (tilstandResponse && tilstandResponse.length > 0) {
           setTilstand(tilstandResponse[0]);

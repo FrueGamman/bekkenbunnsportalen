@@ -78,8 +78,9 @@ export const useHomepageData = (language: string) => {
         const results = await Promise.allSettled([
           directusFetch<Hjemmeside>(`/items/hjemmeside`),
           directusFetch<PatientStory[]>(`/items/testimonials?fields=*,translations.*`),
-          directusFetch<ELearningCourse[]>(`/items/e_learning_courses?fields=*,translations.*`),
-          directusFetch<Event[]>(`/items/events?fields=*,translations.*`),
+          // These collections might be missing in some Directus instances
+          directusFetch<ELearningCourse[]>(`/items/e_learning_courses?fields=*,translations.*`).catch(() => []),
+          directusFetch<Event[]>(`/items/events?fields=*,translations.*`).catch(() => []),
           directusFetch<Pasientorganisasjon[]>(`/items/pasientorganisasjoner?filter[aktiv][_eq]=true`),
           directusFetch<any[]>(`/items/tilstander?fields=slug,navn,side_tittel_en,ikon`)
         ]);
