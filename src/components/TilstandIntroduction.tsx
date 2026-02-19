@@ -1,6 +1,7 @@
 import { useLanguage } from "../context/LanguageContext";
 import { useTheme } from "../context/ThemeContext";
 import type { Tilstand } from "../types/cms";
+import { getImageUrl } from "../lib/directus";
 import styles from "../conditions/urinary-incontinence/components/section-content.module.css";
 
 interface TilstandIntroductionProps {
@@ -8,9 +9,8 @@ interface TilstandIntroductionProps {
 }
 
 /**
- * Renders the introduction box ABOVE the section container,
- * matching the pattern of FecalIncontinenceIntroduction.
- * Contains: side_intro description, Forekomst box, and video.
+ * Renders the introduction box ABOVE the section container.
+ * Contains: side_intro description, Forekomst box, and video OR image.
  */
 export const TilstandIntroduction = ({ tilstand }: TilstandIntroductionProps) => {
     const { language } = useLanguage();
@@ -21,9 +21,9 @@ export const TilstandIntroduction = ({ tilstand }: TilstandIntroductionProps) =>
     const forekomstInnhold = (language === 'en' && tilstand.funksjon_forekomst_innhold_en) || tilstand.funksjon_forekomst_innhold;
     const hasForekomst = !!forekomstInnhold;
     const hasVideo = !!tilstand.funksjon_video_id;
+    const hasImage = !!tilstand.side_intro_Image;
 
-    // Don't render anything if there's no intro content
-    if (!hasSideIntro && !hasForekomst && !hasVideo) return null;
+    if (!hasSideIntro && !hasForekomst && !hasVideo && !hasImage) return null;
 
     return (
         <div className={`${styles.introductionContainer} ${resolvedTheme === 'dark' ? styles.darkMode : ''}`}>
@@ -49,7 +49,7 @@ export const TilstandIntroduction = ({ tilstand }: TilstandIntroductionProps) =>
                 </div>
 
                 <div className={styles.introductionImage}>
-                    {hasVideo && (
+                    {hasVideo ? (
                         <div className={styles.introVideoWrapper}>
                             <div className={styles.introVideoContainer}>
                                 <iframe
@@ -68,7 +68,15 @@ export const TilstandIntroduction = ({ tilstand }: TilstandIntroductionProps) =>
                                 </p>
                             )}
                         </div>
-                    )}
+                    ) : hasImage ? (
+                        <div className={styles.introImageWrapper}>
+                            <img
+                                src={getImageUrl(tilstand.side_intro_Image!)}
+                                alt={tilstand.side_tittel || ""}
+                                className={styles.introImage}
+                            />
+                        </div>
+                    ) : null}
                 </div>
             </div>
         </div>

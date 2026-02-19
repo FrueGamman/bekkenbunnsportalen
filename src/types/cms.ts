@@ -273,6 +273,7 @@ export interface Tilstand {
   side_beskrivelse_en?: string | null;
   side_intro: string | null;
   side_intro_en?: string | null;
+  side_intro_Image?: string | null;
 
   // Normal functions / Funksjon (Directus: funksjon_*)
   funksjon_tittel: string;
