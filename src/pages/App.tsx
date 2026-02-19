@@ -64,7 +64,7 @@ export const App = () => {
           title: cmsData.testimonials.title,
           subtitle: "",
           intro: cmsData.testimonials.description,
-          testimonials: cmsData.testimonials.stories
+          testimonials: []
         } : undefined} />
 
         <ElearningSection cmsData={cmsData ? cmsData.elearning : undefined} />
