@@ -16,8 +16,10 @@ export const TilstandIntroduction = ({ tilstand }: TilstandIntroductionProps) =>
     const { language } = useLanguage();
     const { resolvedTheme } = useTheme();
 
-    const hasSideIntro = !!tilstand.side_intro;
-    const hasForekomst = !!tilstand.funksjon_forekomst_innhold;
+    const sideIntro = (language === 'en' && tilstand.side_intro_en) || tilstand.side_intro;
+    const hasSideIntro = !!sideIntro;
+    const forekomstInnhold = (language === 'en' && tilstand.funksjon_forekomst_innhold_en) || tilstand.funksjon_forekomst_innhold;
+    const hasForekomst = !!forekomstInnhold;
     const hasVideo = !!tilstand.funksjon_video_id;
 
     // Don't render anything if there's no intro content
@@ -30,17 +32,17 @@ export const TilstandIntroduction = ({ tilstand }: TilstandIntroductionProps) =>
                     {hasSideIntro && (
                         <div
                             className={styles.introductionDescription}
-                            dangerouslySetInnerHTML={{ __html: tilstand.side_intro! }}
+                            dangerouslySetInnerHTML={{ __html: sideIntro! }}
                         />
                     )}
                     {hasForekomst && (
                         <div className={styles.prevalenceBox}>
                             <h3 className={styles.prevalenceTitle}>
-                                {tilstand.funksjon_forekomst_tittel || (language === 'no' ? "Forekomst" : "Prevalence")}
+                                {(language === 'en' && tilstand.funksjon_forekomst_tittel_en) || tilstand.funksjon_forekomst_tittel || (language === 'no' ? "Forekomst" : "Prevalence")}
                             </h3>
                             <div
                                 className={styles.prevalenceText}
-                                dangerouslySetInnerHTML={{ __html: tilstand.funksjon_forekomst_innhold! }}
+                                dangerouslySetInnerHTML={{ __html: forekomstInnhold! }}
                             />
                         </div>
                     )}

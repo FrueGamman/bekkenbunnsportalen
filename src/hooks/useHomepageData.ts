@@ -82,7 +82,7 @@ export const useHomepageData = (language: string) => {
           directusFetch<ELearningCourse[]>(`/items/e_learning_courses?fields=*,translations.*`).catch(() => []),
           directusFetch<Event[]>(`/items/events?fields=*,translations.*`).catch(() => []),
           directusFetch<Pasientorganisasjon[]>(`/items/pasientorganisasjoner?filter[aktiv][_eq]=true`),
-          directusFetch<any[]>(`/items/tilstander?fields=slug,navn,side_tittel_en,ikon`)
+          directusFetch<any[]>(`/items/tilstander?fields=slug,navn,side_tittel,side_tittel_en,ikon`)
         ]);
 
         const [
@@ -106,27 +106,34 @@ export const useHomepageData = (language: string) => {
           return translations.find(t => t.languages_code === lang) || translations[0];
         };
 
+        // Helper: get language-aware field from Directus _no/_en pattern
+        const getField = <K extends keyof NonNullable<typeof homePage>>(baseKey: K, enKey: string) => {
+          const base = homePage?.[baseKey];
+          const en = homePage?.[enKey as K];
+          return (language === 'en' && en) ? String(en) : (base ? String(base) : "");
+        };
+
         // Map data to the internal format
         const mappedData: HomepageData = {
           hero: {
-            title: homePage?.hero_tittel || "Velkommen til Bekkenbunnsportalen",
-            description: homePage?.hero_beskrivelse || "Din portal for informasjon om bekkenbunnshelse.",
-            subtitle: homePage?.hero_undertekst || "Bekkenbunnsportalen presenteres av Nasjonalt senter for Bekkenbunnshelse (NBH)"
+            title: getField("hero_tittel", "hero_tittel_en") || (language === 'no' ? "Velkommen til Bekkenbunnsportalen" : "Welcome to the Pelvic Floor Portal"),
+            description: getField("hero_beskrivelse", "hero_beskrivelse_en") || (language === 'no' ? "Din portal for informasjon om bekkenbunnshelse." : "Your portal for pelvic floor health information."),
+            subtitle: getField("hero_undertekst", "hero_undertekst_en") || (language === 'no' ? "Bekkenbunnsportalen presenteres av Nasjonalt senter for Bekkenbunnshelse (NBH)" : "The Pelvic Floor Portal is presented by the National Center for Pelvic Floor Health (NBH)")
           },
           exercises: {
-            title: homePage?.ovelser_tittel || "Bekkenbunnsøvelser",
-            subtitle: homePage?.ovelser_undertittel || "Lær å styrke bekkenbunnen med målrettede øvelser",
-            description: homePage?.ovelser_beskrivelse || "Bekkenbunnen består av muskler som støtter underlivsorganene.",
-            buttonText: homePage?.ovelser_knapp_tekst || "Se øvelser"
+            title: getField("ovelser_tittel", "ovelser_tittel_en") || (language === 'no' ? "Bekkenbunnsøvelser" : "Pelvic floor exercises"),
+            subtitle: getField("ovelser_undertittel", "ovelser_undertittel_en") || (language === 'no' ? "Lær å styrke bekkenbunnen med målrettede øvelser" : "Learn to strengthen your pelvic floor with targeted exercises"),
+            description: getField("ovelser_beskrivelse", "ovelser_beskrivelse_en") || (language === 'no' ? "Bekkenbunnen består av muskler som støtter underlivsorganene." : "The pelvic floor consists of muscles that support the pelvic organs."),
+            buttonText: getField("ovelser_knapp_tekst", "ovelser_knapp_tekst_en") || (language === 'no' ? "Se øvelser" : "View exercises")
           },
           video: {
-            title: homePage?.video_tittel || "Video om bekkenbunnshelse",
+            title: getField("video_tittel", "video_tittel_en") || (language === 'no' ? "Video om bekkenbunnshelse" : "Video about pelvic floor health"),
             id: homePage?.video_id || "",
             type: homePage?.video_type || "vimeo"
           },
           testimonials: {
-            title: homePage?.historier_tittel || "Pasienthistorier og erfaringer",
-            description: homePage?.historier_beskrivelse || "Hør fra andre som har opplevd bekkenbunnsplager.",
+            title: getField("historier_tittel", "historier_tittel_en") || (language === 'no' ? "Pasienthistorier og erfaringer" : "Patient stories and experiences"),
+            description: getField("historier_beskrivelse", "historier_beskrivelse_en") || (language === 'no' ? "Hør fra andre som har opplevd bekkenbunnsplager." : "Hear from others who have experienced pelvic floor issues."),
             stories: stories ? stories.map(s => {
               const t = findTranslation(s.translations, language);
               return {
@@ -136,22 +143,22 @@ export const useHomepageData = (language: string) => {
             }) : []
           },
           elearning: {
-            title: homePage?.elaring_tittel || (courses && courses[0] ? findTranslation(courses[0].translations, language)?.title : "") || "",
-            description: homePage?.elaring_beskrivelse || (courses && courses[0] ? findTranslation(courses[0].translations, language)?.description?.replace(/<[^>]*>/g, '') : "") || "",
+            title: getField("elaring_tittel", "elaring_tittel_en") || (courses && courses[0] ? findTranslation(courses[0].translations, language)?.title : "") || "",
+            description: getField("elaring_beskrivelse", "elaring_beskrivelse_en") || (courses && courses[0] ? findTranslation(courses[0].translations, language)?.description?.replace(/<[^>]*>/g, '') : "") || "",
             url: homePage?.elaring_lenke || (courses && courses[0] ? courses[0].course_url : "") || "",
             thumbnail: (courses && courses[0] ? courses[0].thumbnail : "") || ""
           },
           conference: {
-            title: homePage?.konferanse_tittel || (events && events[0] ? findTranslation(events[0].translations, language)?.title : "") || "",
-            subtitle: homePage?.konferanse_undertekst || "",
-            description: homePage?.konferanse_beskrivelse || (events && events[0] ? findTranslation(events[0].translations, language)?.description?.replace(/<[^>]*>/g, '') : "") || "",
+            title: getField("konferanse_tittel", "konferanse_tittel_en") || (events && events[0] ? findTranslation(events[0].translations, language)?.title : "") || "",
+            subtitle: getField("konferanse_undertekst", "konferanse_undertekst_en") || "",
+            description: getField("konferanse_beskrivelse", "konferanse_beskrivelse_en") || (events && events[0] ? findTranslation(events[0].translations, language)?.description?.replace(/<[^>]*>/g, '') : "") || "",
             date: homePage?.konferanse_dato || (events && events[0] ? events[0].start_date : "") || "",
-            location: homePage?.konferanse_sted || (events && events[0] ? events[0].location : "") || "",
+            location: (language === 'en' && homePage?.konferanse_sted_en) ? homePage.konferanse_sted_en : (homePage?.konferanse_sted || (events && events[0] ? events[0].location : "") || ""),
             url: homePage?.konferanse_lenke || (events && events[0] ? events[0].external_url : "") || ""
           },
           organizations: {
-            title: homePage?.organisasjoner_tittel || "Pasient- og brukerorganisasjoner",
-            description: homePage?.organisasjoner_beskrivelse || "Pasient- og brukerorganisasjonene er interesseorganisasjoner...",
+            title: getField("organisasjoner_tittel", "organisasjoner_tittel_en") || (language === 'no' ? "Pasient- og brukerorganisasjoner" : "Patient and user organizations"),
+            description: getField("organisasjoner_beskrivelse", "organisasjoner_beskrivelse_en") || (language === 'no' ? "Pasient- og brukerorganisasjonene er interesseorganisasjoner..." : "Patient and user organizations are advocacy groups..."),
             items: orgs ? orgs.map(o => ({
               name: o.navn || "",
               url: o.lenke || "",
@@ -159,7 +166,7 @@ export const useHomepageData = (language: string) => {
             })) : []
           },
           conditions: conditions ? conditions.map(c => ({
-            title: (language === 'en' && c.side_tittel_en) ? c.side_tittel_en : (c.navn || ""),
+            title: (language === 'en' && c.side_tittel_en) ? c.side_tittel_en : (c.side_tittel || c.navn || ""),
             slug: c.slug,
             icon: c.ikon
           })) : []

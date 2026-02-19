@@ -233,15 +233,17 @@ export const HeroSection = ({ cmsData }: HeroSectionProps) => {
             />
             <div className={styles.heroTitleRow}>
               <h1 className={styles.heroTitle}>
-                <span className={styles.heroTitleLine1}>
-                  {language === 'no' ? 'Velkommen til' : 'Welcome to the'}
-                </span>
-                <span className={styles.heroTitleLine2}>
-                  {language === 'no' ? 'Bekkenbunnsportalen.no' : 'Pelvic Floor Portal'}
-                </span>
-                {/* Fallback override if title from CMS is different in structure */}
-                {title && title !== staticData.title && (
-                  <span style={{ display: 'none' }}>{title}</span>
+                {title && title !== staticData.title ? (
+                  <span className={styles.heroTitleLine2}>{title}</span>
+                ) : (
+                  <>
+                    <span className={styles.heroTitleLine1}>
+                      {language === 'no' ? 'Velkommen til' : 'Welcome to the'}
+                    </span>
+                    <span className={styles.heroTitleLine2}>
+                      {language === 'no' ? 'Bekkenbunnsportalen.no' : 'Pelvic Floor Portal'}
+                    </span>
+                  </>
                 )}
               </h1>
             </div>
