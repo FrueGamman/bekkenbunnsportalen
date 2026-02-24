@@ -6,24 +6,24 @@ import { SectionAccordion } from "../../../components/SectionAccordion";
 import styles from "./section-content.module.css";
 
 // Content data structure
-type ContentItem = 
+type ContentItem =
   | {
-      id: string
-      type: "section"
-      title: string
-      description: string
-      images?: ReadonlyArray<{
-        src: string
-        alt: string
-        caption: string
-      }>
-    }
+    id: string
+    type: "section"
+    title: string
+    description: string
+    images?: ReadonlyArray<{
+      src: string
+      alt: string
+      caption: string
+    }>
+  }
   | {
-      id: string
-      type: "symptom"
-      title: string
-      description: string
-    }
+    id: string
+    type: "symptom"
+    title: string
+    description: string
+  }
 
 type SymptomsData = {
   pageTitle: string
@@ -32,6 +32,7 @@ type SymptomsData = {
   content: ContentItem[]
 }
 
+/*
 const SYMPTOMS_DATA: Record<'no' | 'en', SymptomsData> = {
   no: {
     pageTitle: "Symptomer",
@@ -158,6 +159,11 @@ const SYMPTOMS_DATA: Record<'no' | 'en', SymptomsData> = {
     ]
   }
 } as const
+*/
+const SYMPTOMS_DATA: Record<'no' | 'en', SymptomsData> = {
+  no: { pageTitle: "Symptomer", introQuote: "", introQuoteAuthor: "", content: [] as ContentItem[] },
+  en: { pageTitle: "Symptoms", introQuote: "", introQuoteAuthor: "", content: [] as ContentItem[] }
+};
 
 export const Symptoms = () => {
   const { language } = useLanguage();
@@ -168,8 +174,8 @@ export const Symptoms = () => {
   const renderContent = (item: ContentItem) => {
     if (item.type === "symptom") {
       return (
-        <SectionAccordion 
-          title={item.title} 
+        <SectionAccordion
+          title={item.title}
           isDarkMode={resolvedTheme === 'dark'}
           defaultOpen={false}
         >
@@ -183,8 +189,8 @@ export const Symptoms = () => {
     // For sections with title, use accordion
     if (item.title) {
       return (
-        <SectionAccordion 
-          title={item.title} 
+        <SectionAccordion
+          title={item.title}
           isDarkMode={resolvedTheme === 'dark'}
           defaultOpen={false}
         >
@@ -196,9 +202,9 @@ export const Symptoms = () => {
               <div className={styles.anatomyGrid}>
                 {item.images.map((image) => (
                   <div key={image.src} className={styles.anatomyItem2}>
-                    <img 
-                      src={image.src} 
-                      alt={image.alt} 
+                    <img
+                      src={image.src}
+                      alt={image.alt}
                       className={styles.anatomyImage}
                     />
                     <p className={styles.anatomyCaption}>

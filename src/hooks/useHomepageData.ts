@@ -1,12 +1,12 @@
 import { useState, useEffect } from "react";
 import { directusFetch } from "../lib/directus";
-import type { 
-  Page, 
-  PatientStory, 
-  ELearningCourse, 
-  Event, 
-  Organization, 
-  Condition 
+import type {
+  Hjemmeside,
+  PatientStory,
+  ELearningCourse,
+  Event,
+  Pasientorganisasjon,
+  Condition
 } from "../types/cms";
 
 export interface HomepageData {
@@ -15,29 +15,61 @@ export interface HomepageData {
     description: string;
     subtitle: string;
   };
+  exercises: {
+    title: string;
+    subtitle: string;
+    description: string;
+    buttonText: string;
+    physioButtonText: string;
+    physioLink: string;
+    image: string;
+  };
+  video: {
+    title: string;
+    id: string;
+    type: string;
+  };
   testimonials: {
-    text: string;
-    attribution: string;
-  }[];
+    title: string;
+    description: string;
+    stories: {
+      text: string;
+      attribution: string;
+    }[];
+  };
+  education: {
+    title: string;
+    description: string;
+    buttonText: string;
+    image: string;
+  };
   elearning: {
     title: string;
     description: string;
+    buttonText: string;
     url: string;
     thumbnail: string;
+    image: string;
   };
   conference: {
     title: string;
     subtitle: string;
     description: string;
+    buttonText: string;
     date: string;
     location: string;
     url: string;
+    image: string;
   };
   organizations: {
-    name: string;
-    url: string;
-    logo: string;
-  }[];
+    title: string;
+    description: string;
+    items: {
+      name: string;
+      url: string;
+      logo: string | null;
+    }[];
+  };
   conditions: {
     title: string;
     slug: string;
@@ -54,27 +86,28 @@ export const useHomepageData = (language: string) => {
     const fetchData = async () => {
       try {
         setLoading(true);
-        
+
         // Fetch all required data in parallel using allSettled to be resilient
         const results = await Promise.allSettled([
-          directusFetch<Page[]>(`/items/pages?filter[slug][_eq]=home&fields=*,translations.*`),
-          directusFetch<PatientStory[]>(`/items/patient_stories?fields=*,translations.*`),
-          directusFetch<ELearningCourse[]>(`/items/e_learning_courses?fields=*,translations.*`),
-          directusFetch<Event[]>(`/items/events?fields=*,translations.*`),
-          directusFetch<Organization[]>(`/items/organizations?fields=*,translations.*`),
-          directusFetch<Condition[]>(`/items/conditions?fields=*,translations.*`)
+          directusFetch<Hjemmeside>(`/items/hjemmeside`),
+          directusFetch<PatientStory[]>(`/items/testimonials?fields=*,translations.*`),
+          // These collections might be missing in some Directus instances
+          directusFetch<ELearningCourse[]>(`/items/e_learning_courses?fields=*,translations.*`).catch(() => []),
+          directusFetch<Event[]>(`/items/events?fields=*,translations.*`).catch(() => []),
+          directusFetch<Pasientorganisasjon[]>(`/items/pasientorganisasjoner?filter[aktiv][_eq]=true`),
+          directusFetch<any[]>(`/items/tilstander?fields=slug,navn,side_tittel,side_tittel_en,ikon`)
         ]);
 
         const [
-          pagesRes, 
-          storiesRes, 
-          coursesRes, 
-          eventsRes, 
-          orgsRes, 
+          hjemmesideRes,
+          storiesRes,
+          coursesRes,
+          eventsRes,
+          orgsRes,
           conditionsRes
         ] = results;
 
-        const pages = pagesRes.status === 'fulfilled' ? pagesRes.value : null;
+        const homePage = hjemmesideRes.status === 'fulfilled' ? hjemmesideRes.value : null;
         const stories = storiesRes.status === 'fulfilled' ? storiesRes.value : null;
         const courses = coursesRes.status === 'fulfilled' ? coursesRes.value : null;
         const events = eventsRes.status === 'fulfilled' ? eventsRes.value : null;
@@ -86,46 +119,82 @@ export const useHomepageData = (language: string) => {
           return translations.find(t => t.languages_code === lang) || translations[0];
         };
 
-        const homePage = pages ? pages[0] : null;
-        const homeTrans = homePage ? findTranslation(homePage.translations, language) : null;
+        // Helper: get language-aware field from Directus _no/_en pattern
+        const getField = <K extends keyof NonNullable<typeof homePage>>(baseKey: K, enKey: string) => {
+          const base = homePage?.[baseKey];
+          const en = homePage?.[enKey as K];
+          return (language === 'en' && en) ? String(en) : (base ? String(base) : "");
+        };
 
         // Map data to the internal format
         const mappedData: HomepageData = {
           hero: {
-            title: homeTrans?.title || "Velkommen til Bekkenbunnsportalen",
-            description: homeTrans?.content?.replace(/<[^>]*>/g, '') || "Din portal for informasjon om bekkenbunnshelse.",
-            subtitle: "Bekkenbunnsportalen presenteres av Nasjonalt senter for Bekkenbunnshelse (NBH)"
+            title: getField("hero_tittel", "hero_tittel_en") || (language === 'no' ? "Velkommen til Bekkenbunnsportalen" : "Welcome to the Pelvic Floor Portal"),
+            description: getField("hero_beskrivelse", "hero_beskrivelse_en") || (language === 'no' ? "Din portal for informasjon om bekkenbunnshelse." : "Your portal for pelvic floor health information."),
+            subtitle: getField("hero_undertekst", "hero_undertekst_en") || (language === 'no' ? "Bekkenbunnsportalen presenteres av Nasjonalt senter for Bekkenbunnshelse (NBH)" : "The Pelvic Floor Portal is presented by the National Center for Pelvic Floor Health (NBH)")
           },
-          testimonials: stories ? stories.map(s => {
-            const t = findTranslation(s.translations, language);
-            return {
-              text: t?.quote_text || "",
-              attribution: t?.attribution || `${s.gender === 'male' ? (language === 'no' ? 'Mann' : 'Man') : (language === 'no' ? 'Kvinne' : 'Woman')}, ${s.age} ${language === 'no' ? 'år' : 'years'}`
-            };
-          }) : [],
+          exercises: {
+            title: getField("ovelser_tittel", "ovelser_tittel_en") || (language === 'no' ? "Bekkenbunnsøvelser" : "Pelvic floor exercises"),
+            subtitle: getField("ovelser_undertittel", "ovelser_undertittel_en") || (language === 'no' ? "Lær å styrke bekkenbunnen med målrettede øvelser" : "Learn to strengthen your pelvic floor with targeted exercises"),
+            description: getField("ovelser_beskrivelse", "ovelser_beskrivelse_en") || (language === 'no' ? "Bekkenbunnen består av muskler som støtter underlivsorganene." : "The pelvic floor consists of muscles that support the pelvic organs."),
+            buttonText: getField("ovelser_knapp_tekst", "ovelser_knapp_tekst_en") || (language === 'no' ? "Se øvelser" : "View exercises"),
+            physioButtonText: getField("ovelser_fysio_knapp_tekst", "ovelser_fysio_knapp_tekst_en") || (language === 'no' ? "Finn fysioterapeut" : "Find physiotherapist"),
+            physioLink: homePage?.ovelser_fysio_lenke || "https://fysio.no/kvinnehelse",
+            image: homePage?.ovelser_bilde || ""
+          },
+          video: {
+            title: getField("video_tittel", "video_tittel_en") || (language === 'no' ? "Video om bekkenbunnshelse" : "Video about pelvic floor health"),
+            id: homePage?.video_id || "",
+            type: homePage?.video_type || "vimeo"
+          },
+          testimonials: {
+            title: getField("historier_tittel", "historier_tittel_en") || (language === 'no' ? "Pasienthistorier og erfaringer" : "Patient stories and experiences"),
+            description: getField("historier_beskrivelse", "historier_beskrivelse_en") || (language === 'no' ? "Hør fra andre som har opplevd bekkenbunnsplager." : "Hear from others who have experienced pelvic floor issues."),
+            stories: stories ? stories.map(s => {
+              const t = findTranslation(s.translations, language);
+              return {
+                text: t?.quote_text || "",
+                attribution: t?.attribution || `${s.gender === 'male' ? (language === 'no' ? 'Mann' : 'Man') : (language === 'no' ? 'Kvinne' : 'Woman')}, ${s.age} ${language === 'no' ? 'år' : 'years'}`
+              };
+            }) : []
+          },
+          education: {
+            title: getField("undervisning_tittel", "undervisning_tittel_en") || (language === 'no' ? "Pasientundervisning" : "Patient Education"),
+            description: getField("undervisning_beskrivelse", "undervisning_beskrivelse_en") || (language === 'no' ? "Her finner du filmer, lydfiler og brosjyrer." : "Here you will find videos, audio files and brochures."),
+            buttonText: getField("undervisning_knapp_tekst", "undervisning_knapp_tekst_en") || (language === 'no' ? "Se mer" : "See more"),
+            image: homePage?.undervisning_bilde || "",
+          },
           elearning: {
-            title: (courses && courses[0]) ? findTranslation(courses[0].translations, language)?.title || "" : "",
-            description: (courses && courses[0]) ? findTranslation(courses[0].translations, language)?.description?.replace(/<[^>]*>/g, '') || "" : "",
-            url: (courses && courses[0]) ? courses[0].course_url || "" : "",
-            thumbnail: (courses && courses[0]) ? courses[0].thumbnail || "" : ""
+            title: getField("elaring_tittel", "elaring_tittel_en") || (courses && courses[0] ? findTranslation(courses[0].translations, language)?.title : "") || "",
+            description: getField("elaring_beskrivelse", "elaring_beskrivelse_en") || (courses && courses[0] ? findTranslation(courses[0].translations, language)?.description?.replace(/<[^>]*>/g, '') : "") || "",
+            buttonText: getField("elaring_knapp_tekst", "elaring_knapp_tekst_en") || (language === 'no' ? "Gå til kurs" : "Go to course"),
+            url: homePage?.elaring_lenke || (courses && courses[0] ? courses[0].course_url : "") || "",
+            thumbnail: (courses && courses[0] ? courses[0].thumbnail : "") || "",
+            image: homePage?.elaring_bilde || ""
           },
           conference: {
-            title: (events && events[0]) ? findTranslation(events[0].translations, language)?.title || "" : "",
-            subtitle: (events && events[0]) ? findTranslation(events[0].translations, language)?.subtitle || "" : "",
-            description: (events && events[0]) ? findTranslation(events[0].translations, language)?.description?.replace(/<[^>]*>/g, '') || "" : "",
-            date: (events && events[0]) ? events[0].start_date || "" : "",
-            location: (events && events[0]) ? events[0].location || "" : "",
-            url: (events && events[0]) ? events[0].external_url || "" : ""
+            title: getField("konferanse_tittel", "konferanse_tittel_en") || (events && events[0] ? findTranslation(events[0].translations, language)?.title : "") || "",
+            subtitle: getField("konferanse_undertekst", "konferanse_undertekst_en") || "",
+            description: getField("konferanse_beskrivelse", "konferanse_beskrivelse_en") || (events && events[0] ? findTranslation(events[0].translations, language)?.description?.replace(/<[^>]*>/g, '') : "") || "",
+            buttonText: getField("konferanse_knapp_tekst", "konferanse_knapp_tekst_en") || (language === 'no' ? "Les mer" : "Learn more"),
+            date: homePage?.konferanse_dato || (events && events[0] ? events[0].start_date : "") || "",
+            location: (language === 'en' && homePage?.konferanse_sted_en) ? homePage.konferanse_sted_en : (homePage?.konferanse_sted || (events && events[0] ? events[0].location : "") || ""),
+            url: homePage?.konferanse_lenke || (events && events[0] ? events[0].external_url : "") || "",
+            image: homePage?.konferanse_bilde || ""
           },
-          organizations: orgs ? orgs.map(o => ({
-            name: o.name || findTranslation(o.translations, language)?.name || "",
-            url: o.url || o.website_url || "",
-            logo: o.logo || ""
-          })) : [],
+          organizations: {
+            title: getField("organisasjoner_tittel", "organisasjoner_tittel_en") || (language === 'no' ? "Pasient- og brukerorganisasjoner" : "Patient and user organizations"),
+            description: getField("organisasjoner_beskrivelse", "organisasjoner_beskrivelse_en") || (language === 'no' ? "Pasient- og brukerorganisasjonene er interesseorganisasjoner..." : "Patient and user organizations are advocacy groups..."),
+            items: orgs ? orgs.map(o => ({
+              name: o.navn || "",
+              url: o.lenke || "",
+              logo: o.logo || ""
+            })) : []
+          },
           conditions: conditions ? conditions.map(c => ({
-            title: findTranslation(c.translations, language)?.title || "",
+            title: (language === 'en' && c.side_tittel_en) ? c.side_tittel_en : (c.side_tittel || c.navn || ""),
             slug: c.slug,
-            icon: c.icon
+            icon: c.ikon
           })) : []
         };
 

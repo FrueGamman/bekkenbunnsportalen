@@ -15,6 +15,7 @@ import { TestimonialSection } from "../components/testimonial-section";
 import BackgroundVideoGroup from "../components/BackgroundVideoGroup";
 import { useHomepageData } from "../hooks/useHomepageData";
 import { getImageUrl } from "../lib/directus";
+import HomepageOrganizations from "../components/HomepageOrganizations";
 
 // Structured bilingual data for App content (Fallbacks)
 const APP_DATA = {
@@ -54,104 +55,34 @@ export const App = () => {
         } : undefined} />
 
         {/* Try Exercise Section - Prøv selv */}
-        <TryExerciseSection cmsData={cmsData ? {
-          title: "Bekkenbunnsøvelser", // Using static title as it is often consistent
-          subtitle: "Lær å styrke bekkenbunnen med målrettede øvelser",
-          description: "Bekkenbunnen består av muskler som støtter underlivsorganene. Regelmessig trening kan forebygge og behandle plager."
-        } : undefined} />
+        <TryExerciseSection cmsData={cmsData ? cmsData.exercises : undefined} />
 
         {/* Testimonial + Pasientundervisning over sticky background video */}
         <BackgroundVideoGroup initialSpacer={0}>
         </BackgroundVideoGroup>
         <TestimonialSection cmsData={cmsData ? {
-          title: "Pasienthistorier og erfaringer",
-          subtitle: "Hør fra andre som har opplevd bekkenbunnsplager",
-          intro: "Disse historiene viser at du ikke er alene, og at det finnes hjelp å få. Mange har funnet måter å håndtere sine plager på.",
-          testimonials: cmsData.testimonials
+          title: cmsData.testimonials.title,
+          subtitle: "",
+          intro: cmsData.testimonials.description,
+          testimonials: []
         } : undefined} />
 
-        <ElearningSection cmsData={cmsData ? cmsData.elearning : undefined} />
+        <ElearningSection cmsData={cmsData ? cmsData.education : undefined} />
 
         {/* E-learning Hero Section - For Healthcare Professionals */}
         <ElearningHeroSection cmsData={cmsData ? {
-          title: "E-læringskurs for helsepersonell",
-          description: "Vi har utviklet et e-læringskurs spesielt rettet mot helsepersonell som ønsker å øke sin kompetanse innen utredning og behandling av bekkenbunnssykdom."
+          title: cmsData.elearning.title,
+          description: cmsData.elearning.description,
+          buttonText: cmsData.elearning.buttonText,
+          url: cmsData.elearning.url,
+          image: cmsData.elearning.image
         } : undefined} />
 
         {/* Arctic Pelvic Floor Meeting / Conference Section */}
         <ConferenceSection cmsData={cmsData ? cmsData.conference : undefined} />
 
         {/* Additional Resources Section --Organisation cards*/}
-        <section className={styles.resourcesSection} aria-labelledby="organizations-heading">
-          <div className={styles.sectionHeader}>
-            <h2 id="organizations-heading" className={styles.sectionTitle}>
-              {cmsData ? "Pasient- og brukerorganisasjoner" : fallbackData.organizations.title}
-            </h2>
-            <p className={styles.sectionDescription}>
-              {cmsData ? "Pasient- og brukerorganisasjonene er interesseorganisasjoner som arbeider for personer med sykdom og nedsatt funksjonsevne. Under finner du en oversikt over aktuelle organisasjoner innenfor inkontinens og bekkenbunnsykdom." : fallbackData.organizations.description}
-            </p>
-          </div>
-          <div className={styles.resourcesContainer}>
-            {cmsData && cmsData.organizations && cmsData.organizations.length > 0 ? (
-              cmsData.organizations.map((org, index) => (
-                <Card key={index} className={styles.resourceCard}>
-                  <CardContent className={styles.resourceCardContent}>
-                    <div className={styles.resourceImageContainer}>
-                      <a
-                        href={org.url}
-                        className={styles.resourceLink}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        aria-label={`Gå til ${org.name} nettside`}
-                      >
-                        {org.logo ? (
-                          <img
-                            className={styles.resourceImage}
-                            alt={org.name}
-                            src={getImageUrl(org.logo)}
-                            style={{ width: "140px", objectFit: "contain" }}
-                          />
-                        ) : (
-                          <div className={styles.resourceLogoPlaceholder}>
-                            {org.name}
-                          </div>
-                        )}
-                      </a>
-                    </div>
-                    <Separator className={styles.resourceSeparator} />
-                    <p className={styles.resourceInfoText}>{org.name}</p>
-                  </CardContent>
-                </Card>
-              ))
-            ) : (
-              <>
-                {/* Fallback hardcoded organizations if CMS is empty or loading */}
-                <Card className={styles.resourceCard}>
-                  <CardContent className={styles.resourceCardContent}>
-                    <div className={styles.resourceImageContainer}>
-                      <a
-                        href="https://barselambassadorene.no"
-                        className={styles.resourceLink}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        aria-label="Gå til Barselambassadørene nettside">
-                        <img
-                          className={styles.resourceImage}
-                          alt="Barselambassadørene"
-                          src="/ba-logo.svg"
-                          style={{ width: "140px" }}
-                        />
-                      </a>
-                    </div>
-                    <Separator className={styles.resourceSeparator} />
-                    <p className={styles.resourceInfoText}>Barselambassadørene</p>
-                  </CardContent>
-                </Card>
-                {/* ... other hardcoded cards ... */}
-              </>
-            )}
-          </div>
-        </section>
+        <HomepageOrganizations organizations={cmsData?.organizations} />
 
         {/* Footer */}
       </main>

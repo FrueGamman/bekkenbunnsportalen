@@ -1,5 +1,7 @@
 import { Button } from "./ui/Button"
+import { useLanguage } from "../context/LanguageContext"
 import { translations } from "../translations/translations"
+import { getImageUrl } from "../lib/directus"
 import styles from "./conference-section.module.css"
 
 interface ConferenceSectionProps {
@@ -7,22 +9,26 @@ interface ConferenceSectionProps {
     title: string;
     subtitle: string;
     description: string;
+    buttonText: string;
     date: string;
     location: string;
     url: string;
+    image: string;
   };
 }
 
 export const ConferenceSection = ({ cmsData }: ConferenceSectionProps) => {
-  // Conference section is English-only by default in translations
-  const t = translations['en']
+  const { language } = useLanguage()
+  const t = translations[language]
 
   const title = cmsData?.title || t["conference.title"]
   const subtitle = cmsData?.subtitle || t["conference.subtitle"]
   const description = cmsData?.description || t["conference.description"]
+  const buttonText = cmsData?.buttonText || t["conference.learnMore"]
   const date = cmsData?.date || t["conference.dates"]
   const location = cmsData?.location || t["conference.location"]
   const url = cmsData?.url || 'https://apfm.no'
+  const imageUrl = cmsData?.image ? getImageUrl(cmsData.image) : ""
 
   // Extract day from date string for the icon if possible
   const dayMatch = date.match(/\d+/)
@@ -41,10 +47,16 @@ export const ConferenceSection = ({ cmsData }: ConferenceSectionProps) => {
             className={styles.conferenceLearnButton}
             onClick={() => window.open(url, '_blank')}
           >
-            {t["conference.learnMore"]}
+            {buttonText}
           </Button>
         </div>
       </div>
+
+      {imageUrl && (
+        <div className={styles.conferenceImageWrapper}>
+          <img src={imageUrl} alt={title} className={styles.conferenceImage} />
+        </div>
+      )}
 
       <div className={styles.conferenceCardsContainer}>
         <div className={styles.conferenceCard}>

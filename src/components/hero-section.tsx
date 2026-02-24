@@ -69,11 +69,20 @@ export const HeroSection = ({ cmsData }: HeroSectionProps) => {
   const description = cmsData?.description || staticData.description
   const subtitle = cmsData?.subtitle || staticData.subtitle
 
+  const hardcodedIcons: Record<string, string> = {
+    "urinary-incontinence": "/image-7.svg",
+    "urinary-retention": "/vector.svg",
+    "fecal-incontinence": "/fecalincontinence.svg",
+    "constipation": "/constipation.svg",
+    "pelvic-pain": "/belly--1--1.svg",
+    "pregnancy": "/vector-2.svg"
+  }
+
   const healthConditions: HealthCondition[] = (cmsData?.conditions && cmsData.conditions.length > 0) ?
     cmsData.conditions.map((c, i) => ({
       id: `cms-${i}`,
       titleKey: c.title,
-      icon: getImageUrl(c.icon),
+      icon: hardcodedIcons[c.slug] || getImageUrl(c.icon),
       route: c.slug,
       isCms: true
     })) : [
@@ -233,15 +242,17 @@ export const HeroSection = ({ cmsData }: HeroSectionProps) => {
             />
             <div className={styles.heroTitleRow}>
               <h1 className={styles.heroTitle}>
-                <span className={styles.heroTitleLine1}>
-                  {language === 'no' ? 'Velkommen til' : 'Welcome to the'}
-                </span>
-                <span className={styles.heroTitleLine2}>
-                  {language === 'no' ? 'Bekkenbunnsportalen.no' : 'Pelvic Floor Portal'}
-                </span>
-                {/* Fallback override if title from CMS is different in structure */}
-                {title && title !== staticData.title && (
-                  <span style={{ display: 'none' }}>{title}</span>
+                {title && title !== staticData.title ? (
+                  <span className={styles.heroTitleLine2}>{title}</span>
+                ) : (
+                  <>
+                    <span className={styles.heroTitleLine1}>
+                      {language === 'no' ? 'Velkommen til' : 'Welcome to the'}
+                    </span>
+                    <span className={styles.heroTitleLine2}>
+                      {language === 'no' ? 'Bekkenbunnsportalen.no' : 'Pelvic Floor Portal'}
+                    </span>
+                  </>
                 )}
               </h1>
             </div>

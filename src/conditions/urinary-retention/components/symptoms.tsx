@@ -10,6 +10,7 @@ const INTRODUCTION_DATA = {
 }
 */
 
+/*
 const SYMPTOMS_DATA = {
   no: {
     pageTitle: "Symptomene ",
@@ -96,6 +97,13 @@ const SYMPTOMS_DATA = {
     ]
   }
 } as const
+*/
+
+const SYMPTOMS_DATA = {
+  no: { pageTitle: "Symptomene ", overviewTitle: "Symptomene varierer", symptoms: [] as any[] },
+  en: { pageTitle: "Symptoms ", overviewTitle: "What is it?", symptoms: [] as any[] }
+};
+
 
 export const Symptoms = () => {
   const { language } = useLanguage();
@@ -106,65 +114,65 @@ export const Symptoms = () => {
   return (
     <>
       <div className={`${styles.sectionContainer} ${resolvedTheme === 'dark' ? styles.darkMode : ''}`}>
-      <div className={styles.sectionHeader}>
-        <div className={styles.sectionIcon}>
-          <img src="/inSymptoms.png" alt="Symptome" width="24" height="24" />
-        </div>
-        <h2 className={styles.sectionTitle}>
-          {pageTitle}
-        </h2>
-      </div>
-      
-      <div className={styles.sectionContent}>
-        {/* Male anatomy image outside the accordion */}
-        <div style={{ 
-          display: 'flex', 
-          justifyContent: 'center', 
-          alignItems: 'center', 
-          flexDirection: 'column',
-          marginBottom: '2rem',
-          padding: '1rem'
-        }}>
-          <img 
-            src="/montasje1.jpg" 
-            alt="Male anatomy" 
-            style={{ 
-              maxWidth: '600px', 
-              width: '100%', 
-              height: 'auto',
-              borderRadius: '8px',
-              boxShadow: '0 4px 8px rgba(0,0,0,0.1)',
-              display: 'block',
-              margin: '0 auto'
-            }} 
-          />
-          <p className={styles.contentSubtitle} style={{ 
-            marginTop: '1rem', 
-            fontWeight: '500',
-            textAlign: 'center'
-          }}>
-            Symptomene Varierer
-          </p>
+        <div className={styles.sectionHeader}>
+          <div className={styles.sectionIcon}>
+            <img src="/inSymptoms.png" alt="Symptome" width="24" height="24" />
+          </div>
+          <h2 className={styles.sectionTitle}>
+            {pageTitle}
+          </h2>
         </div>
 
-        <SectionAccordion 
-          title={overviewTitle}
-          isDarkMode={resolvedTheme === 'dark'}
-          defaultOpen={false}
-        >
-          <div className={styles.enhancedContentSection}>
-            <ul className={styles.symptomsList}>
-              {symptoms.map((symptom, index) => (
-                <li key={index} className={styles.symptomItem}>
-                  <div className={styles.symptomBullet}>•</div>
-                  <span className={styles.symptomText}>{symptom.text}</span>
-                </li>
-              ))}
-            </ul>
+        <div className={styles.sectionContent}>
+          {/* Male anatomy image outside the accordion */}
+          <div style={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            flexDirection: 'column',
+            marginBottom: '2rem',
+            padding: '1rem'
+          }}>
+            <img
+              src="/montasje1.jpg"
+              alt="Male anatomy"
+              style={{
+                maxWidth: '600px',
+                width: '100%',
+                height: 'auto',
+                borderRadius: '8px',
+                boxShadow: '0 4px 8px rgba(0,0,0,0.1)',
+                display: 'block',
+                margin: '0 auto'
+              }}
+            />
+            <p className={styles.contentSubtitle} style={{
+              marginTop: '1rem',
+              fontWeight: '500',
+              textAlign: 'center'
+            }}>
+              Symptomene Varierer
+            </p>
           </div>
-        </SectionAccordion>
+
+          <SectionAccordion
+            title={overviewTitle}
+            isDarkMode={resolvedTheme === 'dark'}
+            defaultOpen={false}
+          >
+            <div className={styles.enhancedContentSection}>
+              <ul className={styles.symptomsList}>
+                {symptoms.map((symptom, index) => (
+                  <li key={index} className={styles.symptomItem}>
+                    <div className={styles.symptomBullet}>•</div>
+                    <span className={styles.symptomText}>{symptom.text}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </SectionAccordion>
+        </div>
       </div>
-    </div>
     </>
   );
 };

@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom"
 import { useLanguage } from "../context/LanguageContext"
 import { useTheme } from "../context/ThemeContext"
+import { getImageUrl } from "../lib/directus"
 import styles from "./try-exercise-section.module.css"
 
 const EXERCISE_SECTION_DATA = {
@@ -25,6 +26,10 @@ interface TryExerciseSectionProps {
     title: string;
     subtitle: string;
     description: string;
+    buttonText: string;
+    physioButtonText: string;
+    physioLink: string;
+    image: string;
   };
 }
 
@@ -38,6 +43,9 @@ export const TryExerciseSection = ({ cmsData }: TryExerciseSectionProps) => {
   const title = cmsData?.title || staticData.title
   const subtitle = cmsData?.subtitle || staticData.subtitle
   const description = cmsData?.description || staticData.description
+  const physioButtonText = cmsData?.physioButtonText || staticData.physioButtonText
+  const physioLink = cmsData?.physioLink || "https://fysio.no/kvinnehelse"
+  const imageUrl = cmsData?.image ? getImageUrl(cmsData.image) : "/media/image/bekkenbunn.jpg"
 
   // removed "Les mer" button; keep CTA to Øvelse tab on Useful
   const handleSeeUsefulExercises = () => {
@@ -52,7 +60,7 @@ export const TryExerciseSection = ({ cmsData }: TryExerciseSectionProps) => {
           <div className={styles.imageContent}>
             <div className={styles.imageWrapper}>
               <img
-                src="/media/image/bekkenbunn.jpg"
+                src={imageUrl}
                 alt="Pelvic floor exercises"
                 className={styles.mainImage}
               />
@@ -73,16 +81,16 @@ export const TryExerciseSection = ({ cmsData }: TryExerciseSectionProps) => {
                 className={styles.startButton}
                 onClick={handleSeeUsefulExercises}
               >
-                Se øvelser
+                {cmsData?.buttonText || staticData.buttonText}
               </button>
 
               <a
-                href="https://fysio.no/kvinnehelse"
+                href={physioLink}
                 target="_blank"
                 rel="noopener noreferrer"
                 className={styles.physioButton}
               >
-                {staticData.physioButtonText}
+                {physioButtonText}
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path d="M7 17L17 7M17 7H7M17 7V17" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
