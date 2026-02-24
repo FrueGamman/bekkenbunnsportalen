@@ -7,11 +7,10 @@ import { Header } from "../../components/Header";
 import Footer from "../../components/Footer";
 import styles from "./ConditionPage.module.css";
 import { useConditionDetails } from "../../hooks/useConditionDetails";
-import { DynamicConditionSection } from "../../components/DynamicConditionSection";
 import { TilstandDynamicSection } from "../../components/TilstandDynamicSection";
 import { TilstandIntroduction } from "../../components/TilstandIntroduction";
 
-// Import pregnancy components
+// Import pregnancy components (pregnancy has unique UI not in standard CMS pattern)
 import { NormalFunctions as PregnancyNormalFunctions } from "../../conditions/pregnancy/components/normal-functions";
 import { UpgradedPregnancyContent } from "../../conditions/pregnancy/components/UpgradedPregnancyContent";
 
@@ -432,27 +431,7 @@ export default function ConditionPage() {
   };
 
   const renderSectionContent = () => {
-    // New 'tilstander' collection (simplified Norwegian schema)
-    // Only use if it actually has content for the active section
-    const prefix = sectionMap[activeSection];
-    const hasTilstandContent = cmsTilstand && prefix && (
-      (cmsTilstand as any)[`${prefix}_tittel`] ||
-      (cmsTilstand as any)[`${prefix}_intro`] ||
-      (cmsTilstand as any)[`${prefix}_trekkspill`]?.length > 0
-    );
-
-    if (hasTilstandContent) {
-      return (
-        <>
-          {activeSection === "normal-functions" && (
-            <TilstandIntroduction tilstand={cmsTilstand} />
-          )}
-          <TilstandDynamicSection tilstand={cmsTilstand} activeSection={activeSection} />
-        </>
-      );
-    }
-
-    // Handle pregnancy special cases that don't map to standard trekkspill
+    // Pregnancy has unique UI components not in the standard CMS pattern
     if (activeCondition === "pregnancy") {
       if (activeSection === "overview") {
         return <UpgradedPregnancyContent />;
@@ -463,14 +442,9 @@ export default function ConditionPage() {
             <PregnancyNormalFunctions />
             {pregnancyCards.length > 0 && (
               <div
-                className={`${styles.pregnancyCardGrid} ${resolvedTheme === "dark" ? styles.darkMode : styles.lightMode
-                  }`}
+                className={`${styles.pregnancyCardGrid} ${resolvedTheme === "dark" ? styles.darkMode : styles.lightMode}`}
                 role="navigation"
-                aria-label={
-                  language === "no"
-                    ? "Utforsk flere temasider for graviditet"
-                    : "Explore additional pregnancy topics"
-                }
+                aria-label={language === "no" ? "Utforsk flere temasider for graviditet" : "Explore additional pregnancy topics"}
               >
                 {pregnancyCards.map((card) => {
                   const isActive = activeSection === (card.id as any);
@@ -479,25 +453,17 @@ export default function ConditionPage() {
                       key={card.id}
                       type="button"
                       onClick={() => handleSectionChange(card.id)}
-                      className={`${styles.pregnancyCard} ${isActive ? styles.pregnancyCardActive : ""
-                        }`}
+                      className={`${styles.pregnancyCard} ${isActive ? styles.pregnancyCardActive : ""}`}
                       aria-pressed={isActive}
                       aria-label={`${card.title} - ${card.description}`}
                     >
                       <div className={styles.pregnancyCardHeader}>
                         <div className={styles.pregnancyCardIconWrapper}>
-                          <img
-                            src={card.icon}
-                            alt=""
-                            role="presentation"
-                            className={styles.pregnancyCardIcon}
-                          />
+                          <img src={card.icon} alt="" role="presentation" className={styles.pregnancyCardIcon} />
                         </div>
                         <h3 className={styles.pregnancyCardTitle}>{card.title}</h3>
                       </div>
-                      <p className={styles.pregnancyCardDescription}>
-                        {card.description}
-                      </p>
+                      <p className={styles.pregnancyCardDescription}>{card.description}</p>
                     </button>
                   );
                 })}
@@ -506,15 +472,18 @@ export default function ConditionPage() {
           </>
         );
       }
-      // References for pregnancy are handled via TilstandDynamicSection now (mapped to referanser)
     }
 
-    // Default Fallback
+    // All content from Directus CMS
+    if (!cmsTilstand) return null;
+
     return (
-      <div className={styles.contentSection}>
-        <h2 className={styles.sectionTitle}>Content not available</h2>
-        <p>This condition content is not yet populated in CMS.</p>
-      </div>
+      <>
+        {activeSection === "normal-functions" && (
+          <TilstandIntroduction tilstand={cmsTilstand} />
+        )}
+        <TilstandDynamicSection tilstand={cmsTilstand} activeSection={activeSection} />
+      </>
     );
   };
 

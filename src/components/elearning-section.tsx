@@ -22,6 +22,8 @@ interface ElearningSectionProps {
   cmsData?: {
     title: string;
     description: string;
+    buttonText?: string;
+    image?: string;
     thumbnail?: string;
   };
 }
@@ -32,9 +34,12 @@ export const ElearningSection = ({ overVideo = false, cmsData }: ElearningSectio
 
   const title = cmsData?.title || staticData.title;
   const description = cmsData?.description || staticData.description;
-  const imageUrl = cmsData?.thumbnail
-    ? getImageUrl(cmsData.thumbnail)
-    : "https://nekib.helsekompetanse.no/wp-content/uploads/2022/10/AdobeStock_259480195_mobil-short-v3-scaled.jpg";
+  const buttonLabel = cmsData?.buttonText || staticData.button;
+  const imageUrl = cmsData?.image
+    ? getImageUrl(cmsData.image)
+    : cmsData?.thumbnail
+      ? getImageUrl(cmsData.thumbnail)
+      : "https://nekib.helsekompetanse.no/wp-content/uploads/2022/10/AdobeStock_259480195_mobil-short-v3-scaled.jpg";
 
   return (
     <div className={`${styles.contentWrapper} ${overVideo ? styles.overVideo : ''}`}>
@@ -50,7 +55,7 @@ export const ElearningSection = ({ overVideo = false, cmsData }: ElearningSectio
           className={styles.moreButton}
           onClick={() => window.location.href = '/useful?tab=pasientundervisning'}
         >
-          {staticData.button}
+          {buttonLabel}
         </button>
       </div>
 

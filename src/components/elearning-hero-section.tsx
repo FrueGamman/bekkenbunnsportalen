@@ -1,11 +1,15 @@
 import { useLanguage } from "../context/LanguageContext"
 import { translations } from "../translations/translations"
+import { getImageUrl } from "../lib/directus"
 import styles from "./elearning-hero-section.module.css"
 
 interface ElearningHeroSectionProps {
   cmsData?: {
     title: string;
     description: string;
+    buttonText?: string;
+    url?: string;
+    image?: string;
   };
 }
 
@@ -13,8 +17,13 @@ export const ElearningHeroSection = ({ cmsData }: ElearningHeroSectionProps) => 
   const { language } = useLanguage()
   const t = translations[language]
 
-  const title = cmsData?.title || t["elearning.hero.title"]
-  const description = cmsData?.description || t["elearning.hero.description"]
+  if (!cmsData?.title && !cmsData?.description) {
+    return null
+  }
+
+  const imageUrl = cmsData?.image ? getImageUrl(cmsData.image) : "/vector-logo.png"
+  const courseUrl = cmsData?.url || "https://helsekompetanse.no/course/view.php?id=233"
+  const buttonLabel = cmsData?.buttonText || t["elearning.hero.buttonText"]
 
   return (
     <div className={styles.elearningSection}>
@@ -22,25 +31,29 @@ export const ElearningHeroSection = ({ cmsData }: ElearningHeroSectionProps) => 
         <div className={styles.elearningContent}>
           <div className={styles.elearningImage}>
             <img
-              src="/vector-logo.png"
+              src={imageUrl}
               alt={t["elearning.hero.imageAlt"]}
               className={styles.elearningImageFile}
             />
           </div>
           <div className={styles.elearningText}>
-            <h2 className={styles.elearningTitle}>
-              {title}
-            </h2>
-            <p className={styles.elearningDescription}>
-              {description}
-            </p>
+            {cmsData.title && (
+              <h2 className={styles.elearningTitle}>
+                {cmsData.title}
+              </h2>
+            )}
+            {cmsData.description && (
+              <p className={styles.elearningDescription}>
+                {cmsData.description}
+              </p>
+            )}
             <a
-              href="https://helsekompetanse.no/course/view.php?id=233"
+              href={courseUrl}
               className={styles.elearningButton}
               target="_blank"
               rel="noopener noreferrer"
             >
-              {t["elearning.hero.buttonText"]}
+              {buttonLabel}
             </a>
           </div>
         </div>

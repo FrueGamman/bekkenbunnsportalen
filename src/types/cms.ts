@@ -74,6 +74,10 @@ export interface Hjemmeside {
   ovelser_beskrivelse_en?: string | null;
   ovelser_knapp_tekst: string;
   ovelser_knapp_tekst_en?: string | null;
+  ovelser_fysio_knapp_tekst?: string | null;
+  ovelser_fysio_knapp_tekst_en?: string | null;
+  ovelser_fysio_lenke?: string | null;
+  ovelser_bilde?: string | null;
 
   // Video
   video_tittel: string;
@@ -94,13 +98,19 @@ export interface Hjemmeside {
   undervisning_tittel_en?: string | null;
   undervisning_beskrivelse: string;
   undervisning_beskrivelse_en?: string | null;
+  undervisning_knapp_tekst?: string | null;
+  undervisning_knapp_tekst_en?: string | null;
+  undervisning_bilde?: string | null;
 
   // E-learning (Directus: elaring_*)
   elaring_tittel: string;
   elaring_tittel_en?: string | null;
   elaring_beskrivelse: string;
   elaring_beskrivelse_en?: string | null;
+  elaring_knapp_tekst?: string | null;
+  elaring_knapp_tekst_en?: string | null;
   elaring_lenke: string;
+  elaring_bilde?: string | null;
 
   // Conference (Directus: konferanse_*)
   konferanse_tittel: string;
@@ -109,10 +119,15 @@ export interface Hjemmeside {
   konferanse_beskrivelse_en?: string | null;
   konferanse_undertekst: string;
   konferanse_undertekst_en?: string | null;
+  konferanse_undertittel?: string | null;
+  konferanse_undertittel_en?: string | null;
+  konferanse_knapp_tekst?: string | null;
+  konferanse_knapp_tekst_en?: string | null;
   konferanse_dato: string;
   konferanse_sted: string;
   konferanse_sted_en?: string | null;
   konferanse_lenke?: string;
+  konferanse_bilde?: string | null;
 
   // Organizations (Directus: organisasjoner_*)
   organisasjoner_tittel: string;

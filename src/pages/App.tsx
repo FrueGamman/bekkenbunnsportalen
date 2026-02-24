@@ -67,12 +67,15 @@ export const App = () => {
           testimonials: []
         } : undefined} />
 
-        <ElearningSection cmsData={cmsData ? cmsData.elearning : undefined} />
+        <ElearningSection cmsData={cmsData ? cmsData.education : undefined} />
 
         {/* E-learning Hero Section - For Healthcare Professionals */}
         <ElearningHeroSection cmsData={cmsData ? {
           title: cmsData.elearning.title,
-          description: cmsData.elearning.description
+          description: cmsData.elearning.description,
+          buttonText: cmsData.elearning.buttonText,
+          url: cmsData.elearning.url,
+          image: cmsData.elearning.image
         } : undefined} />
 
         {/* Arctic Pelvic Floor Meeting / Conference Section */}

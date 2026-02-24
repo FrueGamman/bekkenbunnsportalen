@@ -20,6 +20,9 @@ export interface HomepageData {
     subtitle: string;
     description: string;
     buttonText: string;
+    physioButtonText: string;
+    physioLink: string;
+    image: string;
   };
   video: {
     title: string;
@@ -34,19 +37,29 @@ export interface HomepageData {
       attribution: string;
     }[];
   };
+  education: {
+    title: string;
+    description: string;
+    buttonText: string;
+    image: string;
+  };
   elearning: {
     title: string;
     description: string;
+    buttonText: string;
     url: string;
     thumbnail: string;
+    image: string;
   };
   conference: {
     title: string;
     subtitle: string;
     description: string;
+    buttonText: string;
     date: string;
     location: string;
     url: string;
+    image: string;
   };
   organizations: {
     title: string;
@@ -124,7 +137,10 @@ export const useHomepageData = (language: string) => {
             title: getField("ovelser_tittel", "ovelser_tittel_en") || (language === 'no' ? "Bekkenbunnsøvelser" : "Pelvic floor exercises"),
             subtitle: getField("ovelser_undertittel", "ovelser_undertittel_en") || (language === 'no' ? "Lær å styrke bekkenbunnen med målrettede øvelser" : "Learn to strengthen your pelvic floor with targeted exercises"),
             description: getField("ovelser_beskrivelse", "ovelser_beskrivelse_en") || (language === 'no' ? "Bekkenbunnen består av muskler som støtter underlivsorganene." : "The pelvic floor consists of muscles that support the pelvic organs."),
-            buttonText: getField("ovelser_knapp_tekst", "ovelser_knapp_tekst_en") || (language === 'no' ? "Se øvelser" : "View exercises")
+            buttonText: getField("ovelser_knapp_tekst", "ovelser_knapp_tekst_en") || (language === 'no' ? "Se øvelser" : "View exercises"),
+            physioButtonText: getField("ovelser_fysio_knapp_tekst", "ovelser_fysio_knapp_tekst_en") || (language === 'no' ? "Finn fysioterapeut" : "Find physiotherapist"),
+            physioLink: homePage?.ovelser_fysio_lenke || "https://fysio.no/kvinnehelse",
+            image: homePage?.ovelser_bilde || ""
           },
           video: {
             title: getField("video_tittel", "video_tittel_en") || (language === 'no' ? "Video om bekkenbunnshelse" : "Video about pelvic floor health"),
@@ -142,19 +158,29 @@ export const useHomepageData = (language: string) => {
               };
             }) : []
           },
+          education: {
+            title: getField("undervisning_tittel", "undervisning_tittel_en") || (language === 'no' ? "Pasientundervisning" : "Patient Education"),
+            description: getField("undervisning_beskrivelse", "undervisning_beskrivelse_en") || (language === 'no' ? "Her finner du filmer, lydfiler og brosjyrer." : "Here you will find videos, audio files and brochures."),
+            buttonText: getField("undervisning_knapp_tekst", "undervisning_knapp_tekst_en") || (language === 'no' ? "Se mer" : "See more"),
+            image: homePage?.undervisning_bilde || "",
+          },
           elearning: {
             title: getField("elaring_tittel", "elaring_tittel_en") || (courses && courses[0] ? findTranslation(courses[0].translations, language)?.title : "") || "",
             description: getField("elaring_beskrivelse", "elaring_beskrivelse_en") || (courses && courses[0] ? findTranslation(courses[0].translations, language)?.description?.replace(/<[^>]*>/g, '') : "") || "",
+            buttonText: getField("elaring_knapp_tekst", "elaring_knapp_tekst_en") || (language === 'no' ? "Gå til kurs" : "Go to course"),
             url: homePage?.elaring_lenke || (courses && courses[0] ? courses[0].course_url : "") || "",
-            thumbnail: (courses && courses[0] ? courses[0].thumbnail : "") || ""
+            thumbnail: (courses && courses[0] ? courses[0].thumbnail : "") || "",
+            image: homePage?.elaring_bilde || ""
           },
           conference: {
             title: getField("konferanse_tittel", "konferanse_tittel_en") || (events && events[0] ? findTranslation(events[0].translations, language)?.title : "") || "",
             subtitle: getField("konferanse_undertekst", "konferanse_undertekst_en") || "",
             description: getField("konferanse_beskrivelse", "konferanse_beskrivelse_en") || (events && events[0] ? findTranslation(events[0].translations, language)?.description?.replace(/<[^>]*>/g, '') : "") || "",
+            buttonText: getField("konferanse_knapp_tekst", "konferanse_knapp_tekst_en") || (language === 'no' ? "Les mer" : "Learn more"),
             date: homePage?.konferanse_dato || (events && events[0] ? events[0].start_date : "") || "",
             location: (language === 'en' && homePage?.konferanse_sted_en) ? homePage.konferanse_sted_en : (homePage?.konferanse_sted || (events && events[0] ? events[0].location : "") || ""),
-            url: homePage?.konferanse_lenke || (events && events[0] ? events[0].external_url : "") || ""
+            url: homePage?.konferanse_lenke || (events && events[0] ? events[0].external_url : "") || "",
+            image: homePage?.konferanse_bilde || ""
           },
           organizations: {
             title: getField("organisasjoner_tittel", "organisasjoner_tittel_en") || (language === 'no' ? "Pasient- og brukerorganisasjoner" : "Patient and user organizations"),

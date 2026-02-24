@@ -69,11 +69,20 @@ export const HeroSection = ({ cmsData }: HeroSectionProps) => {
   const description = cmsData?.description || staticData.description
   const subtitle = cmsData?.subtitle || staticData.subtitle
 
+  const hardcodedIcons: Record<string, string> = {
+    "urinary-incontinence": "/image-7.svg",
+    "urinary-retention": "/vector.svg",
+    "fecal-incontinence": "/fecalincontinence.svg",
+    "constipation": "/constipation.svg",
+    "pelvic-pain": "/belly--1--1.svg",
+    "pregnancy": "/vector-2.svg"
+  }
+
   const healthConditions: HealthCondition[] = (cmsData?.conditions && cmsData.conditions.length > 0) ?
     cmsData.conditions.map((c, i) => ({
       id: `cms-${i}`,
       titleKey: c.title,
-      icon: getImageUrl(c.icon),
+      icon: hardcodedIcons[c.slug] || getImageUrl(c.icon),
       route: c.slug,
       isCms: true
     })) : [
