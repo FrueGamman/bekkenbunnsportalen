@@ -15,6 +15,7 @@ export const Helsepersonell = () => {
 
     // Helper for bilingual content from the singleton fields
     const getTranslation = (key: string) => {
+        if (!pageData) return "";
         const field_nb = `${key}_no` as keyof typeof pageData;
         const field_en = `${key}_en` as keyof typeof pageData;
 
