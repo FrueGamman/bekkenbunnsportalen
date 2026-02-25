@@ -3,6 +3,7 @@ import { useLanguage } from "../context/LanguageContext";
 import { useTheme } from "../context/ThemeContext";
 import { SectionAccordion } from "./SectionAccordion";
 import { CommonExerciseSection } from "./CommonExerciseSection";
+import type { ExerciseStep, GenderInstruction, Video, SmartphoneApps } from "./CommonExerciseSection";
 import { ImageModal } from "./ui/ImageModal";
 import type { Tilstand, TilstandAccordionItem } from "../types/cms";
 import { getImageUrl } from "../lib/directus";
@@ -43,6 +44,65 @@ export const TilstandDynamicSection = ({ tilstand, activeSection }: TilstandDyna
     // Specific fields for symptoms/causes
     const sitat = (language === 'en' && t[`${prefix}_sitat_en`]) || t[`${prefix}_sitat`];
     const sitatKilde = (language === 'en' && t[`${prefix}_sitat_kilde_en`]) || t[`${prefix}_sitat_kilde`];
+
+    // Exercises: render original design (CommonExerciseSection) when structured data from Directus exists
+    if (activeSection === "exercises") {
+        const tryTitle = (language === "en" && t.ovelse_try_yourself_title_en) || t.ovelse_try_yourself_title || "";
+        const step1 = (language === "en" && t.ovelse_step1_text_en) || t.ovelse_step1_text || "";
+        const tipsTitle = (language === "en" && t.ovelse_tips_title_en) || t.ovelse_tips_title || "";
+        const tipsText = (language === "en" && t.ovelse_tips_text_en) || t.ovelse_tips_text || "";
+        const videoSectionTitle = (language === "en" && t.ovelse_video_section_title_en) || t.ovelse_video_section_title || "";
+        const videoSectionDesc = (language === "en" && t.ovelse_video_section_description_en) || t.ovelse_video_section_description || "";
+        const videosRaw = (t.ovelse_videos as { src: string; title?: string; title_en?: string }[] | null) || [];
+        const stepsRaw = (t.ovelse_steps as { number: number; text?: string; text_en?: string }[] | null) || [];
+        const genderRaw = (t.ovelse_gender_instructions as { title?: string; title_en?: string; text?: string; text_en?: string; icon?: string; iconColor?: string }[] | null) || [];
+        const appsRaw = t.ovelse_smartphone_apps as SmartphoneApps | null | undefined;
+
+        const hasStructured = tryTitle || step1 || videoSectionTitle || videosRaw.length > 0;
+        if (hasStructured) {
+            const videos: Video[] = videosRaw.map((v) => ({
+                src: v.src,
+                title: (language === "en" && v.title_en) ? v.title_en : (v.title || "")
+            }));
+            const exerciseSteps: ExerciseStep[] = stepsRaw
+                .sort((a, b) => a.number - b.number)
+                .map((s) => ({
+                    number: s.number,
+                    text: (language === "en" && s.text_en) ? s.text_en : (s.text || "")
+                }));
+            const genderInstructions: GenderInstruction[] = genderRaw.map((g) => ({
+                title: (language === "en" && g.title_en) ? g.title_en : (g.title || ""),
+                text: (language === "en" && g.text_en) ? g.text_en : (g.text || ""),
+                icon: g.icon || "",
+                iconColor: g.iconColor || "#053870"
+            }));
+            const app = appsRaw as Record<string, string | undefined> | null | undefined;
+            const smartphoneApps: SmartphoneApps | undefined = app
+                ? {
+                    title: (language === "en" && app.title_en) ? app.title_en : (app.title || ""),
+                    description: (language === "en" && app.description_en) ? app.description_en : (app.description || ""),
+                    linkText: (language === "en" && app.linkText_en) ? app.linkText_en : (app.linkText || ""),
+                    linkUrl: app.linkUrl || ""
+                }
+                : undefined;
+
+            return (
+                <CommonExerciseSection
+                    pageTitle={title || (language === "no" ? "Øvelser" : "Exercises")}
+                    tryYourselfTitle={tryTitle}
+                    step1Text={step1}
+                    genderInstructions={genderInstructions}
+                    tipsTitle={tipsTitle}
+                    tipsText={tipsText}
+                    exerciseSteps={exerciseSteps}
+                    videoSectionTitle={videoSectionTitle}
+                    videoSectionDescription={videoSectionDesc || undefined}
+                    videos={videos}
+                    smartphoneApps={smartphoneApps}
+                />
+            );
+        }
+    }
 
     if (!title && !intro && !trekkspill) return null;
 

@@ -346,6 +346,27 @@ export interface Tilstand {
   ovelse_intro: string;
   ovelse_intro_en?: string | null;
   ovelse_trekkspill: TilstandAccordionItem[] | null;
+  /** Structured exercise block (original design): try-yourself + videos. Stored as JSON in Directus. */
+  ovelse_try_yourself_title?: string | null;
+  ovelse_try_yourself_title_en?: string | null;
+  ovelse_step1_text?: string | null;
+  ovelse_step1_text_en?: string | null;
+  ovelse_tips_title?: string | null;
+  ovelse_tips_title_en?: string | null;
+  ovelse_tips_text?: string | null;
+  ovelse_tips_text_en?: string | null;
+  ovelse_video_section_title?: string | null;
+  ovelse_video_section_title_en?: string | null;
+  ovelse_video_section_description?: string | null;
+  ovelse_video_section_description_en?: string | null;
+  /** Array of { src, title?, title_en? }. JSON in Directus. */
+  ovelse_videos?: { src: string; title?: string; title_en?: string }[] | null;
+  /** Array of { number, text?, text_en? }. JSON in Directus. */
+  ovelse_steps?: { number: number; text?: string; text_en?: string }[] | null;
+  /** Array of { title, title_en?, text, text_en?, icon, iconColor }. JSON in Directus. */
+  ovelse_gender_instructions?: { title?: string; title_en?: string; text?: string; text_en?: string; icon?: string; iconColor?: string }[] | null;
+  /** { title?, title_en?, description?, description_en?, linkText?, linkText_en?, linkUrl }. JSON in Directus. */
+  ovelse_smartphone_apps?: { title?: string; title_en?: string; description?: string; description_en?: string; linkText?: string; linkText_en?: string; linkUrl?: string } | null;
 
   // Resources (Directus: ressurser_*)
   ressurser_tittel: string;
