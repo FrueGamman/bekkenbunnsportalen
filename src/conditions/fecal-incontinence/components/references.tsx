@@ -15,7 +15,7 @@ const REFERENCES_DATA = {
     guidelines: [
       {
         title: "Faglige retningslinjer for utredning og konservativ behandling av anorektale funksjonsforstyrrelser (2019)",
-        url: "https://nekib.helsekompetanse.no/wp-content/uploads/2023/02/AI-retningslinjer-2019-pdf.pdf",
+        url: "https://www.bekkenbunnsportalen.no/wp-content/uploads/2023/02/AI-retningslinjer-2019-pdf.pdf",
         description: "Retningslinjen er utarbeidet av Norsk gruppe for konservativ behandling av anorektale funksjonsforstyrrlser. Dette er en nasjonal anbefaling hvor formålet er å kvalitetssikre både utredning og behandling av AI og kronisk obstipasjon, og gi pasienter lik mulighet til anbefalt pasientforløp, uavhengig av bosted. Utarbeidelsen av den norske retningslinjen er basert på de engelske NICE guidelines, danske guidelines, ICS, Norsk elektronisk legehåndbok, kunnskap fra klinisk praksis og litteratursøk. Der tilpasninger til norske forhold har vært nødvendig, er dette gjort i henhold til prinsippet for best clinical practice."
       }
     ],
@@ -51,7 +51,7 @@ const REFERENCES_DATA = {
     guidelines: [
       {
         title: "Clinical Guidelines for Assessment and Conservative Treatment of Anorectal Functional Disorders (2019)",
-        url: "https://nekib.helsekompetanse.no/wp-content/uploads/2023/02/AI-retningslinjer-2019-pdf.pdf",
+        url: "https://www.bekkenbunnsportalen.no/wp-content/uploads/2023/02/AI-retningslinjer-2019-pdf.pdf",
         description: "The guidelines are developed by the Norwegian group for conservative treatment of anorectal functional disorders. This is a national recommendation where the purpose is to quality assure both assessment and treatment of AI and chronic constipation, and give patients equal opportunity for recommended patient pathway, regardless of residence. The development of the Norwegian guidelines is based on the English NICE guidelines, Danish guidelines, ICS, Norwegian electronic medical handbook, knowledge from clinical practice and literature search. Where adaptations to Norwegian conditions have been necessary, this has been done according to the principle of best clinical practice."
       }
     ],

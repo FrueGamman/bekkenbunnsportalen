@@ -277,7 +277,7 @@ export const UpgradedPregnancyContent = () => {
           </div>
           <div className={styles.heroImage}>
             <img
-              src="https://nekib.helsekompetanse.no/wp-content/uploads/2021/11/topp2-1024x514.jpg"
+              src="https://www.bekkenbunnsportalen.no/wp-content/uploads/2021/11/topp2-1024x514.jpg"
               alt="Pregnant woman"
               className={styles.heroImageElement}
               loading="lazy"

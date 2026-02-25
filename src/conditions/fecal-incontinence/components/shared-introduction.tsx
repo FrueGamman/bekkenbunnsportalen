@@ -21,7 +21,7 @@ const INTRODUCTION_DATA = {
     ],
     video: {
       src: "https://player.vimeo.com/video/367327819?autopause=0&loop=0&muted=0&title=0&portrait=0&byline=0",
-      thumbnailSrc: "https://nekib.helsekompetanse.no/wp-content/uploads/2020/01/Ingunn2.jpg",
+      thumbnailSrc: "https://www.bekkenbunnsportalen.no/wp-content/uploads/2020/01/Ingunn2.jpg",
       alt: "Våg å snakk om avføringslekkasje",
       caption: "Informasjonsvideo om avføringslekkasje"
     }
@@ -38,7 +38,7 @@ const INTRODUCTION_DATA = {
     ],
     video: {
       src: "https://player.vimeo.com/video/367327819?autopause=0&loop=0&muted=0&title=0&portrait=0&byline=0",
-      thumbnailSrc: "https://nekib.helsekompetanse.no/wp-content/uploads/2020/01/Ingunn2.jpg",
+      thumbnailSrc: "https://www.bekkenbunnsportalen.no/wp-content/uploads/2020/01/Ingunn2.jpg",
       alt: "Dare to talk about fecal incontinence",
       caption: "Information video about fecal incontinence"
     }

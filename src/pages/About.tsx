@@ -258,7 +258,7 @@ export const About = () => {
                 </p>
                 <div className={styles.resourceLink}>
                   <a 
-                    href="https://nekib.helsekompetanse.no/wp-content/uploads/2023/12/FLYER-bekkenbunnsportalen.no-redigert-19.12.23.pdf" 
+                    href="https://www.bekkenbunnsportalen.no/wp-content/uploads/2023/12/FLYER-bekkenbunnsportalen.no-redigert-19.12.23.pdf" 
                     target="_blank" 
                     rel="noopener"
                     className={styles.downloadLink}

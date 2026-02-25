@@ -32,7 +32,7 @@ const bowelFunctionData = {
         { src: "/korrekt-toiledPosistion.png", alt: "Korrekt sittestilling på toalettet", caption: "Korrekt sittestilling på toalettet" }
       ],
       image: {
-        src: "https://nekib.helsekompetanse.no/wp-content/uploads/2021/11/doposisjon-1.jpg",
+        src: "https://www.bekkenbunnsportalen.no/wp-content/uploads/2021/11/doposisjon-1.jpg",
         alt: "Riktig sittestilling på toalettet",
         caption: "Reprodusert med tillatelse fra Ray Addison (UK), kontinenssykepleier og Wendy Ness (UK), kolorektal specialsykepleier. Norgine 2007."
       },
@@ -204,7 +204,7 @@ const bowelFunctionData = {
               "Hyppighet av avføring varierer fra person til person. Det er ikke et mål i seg selv å etterstrebe et spesifikt mønster såfremt at mønsteret i seg selv ikke er et problem. Selv om det ofte refereres til at avføring en gang per dag er det normale, vet man at dette ikke er gjeldende for alle."
             ],
             image: {
-              src: "https://nekib.helsekompetanse.no/wp-content/uploads/2021/11/bristol_skala.png",
+              src: "https://www.bekkenbunnsportalen.no/wp-content/uploads/2021/11/bristol_skala.png",
               alt: "Bristol avføringsskala",
               caption: "Bristol Stool Scale. Reprodusert av Nasjonalt senter for bekkenbunnshelse med tillatelse fra Dr KW Heaton, Reader in Medicine at the University of Bristol. 2000 Norgine Pharmaceuticals Limited."
             }
@@ -309,7 +309,7 @@ const bowelFunctionData = {
         { src: "/korrekt-toiledPosistion.png", alt: "Correct toilet posture", caption: "Correct toilet posture" }
       ],
       image: {
-        src: "https://nekib.helsekompetanse.no/wp-content/uploads/2021/11/doposisjon-1.jpg",
+        src: "https://www.bekkenbunnsportalen.no/wp-content/uploads/2021/11/doposisjon-1.jpg",
         alt: "Correct sitting position on the toilet",
         caption: "Reproduced with permission from Ray Addison (UK), continence nurse and Wendy Ness (UK), colorectal specialist nurse. Norgine 2007."
       },
@@ -515,7 +515,7 @@ const bowelFunctionData = {
               "Frequency of bowel movements varies from person to person. It is not a goal in itself to strive for a specific pattern as long as the pattern itself is not a problem. Although it is often referred to that bowel movements once a day is normal, it is known that this does not apply to everyone."
             ],
             image: {
-              src: "https://nekib.helsekompetanse.no/wp-content/uploads/2021/11/bristol_skala.png",
+              src: "https://www.bekkenbunnsportalen.no/wp-content/uploads/2021/11/bristol_skala.png",
               alt: "Bristol Stool Scale",
               caption: "Bristol Stool Scale. Reproduced by the National Center for Pelvic Floor Health with permission from Dr KW Heaton, Reader in Medicine at the University of Bristol. 2000 Norgine Pharmaceuticals Limited."
             }

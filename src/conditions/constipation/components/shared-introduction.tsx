@@ -10,7 +10,7 @@ const INTRODUCTION_DATA = {
     subtitle: "Forstå normal tarmfunksjon og forstoppelse",
     description: "På disse sidene finner du informasjon om tømmingsproblemer for avføring og forstoppelse. Her er informasjon om symptomer på, utredning og behandling av slike plager.",
     image: {
-        src: "https://nekib.helsekompetanse.no/wp-content/uploads/2021/11/COLOURBOX9432678-300x300.jpg",
+        src: "https://www.bekkenbunnsportalen.no/wp-content/uploads/2021/11/COLOURBOX9432678-300x300.jpg",
       alt: "Normal tarmfunksjon og anatomi",
       caption: "Oversikt over tarmens funksjon"
     }
@@ -20,7 +20,7 @@ const INTRODUCTION_DATA = {
     subtitle: "Understanding Normal Bowel Function and Constipation",
     description: "On these pages you will find information about bowel emptying problems and constipation. Here is information about symptoms, assessment and treatment of such problems.",
     image: {
-        src: "https://nekib.helsekompetanse.no/wp-content/uploads/2021/11/COLOURBOX9432678-300x300.jpg",
+        src: "https://www.bekkenbunnsportalen.no/wp-content/uploads/2021/11/COLOURBOX9432678-300x300.jpg",
       alt: "Normal bowel function and anatomy",
       caption: "Overview of bowel function"
     }

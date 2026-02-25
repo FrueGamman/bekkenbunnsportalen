@@ -14,7 +14,7 @@ const INTRODUCTION_DATA = {
       "Utforsk forskjellige behandlingsmetoder"
     ],
     image: {
-      src: "https://nekib.helsekompetanse.no/wp-content/uploads/2021/11/COLOURBOX12986833.jpg",
+      src: "https://www.bekkenbunnsportalen.no/wp-content/uploads/2021/11/COLOURBOX12986833.jpg",
       alt: "Behandling av urinretensjon",
       caption: "Oversikt over behandlingsalternativer"
     }
@@ -28,7 +28,7 @@ const INTRODUCTION_DATA = {
       "Explore different treatment methods"
     ],
     image: {
-      src: "https://nekib.helsekompetanse.no/wp-content/uploads/2021/11/COLOURBOX12986833.jpg",
+      src: "https://www.bekkenbunnsportalen.no/wp-content/uploads/2021/11/COLOURBOX12986833.jpg",
       alt: "Treatment of urinary retention",
       caption: "Overview of treatment options"
     }

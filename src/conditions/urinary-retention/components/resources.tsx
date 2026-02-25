@@ -15,7 +15,7 @@ const INTRODUCTION_DATA = {
       "Få tilgang til praktiske ressurser og verktøy"
     ],
     image: {
-      src: "https://nekib.helsekompetanse.no/wp-content/uploads/2021/11/COLOURBOX12986833.jpg",
+      src: "https://www.bekkenbunnsportalen.no/wp-content/uploads/2021/11/COLOURBOX12986833.jpg",
       alt: "Ressurser for urinretensjon",
       caption: "Oversikt over hjelpe- og støtteressurser"
     }
@@ -29,7 +29,7 @@ const INTRODUCTION_DATA = {
       "Access practical resources and tools"
     ],
     image: {
-      src: "https://nekib.helsekompetanse.no/wp-content/uploads/2021/11/COLOURBOX12986833.jpg",
+      src: "https://www.bekkenbunnsportalen.no/wp-content/uploads/2021/11/COLOURBOX12986833.jpg",
       alt: "Resources for urinary retention",
       caption: "Overview of help and support resources"
     }

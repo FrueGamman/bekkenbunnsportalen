@@ -24,7 +24,7 @@ export const PregnancyOverview = ({ onNavigate }: PregnancyOverviewProps) => {
       description: "De fleste endringene er vanlige og vil normalisere seg selv. Noen endringer kan oppleves plagsomme og trenger en mer aktiv tilnærming, enten igjennom tiltak du kan gjøre selv eller gjennom oppfølging av helsevesenet. Dersom plagene går ut over daglige gjøremål og livskvalitet bør du søke hjelp. På disse sidene finnes oversikt over vanlige plager, råd og behandling.",
       note: "Læreboken inneholder utfyllende og samlet informasjon.",
       image: {
-        src: "https://nekib.helsekompetanse.no/wp-content/uploads/2021/11/topp2-1024x514.jpg",
+        src: "https://www.bekkenbunnsportalen.no/wp-content/uploads/2021/11/topp2-1024x514.jpg",
         alt: "Gravid kvinne med hånden på magen",
         caption: "Endringer i bekkenbunnen under graviditet er vanlige"
       }
@@ -94,7 +94,7 @@ export const PregnancyOverview = ({ onNavigate }: PregnancyOverviewProps) => {
       description: "Most changes are normal and will normalize on their own. Some changes can be troublesome and require a more active approach, either through self-care measures or through healthcare follow-up. If the problems affect daily activities and quality of life, you should seek help. These pages provide an overview of common problems, advice, and treatment.",
       note: "The textbook contains comprehensive and collected information.",
       image: {
-        src: "https://nekib.helsekompetanse.no/wp-content/uploads/2021/11/topp2-1024x514.jpg",
+        src: "https://www.bekkenbunnsportalen.no/wp-content/uploads/2021/11/topp2-1024x514.jpg",
         alt: "Pregnant woman with hand on belly",
         caption: "Changes in the pelvic floor during pregnancy are common"
       }

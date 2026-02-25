@@ -207,7 +207,7 @@ export const PelvicFloorSection = () => {
             textAlign: 'center'
           }}>
             <img
-              src="https://nekib.helsekompetanse.no/wp-content/uploads/2021/11/beken2.jpg"
+              src="https://www.bekkenbunnsportalen.no/wp-content/uploads/2021/11/beken2.jpg"
               alt={data.anatomyImageCaption}
               style={{
                 width: '100%',
@@ -254,7 +254,7 @@ export const PelvicFloorSection = () => {
               textAlign: 'center'
             }}>
               <img
-                src="https://nekib.helsekompetanse.no/wp-content/uploads/2021/11/bekkenbunn.jpg"
+                src="https://www.bekkenbunnsportalen.no/wp-content/uploads/2021/11/bekkenbunn.jpg"
                 alt={data.imageCaption}
                 style={{
                   width: '100%',

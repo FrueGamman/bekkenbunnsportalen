@@ -14,7 +14,7 @@ const INTRODUCTION_DATA = {
       "Utforsk når spesialistutredning er nødvendig"
     ],
     image: {
-      src: "https://nekib.helsekompetanse.no/wp-content/uploads/2021/11/COLOURBOX12986833.jpg",
+      src: "https://www.bekkenbunnsportalen.no/wp-content/uploads/2021/11/COLOURBOX12986833.jpg",
       alt: "Utredning av urinretensjon",
       caption: "Oversikt over diagnostiske prosedyrer"
     }
@@ -28,7 +28,7 @@ const INTRODUCTION_DATA = {
       "Explore when specialist examination is necessary"
     ],
     image: {
-      src: "https://nekib.helsekompetanse.no/wp-content/uploads/2021/11/COLOURBOX12986833.jpg",
+      src: "https://www.bekkenbunnsportalen.no/wp-content/uploads/2021/11/COLOURBOX12986833.jpg",
       alt: "Diagnosis of urinary retention",
       caption: "Overview of diagnostic procedures"
     }
@@ -88,7 +88,7 @@ const DIAGNOSIS_DATA: Record<SupportedLanguage, DiagnosisContent> = {
         links: [
           {
             text: "Vannlatingsdagbok (pdf-fil)",
-            url: "https://nekib.helsekompetanse.no/wp-content/uploads/2022/01/vanlatingsbok.pdf"
+            url: "https://www.bekkenbunnsportalen.no/wp-content/uploads/2022/01/vanlatingsbok.pdf"
           },
           {
             text: "App til registrering utviklet av Wellspect Healthcare",
@@ -135,7 +135,7 @@ const DIAGNOSIS_DATA: Record<SupportedLanguage, DiagnosisContent> = {
         links: [
           {
             text: "Urination diary (pdf file)",
-            url: "https://nekib.helsekompetanse.no/wp-content/uploads/2022/01/vanlatingsbok.pdf"
+            url: "https://www.bekkenbunnsportalen.no/wp-content/uploads/2022/01/vanlatingsbok.pdf"
           },
           {
             text: "Registration app developed by Wellspect Healthcare",

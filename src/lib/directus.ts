@@ -23,5 +23,6 @@ export async function directusFetch<T>(endpoint: string, options: RequestInit = 
 
 export const getImageUrl = (id: string) => {
   if (!id) return "";
-  return `${DIRECTUS_URL}/assets/${id}`;
+  const tokenParams = DIRECTUS_TOKEN ? `?access_token=${DIRECTUS_TOKEN}` : "";
+  return `${DIRECTUS_URL}/assets/${id}${tokenParams}`;
 };

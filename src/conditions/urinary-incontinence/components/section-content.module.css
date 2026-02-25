@@ -1144,12 +1144,13 @@
   margin-bottom: 0;
 }
 
-/* Enhanced Anatomy Section - matches reference: light blue-grey bg, card layout */
+/* Enhanced Anatomy Section */
 .anatomySection {
   margin: 3rem 0;
   padding: 2.5rem;
-  background: linear-gradient(135deg, rgba(148, 163, 184, 0.08) 0%, rgba(100, 116, 139, 0.12) 100%);
+  background: linear-gradient(135deg, rgba(30, 64, 175, 0.03) 0%, rgba(5, 56, 112, 0.08) 100%);
   border-radius: 1.25rem;
+  border: 1px solid rgba(30, 64, 175, 0.15);
   display: flex;
   justify-content: center;
 }
@@ -1177,65 +1178,64 @@
 
 .anatomyGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 2rem;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2.5rem;
   margin: 2rem 0;
-  align-items: stretch;
+  align-items: center;
   justify-items: center;
   width: 100%;
 }
 
-/* Anatomy image card - white, rounded, soft shadow (matches reference design) */
 .anatomyItem {
   background: white;
-  border-radius: 12px;
+  border-radius: 1rem;
   padding: 1.5rem;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06), 0 2px 8px rgba(0, 0, 0, 0.04);
+  box-shadow: 0 4px 16px rgba(5, 56, 112, 0.08);
   transition: all 0.3s ease;
+  border: 1px solid rgba(30, 64, 175, 0.1);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
   height: 100%;
-  overflow: hidden;
 }
 
 .anatomyItem:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08), 0 4px 12px rgba(0, 0, 0, 0.05);
+  transform: translateY(-4px);
+  box-shadow: 0 8px 32px rgba(30, 64, 175, 0.15);
 }
 
 .anatomyImage {
   width: 100%;
-  max-width: 100%;
-  height: auto;
-  min-height: 200px;
-  max-height: 320px;
+  max-width: 1000px;
+  height: 280px;
   object-fit: contain;
-  border-radius: 8px;
+  border-radius: 0.75rem;
   margin-bottom: 1rem;
-}
-
-@media (min-width: 768px) {
-  .anatomyGrid {
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 2rem;
-  }
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 @media (min-width: 1440px) {
   .anatomyImage {
-    max-height: 360px;
+    max-width: 1200px;
+    height: 320px;
   }
 }
 
 @media (min-width: 1920px) {
   .anatomyImage {
-    max-height: 400px;
+    max-width: 1400px;
+    height: 360px;
   }
 }
 
-/* Anatomy card for Directus images (TilstandDynamicSection) - matches reference */
+@media (min-width: 2560px) {
+  .anatomyImage {
+    max-width: 1800px;
+    height: 420px;
+  }
+}
+
 .anatomyItem2 {
   display: flex;
   flex-direction: column;
@@ -1243,35 +1243,30 @@
   justify-content: flex-start;
   align-items: center;
   background: white;
-  border-radius: 12px;
+  border-radius: 1rem;
   padding: 1.5rem;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06), 0 2px 8px rgba(0, 0, 0, 0.04);
+  box-shadow: 0 4px 16px rgba(5, 56, 112, 0.08);
   transition: all 0.3s ease;
   width: 100%;
   max-width: 100%;
+  border: 1px solid rgba(30, 64, 175, 0.1);
   height: 100%;
-  overflow: hidden;
 }
 
 .anatomyItem2:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08), 0 4px 12px rgba(0, 0, 0, 0.05);
+  transform: translateY(-4px);
+  box-shadow: 0 8px 32px rgba(30, 64, 175, 0.15);
 }
 
 .anatomyItem2 .anatomyImage {
-  width: 100%;
-  height: auto;
-  min-height: 200px;
-  max-height: 320px;
+  height: 280px;
   object-fit: contain;
-  border-radius: 8px;
 }
 
-/* Centered caption below image - dark, slightly bold (h3/h4 style) */
 .anatomyCaption {
-  font-size: 1rem;
+  font-size: 0.95rem;
   font-weight: 600;
-  color: #1e293b;
+  color: #053870;
   text-align: center;
   margin: 0;
   line-height: 1.4;
@@ -2331,7 +2326,8 @@
 }
 
 .darkMode .anatomySection {
-  background: rgba(30, 41, 59, 0.3);
+  background: var(--color-bg-tertiary);
+  border-color: var(--color-border-primary);
 }
 
 .darkMode .anatomyTitle {
@@ -2795,7 +2791,8 @@
 }
 
 .darkMode .anatomySection {
-  background: rgba(30, 41, 59, 0.3);
+  background: var(--color-bg-tertiary);
+  border-color: var(--color-border-primary);
 }
 
 /* Enhanced Mobile Responsiveness */
@@ -2919,21 +2916,6 @@
   height: 100%;
   border: none;
   display: block;
-}
-
-.introImageWrapper {
-  width: 100%;
-  border-radius: 12px;
-  overflow: hidden;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-}
-
-.introImage {
-  width: 100%;
-  height: auto;
-  display: block;
-  border-radius: 12px;
-  object-fit: cover;
 }
 
 .introductionTitle {
@@ -4166,4 +4148,221 @@ html.dark .quoteAuthor {
   .diagnosisImageCaption {
     font-size: clamp(1.25rem, 1.25vw, 1.5rem);
   }
+}
+
+/* ================================
+   DIRECTUS CMS HTML STYLING
+   Style raw HTML elements from Directus rich-text
+   so they match the pelvic-react hardcoded UI
+   ================================ */
+
+/* Lists inside CMS content */
+.enhancedParagraph ul {
+  list-style: none;
+  padding: 0;
+  margin: 1.5rem 0;
+}
+
+.enhancedParagraph ul li {
+  padding: 0.75rem 0;
+  border-bottom: 1px solid var(--color-border-secondary, #bfdbfe);
+  font-size: 1rem;
+  line-height: 1.6;
+  color: var(--color-text-secondary, #374151);
+  position: relative;
+  padding-left: 1.5rem;
+}
+
+.enhancedParagraph ul li:last-child {
+  border-bottom: none;
+}
+
+.enhancedParagraph ul li::before {
+  content: "•";
+  color: var(--color-primary, #3b82f6);
+  font-weight: 700;
+  position: absolute;
+  left: 0;
+  top: 0.75rem;
+}
+
+/* Ordered lists */
+.enhancedParagraph ol {
+  padding-left: 1.5rem;
+  margin: 1.5rem 0;
+}
+
+.enhancedParagraph ol li {
+  padding: 0.5rem 0;
+  font-size: 1rem;
+  line-height: 1.6;
+  color: var(--color-text-secondary, #374151);
+}
+
+
+/* Links inside CMS content — styled as bordered pill buttons like production */
+.enhancedParagraph a {
+  color: var(--brand-navy, #053870);
+  text-decoration: none;
+  display: inline-block;
+  padding: 0.5rem 1.25rem;
+  border: 1.5px solid var(--brand-navy, #053870);
+  border-radius: 20px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  margin-top: 0.75rem;
+  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+.enhancedParagraph a:hover {
+  background: var(--brand-navy, #053870);
+  color: #ffffff;
+}
+
+/* Headings inside CMS content — card style with blue left bar */
+.enhancedParagraph h3 {
+  font-size: 1.375rem;
+  font-weight: 700;
+  color: var(--brand-navy, #053870);
+  margin: 2.5rem 0 0 0;
+  padding: 0.75rem 0 0.75rem 1rem;
+  border-left: 4px solid var(--brand-navy, #053870);
+  border-bottom: 2px solid rgba(5, 56, 112, 0.1);
+}
+
+.enhancedParagraph h4 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--brand-navy, #053870);
+  margin: 2rem 0 0 0;
+  padding: 0.625rem 0 0.625rem 1rem;
+  border-left: 4px solid var(--brand-navy, #053870);
+  border-bottom: 2px solid rgba(5, 56, 112, 0.1);
+}
+
+.enhancedParagraph h5 {
+  font-size: 1.0625rem;
+  font-weight: 600;
+  color: var(--color-text-secondary, #374151);
+  margin: 1.5rem 0 0.5rem 0;
+  padding-left: 0.75rem;
+  border-left: 3px solid rgba(5, 56, 112, 0.3);
+}
+
+/* Strong/bold text */
+.enhancedParagraph strong {
+  font-weight: 600;
+  color: var(--color-text-primary, #1e293b);
+}
+
+/* Blockquotes inside CMS content */
+.enhancedParagraph blockquote {
+  border-left: 4px solid var(--color-primary, #3b82f6);
+  padding: 1rem 1.5rem;
+  margin: 1.5rem 0;
+  background: rgba(59, 130, 246, 0.05);
+  border-radius: 0 8px 8px 0;
+  font-style: italic;
+  color: var(--color-text-secondary, #374151);
+}
+
+/* Paragraphs inside CMS content */
+.enhancedParagraph p {
+  margin-bottom: 1rem;
+  line-height: 1.7;
+  color: var(--color-text-secondary, #374151);
+}
+
+.enhancedParagraph p:last-child {
+  margin-bottom: 0;
+}
+
+/* Card-like wrapper for the enhancedParagraph content */
+.enhancedParagraph {
+  background: rgba(255, 255, 255, 0.7);
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 2px 8px rgba(5, 56, 112, 0.06);
+  border: 1px solid rgba(5, 56, 112, 0.08);
+  overflow: hidden;
+  /* contain the float */
+}
+
+/* Float images to the right inside cause cards */
+.cardImageFloat {
+  float: right;
+  margin: 0 0 1rem 1.5rem;
+  max-width: 200px;
+}
+
+.cardImageItem {
+  margin-bottom: 0.75rem;
+}
+
+.cardImage {
+  width: 100%;
+  height: auto;
+  border-radius: 8px;
+  object-fit: cover;
+}
+
+.cardImageCaption {
+  font-size: 0.8rem;
+  color: var(--color-text-secondary, #6b7280);
+  font-style: italic;
+  text-align: center;
+  margin-top: 0.25rem;
+}
+
+@media (max-width: 768px) {
+  .cardImageFloat {
+    float: none;
+    max-width: 100%;
+    margin: 0 0 1rem 0;
+  }
+}
+
+/* Dark mode overrides for CMS content */
+:global(:root[data-theme="dark"]) .enhancedParagraph ul li,
+html.dark .enhancedParagraph ul li {
+  color: #cbd5e1;
+  border-bottom-color: rgba(148, 163, 184, 0.2);
+}
+
+:global(:root[data-theme="dark"]) .enhancedParagraph ul li::before,
+html.dark .enhancedParagraph ul li::before {
+  color: #93c5fd;
+}
+
+:global(:root[data-theme="dark"]) .enhancedParagraph a,
+html.dark .enhancedParagraph a {
+  color: #93c5fd;
+  border-color: #93c5fd;
+}
+
+:global(:root[data-theme="dark"]) .enhancedParagraph h3,
+html.dark .enhancedParagraph h3,
+:global(:root[data-theme="dark"]) .enhancedParagraph h4,
+html.dark .enhancedParagraph h4 {
+  color: #f1f5f9;
+  border-left-color: #3b82f6;
+}
+
+:global(:root[data-theme="dark"]) .enhancedParagraph strong,
+html.dark .enhancedParagraph strong {
+  color: #f1f5f9;
+}
+
+:global(:root[data-theme="dark"]) .enhancedParagraph blockquote,
+html.dark .enhancedParagraph blockquote {
+  background: rgba(59, 130, 246, 0.15);
+  border-left-color: #3b82f6;
+  color: #cbd5e1;
+}
+
+:global(:root[data-theme="dark"]) .enhancedParagraph,
+html.dark .enhancedParagraph {
+  background: rgba(30, 41, 59, 0.5);
+  border-color: rgba(255, 255, 255, 0.1);
 }

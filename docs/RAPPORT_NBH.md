@@ -137,8 +137,8 @@ For full CMS-funksjonalitet trengs:
 Prosjektet er klart for testing og videre drift. Ved spørsmål kan dere ta kontakt med utviklingsteamet.
 
 **Referanser:**
-- [Bekkenbunnsportalen (original)](https://nekib.helsekompetanse.no/)
-- [Plager under graviditet og etter fødsel](https://nekib.helsekompetanse.no/plager-under-graviditet-og-etter-fodsel/)
+- [Bekkenbunnsportalen (original)](https://www.bekkenbunnsportalen.no/)
+- [Plager under graviditet og etter fødsel](https://www.bekkenbunnsportalen.no/conditions/pregnancy?section=overview)
 
 ---
 

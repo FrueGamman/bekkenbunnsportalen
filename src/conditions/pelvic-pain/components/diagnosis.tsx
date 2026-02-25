@@ -20,7 +20,7 @@ const diagnosisData = {
       content: "Det er viktig å utrede langvarige underlivssmerter for å gi rett behandling. et ledd i utredningen er å utelukke bakenforliggende sykdom eller skade som trenger spesifikk behandling. første ledd i utredning ved langvarig smerteproblematikk er ofte fastlegen. det er nyttig at du er forberedt på hvilke symptomer du bør formidle i samtalen med legen din.",
       hasImage: true,
       image: {
-        src: "https://nekib.helsekompetanse.no/wp-content/uploads/2021/11/COLOURBOX1691196_resize.jpg",
+        src: "https://www.bekkenbunnsportalen.no/wp-content/uploads/2021/11/COLOURBOX1691196_resize.jpg",
         alt: "Bilde av en hånd som holder en sort penn og skriver på et skjema",
         caption: ""
       }
@@ -135,7 +135,7 @@ const diagnosisData = {
       content: "It is important to investigate chronic pelvic pain to provide proper treatment. Part of the investigation is to rule out underlying disease or injury that requires specific treatment. The first step in investigating chronic pain problems is often the general practitioner. It is useful that you are prepared for which symptoms you should communicate in the conversation with your doctor.",
       hasImage: true,
       image: {
-        src: "https://nekib.helsekompetanse.no/wp-content/uploads/2021/11/COLOURBOX1691196_resize.jpg",
+        src: "https://www.bekkenbunnsportalen.no/wp-content/uploads/2021/11/COLOURBOX1691196_resize.jpg",
         alt: "Image of a hand holding a black pen writing on a form",
         caption: ""
       }

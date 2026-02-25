@@ -16,7 +16,7 @@ const INTRODUCTION_DATA = {
       "Utforsk behandlingsalternativer og håndtering"
     ],
     image: {
-      src: "https://nekib.helsekompetanse.no/wp-content/uploads/2021/11/COLOURBOX12986833.jpg",
+      src: "https://www.bekkenbunnsportalen.no/wp-content/uploads/2021/11/COLOURBOX12986833.jpg",
       alt: "Urinveienes oppbygging og funksjon",
       caption: "Oversikt over urinveienes oppbygging"
     }
@@ -30,7 +30,7 @@ const INTRODUCTION_DATA = {
       "Explore treatment options and management"
     ],
     image: {
-      src: "https://nekib.helsekompetanse.no/wp-content/uploads/2021/11/COLOURBOX12986833.jpg",
+      src: "https://www.bekkenbunnsportalen.no/wp-content/uploads/2021/11/COLOURBOX12986833.jpg",
       alt: "Urinary tract structure and function",
       caption: "Overview of urinary tract structure"
     }
@@ -48,12 +48,12 @@ const NORMAL_FUNCTIONS_DATA = {
         hasAnatomyImages: true,
         anatomyImages: [
           {
-            src: "https://nekib.helsekompetanse.no/wp-content/uploads/2021/11/nyeste-kvinnelig-tverrsnitt-2018_0.png",
+            src: "https://www.bekkenbunnsportalen.no/wp-content/uploads/2021/11/nyeste-kvinnelig-tverrsnitt-2018_0.png",
             alt: "Tverrsnitt av kvinnelig bekken",
             caption: "Tversnitt av et kvinnelig underliv som viser med piler hvor livmor, tarm, blære, skjede og urinrør er plassert"
           },
           {
-            src: "https://nekib.helsekompetanse.no/wp-content/uploads/2021/11/normal-anatomi_0.png",
+            src: "https://www.bekkenbunnsportalen.no/wp-content/uploads/2021/11/normal-anatomi_0.png",
             alt: "Tverrsnitt av mannlig bekken",
             caption: "Tversnitt av et mannlig underliv som viser med piler hvor blære, tarm, blære, prostatakjertel og urinrør er plassert"
           }

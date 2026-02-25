@@ -78,7 +78,7 @@ export const NormalFunctions = () => {
             <div className={styles.anatomyGrid}>
               <div className={styles.anatomyItem}>
                 <img 
-                  src="https://nekib.helsekompetanse.no/wp-content/uploads/2021/11/COLOURBOX9432678-300x300.jpg" 
+                  src="https://www.bekkenbunnsportalen.no/wp-content/uploads/2021/11/COLOURBOX9432678-300x300.jpg" 
                   alt={data.anatomyAlt}
                   className={styles.anatomyImage}
                 />

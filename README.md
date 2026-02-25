@@ -2,8 +2,8 @@
 
 A modern, accessible React reimplementation and improvement of Bekkenbunnsportalen.
 
-- Original reference: [Bekkenbunnsportalen](https://nekib.helsekompetanse.no/)
-- Pregnancy section reference: [Plager under graviditet og etter fødsel](https://nekib.helsekompetanse.no/plager-under-graviditet-og-etter-fodsel/)
+- Original reference: [Bekkenbunnsportalen](https://www.bekkenbunnsportalen.no/)
+- Pregnancy section reference: [Plager under graviditet og etter fødsel](https://www.bekkenbunnsportalen.no/conditions/pregnancy?section=overview)
 
 This app preserves the clinical content and structure while delivering a faster, clearer 2025 UI/UX with better accessibility and navigation.
 
@@ -50,7 +50,7 @@ The pregnancy section mirrors the information architecture of the original while
 
 ### Content parity
 - Introductory text, hero imagery and caption are preserved from the original site
-  - Always cite: [Main portal](https://nekib.helsekompetanse.no/), [Pregnancy section](https://nekib.helsekompetanse.no/plager-under-graviditet-og-etter-fodsel/)
+  - Always cite: [Main portal](https://www.bekkenbunnsportalen.no/), [Pregnancy section](https://www.bekkenbunnsportalen.no/conditions/pregnancy?section=overview)
 
 
 ## Other conditions
@@ -133,5 +133,5 @@ src/
 
 This project is provided for educational and internal use. Content originates from Bekkenbunnsportalen and is referenced for parity and accuracy:
 
-- [Bekkenbunnsportalen](https://nekib.helsekompetanse.no/)
-- [Plager under graviditet og etter fødsel](https://nekib.helsekompetanse.no/plager-under-graviditet-og-etter-fodsel/)
+- [Bekkenbunnsportalen](https://www.bekkenbunnsportalen.no/)
+- [Plager under graviditet og etter fødsel](https://www.bekkenbunnsportalen.no/conditions/pregnancy?section=overview)

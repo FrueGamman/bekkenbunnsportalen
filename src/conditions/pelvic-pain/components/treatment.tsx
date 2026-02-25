@@ -19,7 +19,7 @@ const treatmentData = {
         title: "Helhetlig tilnærming",
         hasImage: true,
         image: {
-          src: "https://nekib.helsekompetanse.no/wp-content/uploads/2021/11/COLOURBOX9507012_resize.jpg",
+          src: "https://www.bekkenbunnsportalen.no/wp-content/uploads/2021/11/COLOURBOX9507012_resize.jpg",
           alt: "Bilde av flere kvinner som ligger på treningsmatter og slapper av med øynene igjen og hendene på magen",
           caption: ""
         },
@@ -27,17 +27,17 @@ const treatmentData = {
         hasRelaxationIcons: true,
         relaxationIcons: [
           {
-            src: "https://nekib.helsekompetanse.no/wp-content/uploads/2021/11/avs1.png",
+            src: "https://www.bekkenbunnsportalen.no/wp-content/uploads/2021/11/avs1.png",
             alt: "Illustrasjon av en kvinne som ligger på rygg og slapper av",
             audioUrl: "https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/172964751%3Fsecret_token%3Ds-qemHe&color=6aaad6&auto_play=false&hide_related=true&show_comments=false&show_user=false&show_reposts=false"
           },
           {
-            src: "https://nekib.helsekompetanse.no/wp-content/uploads/2021/11/avs2.png",
+            src: "https://www.bekkenbunnsportalen.no/wp-content/uploads/2021/11/avs2.png",
             alt: "Illustrasjon av en person som sitter i lotusstilling",
             audioUrl: "https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/172962141%3Fsecret_token%3Ds-sHuQd&color=6aaad6&auto_play=false&hide_related=true&show_comments=false&show_user=false&show_reposts=false"
           },
           {
-            src: "https://nekib.helsekompetanse.no/wp-content/uploads/2021/11/avs3.png",
+            src: "https://www.bekkenbunnsportalen.no/wp-content/uploads/2021/11/avs3.png",
             alt: "Illustrasjon av en person som sover i en seng",
             audioUrl: "https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/172964808%3Fsecret_token%3Ds-yQXdb&color=6aaad6&auto_play=false&hide_related=true&show_comments=false&show_user=false&show_reposts=false"
           }
@@ -124,7 +124,7 @@ const treatmentData = {
         content: "Mestring er et mangetydig begrep. Innen psykologien brukes «mestring» om en persons evne til å håndtere livshendelser, situasjoner og påkjenninger som overstiger det som kan klares på ren rutine. Mestring kan i stor grad læres gjennom teori, og ikke minst gjennom erfaring (øvelse).",
         hasImage: true,
         image: {
-          src: "https://nekib.helsekompetanse.no/wp-content/uploads/2021/11/COLOURBOX2283342_resize.jpg",
+          src: "https://www.bekkenbunnsportalen.no/wp-content/uploads/2021/11/COLOURBOX2283342_resize.jpg",
           alt: "Person som mestrer utfordringer",
           caption: ""
         },
@@ -174,7 +174,7 @@ const treatmentData = {
         title: "Holistic Approach",
         hasImage: true,
         image: {
-          src: "https://nekib.helsekompetanse.no/wp-content/uploads/2021/11/COLOURBOX9507012_resize.jpg",
+          src: "https://www.bekkenbunnsportalen.no/wp-content/uploads/2021/11/COLOURBOX9507012_resize.jpg",
           alt: "Image of several women lying on exercise mats relaxing with their eyes closed and hands on their stomach",
           caption: ""
         },
@@ -182,17 +182,17 @@ const treatmentData = {
         hasRelaxationIcons: true,
         relaxationIcons: [
           {
-            src: "https://nekib.helsekompetanse.no/wp-content/uploads/2021/11/avs1.png",
+            src: "https://www.bekkenbunnsportalen.no/wp-content/uploads/2021/11/avs1.png",
             alt: "Illustration of a woman lying on her back relaxing",
             audioUrl: "https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/172964751%3Fsecret_token%3Ds-qemHe&color=6aaad6&auto_play=false&hide_related=true&show_comments=false&show_user=false&show_reposts=false"
           },
           {
-            src: "https://nekib.helsekompetanse.no/wp-content/uploads/2021/11/avs2.png",
+            src: "https://www.bekkenbunnsportalen.no/wp-content/uploads/2021/11/avs2.png",
             alt: "Illustration of a person sitting in lotus position",
             audioUrl: "https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/172962141%3Fsecret_token%3Ds-sHuQd&color=6aaad6&auto_play=false&hide_related=true&show_comments=false&show_user=false&show_reposts=false"
           },
           {
-            src: "https://nekib.helsekompetanse.no/wp-content/uploads/2021/11/avs3.png",
+            src: "https://www.bekkenbunnsportalen.no/wp-content/uploads/2021/11/avs3.png",
             alt: "Illustration of a person sleeping in a bed",
             audioUrl: "https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/172964808%3Fsecret_token%3Ds-yQXdb&color=6aaad6&auto_play=false&hide_related=true&show_comments=false&show_user=false&show_reposts=false"
           }
@@ -279,7 +279,7 @@ const treatmentData = {
         content: "Coping is a multifaceted concept. In psychology, 'coping' refers to a person's ability to handle life events, situations and stresses that exceed what can be managed through pure routine. Coping can largely be learned through theory, and not least through experience (practice).",
         hasImage: true,
         image: {
-          src: "https://nekib.helsekompetanse.no/wp-content/uploads/2021/11/COLOURBOX2283342_resize.jpg",
+          src: "https://www.bekkenbunnsportalen.no/wp-content/uploads/2021/11/COLOURBOX2283342_resize.jpg",
           alt: "Person coping with challenges",
           caption: ""
         },
@@ -329,7 +329,7 @@ export const Treatment = () => {
     subtitle: "Helhetlig tilnærming til smertelindring og bedre livskvalitet",
     description: "Behandling av langvarige underlivssmerter krever en helhetlig tilnærming som kombinerer ulike behandlingsmetoder. Det finnes ingen universell løsning, men mange pasienter opplever betydelig forbedring gjennom en kombinasjon av fysioterapi, medikamenter, og psykologisk støtte.\n\nViktige behandlingsprinsipper inkluderer å adressere både fysiske og psykiske faktorer, lære smertemanagement-teknikker, og bygge opp en støttende behandlingsallianse med helsepersonell.",
     image: {
-      src: "https://nekib.helsekompetanse.no/wp-content/uploads/2021/11/montasje_smerter_hd-1024x273.jpg",
+      src: "https://www.bekkenbunnsportalen.no/wp-content/uploads/2021/11/montasje_smerter_hd-1024x273.jpg",
       alt: "Behandling av langvarige underlivssmerter",
       caption: "Helhetlig behandling kan gi betydelig smertelindring"
     }

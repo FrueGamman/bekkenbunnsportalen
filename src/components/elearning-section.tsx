@@ -39,7 +39,7 @@ export const ElearningSection = ({ overVideo = false, cmsData }: ElearningSectio
     ? getImageUrl(cmsData.image)
     : cmsData?.thumbnail
       ? getImageUrl(cmsData.thumbnail)
-      : "https://nekib.helsekompetanse.no/wp-content/uploads/2022/10/AdobeStock_259480195_mobil-short-v3-scaled.jpg";
+      : "https://www.bekkenbunnsportalen.no/wp-content/uploads/2022/10/AdobeStock_259480195_mobil-short-v3-scaled.jpg";
 
   return (
     <div className={`${styles.contentWrapper} ${overVideo ? styles.overVideo : ''}`}>

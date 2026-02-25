@@ -121,7 +121,7 @@ export const FecalIncontinenceAnatomy = () => {
           </div>
 
           <div className={styles.anatomyImage}>
-            <img src="https://nekib.helsekompetanse.no/wp-content/uploads/2024/04/Indre-og-ytre-sfinkter.jpg" alt={data.imageAlt} />
+            <img src="https://www.bekkenbunnsportalen.no/wp-content/uploads/2024/04/Indre-og-ytre-sfinkter.jpg" alt={data.imageAlt} />
             <p className={styles.imageCaption}>{data.imageCaption}</p>
           </div>
         </div>
@@ -179,7 +179,7 @@ export const FecalIncontinenceAnatomy = () => {
         <h3>{data.bristolTitle}</h3>
         <div className={styles.bristolSection}>
           <div className={styles.bristolImage}>
-            <img src="https://nekib.helsekompetanse.no/wp-content/uploads/2021/11/bristol_skala.png" alt={data.bristolImageAlt} />
+            <img src="https://www.bekkenbunnsportalen.no/wp-content/uploads/2021/11/bristol_skala.png" alt={data.bristolImageAlt} />
           </div>
           <div className={styles.bristolContent}>
             <p>{data.bristolDesc}</p>

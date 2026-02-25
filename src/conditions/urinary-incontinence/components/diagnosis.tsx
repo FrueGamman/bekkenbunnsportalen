@@ -91,7 +91,7 @@ export const Diagnosis = () => {
               <div className={styles.diagnosisIntroImage}>
                 <div className={styles.diagnosisImageContainer}>
                   <img
-                    src="https://nekib.helsekompetanse.no/wp-content/uploads/2021/11/shutterstock_mann159831206.jpg"
+                    src="https://www.bekkenbunnsportalen.no/wp-content/uploads/2021/11/shutterstock_mann159831206.jpg"
                     alt="Utredning illustrasjon"
                     className={styles.diagnosisImage}
                   />

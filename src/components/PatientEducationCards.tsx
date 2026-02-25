@@ -266,19 +266,19 @@ export const PatientEducationCards: React.FC = () => {
   const audioData: AudioData[] = [
     {
       id: 'relaxation',
-      url: 'https://nekib.helsekompetanse.no/wp-content/uploads/2022/08/Avspenning.mp3',
+      url: 'https://www.bekkenbunnsportalen.no/wp-content/uploads/2022/08/Avspenning.mp3',
       title: data.audio.relaxation.title,
       description: data.audio.relaxation.description
     },
     {
       id: 'mindfulness',
-      url: 'https://nekib.helsekompetanse.no/wp-content/uploads/2022/08/Oppmerksomhetstrening.mp3',
+      url: 'https://www.bekkenbunnsportalen.no/wp-content/uploads/2022/08/Oppmerksomhetstrening.mp3',
       title: data.audio.mindfulness.title,
       description: data.audio.mindfulness.description
     },
     {
       id: 'sleep',
-      url: 'https://nekib.helsekompetanse.no/wp-content/uploads/2022/08/Sovn.mp3',
+      url: 'https://www.bekkenbunnsportalen.no/wp-content/uploads/2022/08/Sovn.mp3',
       title: data.audio.sleep.title,
       description: data.audio.sleep.description
     }

@@ -169,7 +169,7 @@ const Hero: React.FC = () => {
               <li>Constipation workup</li>
               <li>Pelvic pain workup</li>
               <li>
-                <a href="https://nekib.helsekompetanse.no/wp-content/uploads/2023/02/AI-retningslinjer-2019-pdf.pdf" target="_blank" rel="noopener noreferrer">
+                <a href="https://www.bekkenbunnsportalen.no/wp-content/uploads/2023/02/AI-retningslinjer-2019-pdf.pdf" target="_blank" rel="noopener noreferrer">
                   Anorectal disorders – national guideline (PDF)
                 </a>
               </li>
@@ -199,7 +199,7 @@ const Hero: React.FC = () => {
         <div className={styles.contentContainer}>
           <ul>
             <li>
-              <a href="https://nekib.helsekompetanse.no/wp-content/uploads/2023/02/AI-retningslinjer-2019-pdf.pdf" target="_blank" rel="noopener noreferrer">
+              <a href="https://www.bekkenbunnsportalen.no/wp-content/uploads/2023/02/AI-retningslinjer-2019-pdf.pdf" target="_blank" rel="noopener noreferrer">
                 Anorectal disorders – national guideline (PDF)
               </a>
             </li>

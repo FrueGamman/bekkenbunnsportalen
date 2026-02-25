@@ -304,7 +304,7 @@ export const Treatment = () => {
                   <div className={styles.anatomyGrid}>
                     <div className={styles.anatomyItem}>
                       <img 
-                        src="https://nekib.helsekompetanse.no/wp-content/uploads/2021/11/bristol_skala.png" 
+                        src="https://www.bekkenbunnsportalen.no/wp-content/uploads/2021/11/bristol_skala.png" 
                         alt="Bristol Stool Scale" 
                         className={`${styles.anatomyImage} ${styles.bristolImage}`}
                       />
@@ -466,7 +466,7 @@ export const Treatment = () => {
               <div className={styles.taiProductsGrid}>
                 <div className={styles.taiProductItem}>
                   <h6 className={styles.taiProductTitle}>Navina Classic irrigasjonssystem</h6>
-                  <img src="https://nekib.helsekompetanse.no/wp-content/uploads/2021/11/Navina-Classic_bilde_wellspect.png" alt="Navina Classic irrigation system" className={styles.taiProductImage} />
+                  <img src="https://www.bekkenbunnsportalen.no/wp-content/uploads/2021/11/Navina-Classic_bilde_wellspect.png" alt="Navina Classic irrigation system" className={styles.taiProductImage} />
                   <p className={styles.taiProductCaption}>
                     <a href="http://www.wellspect.no/produkter/tarmprodukter/navina-classic/instruksjoner-og-filmer" target="_blank" rel="noopener noreferrer" className={styles.externalLink}>
                       {language === 'no' ? 'Instruksjon i Navina Classic irrigasjonssystem' : 'Instructions for Navina Classic irrigation system'}
@@ -476,7 +476,7 @@ export const Treatment = () => {
                 </div>
                 <div className={styles.taiProductItem}>
                   <h6 className={styles.taiProductTitle}>Peristeen irrigasjonssystem</h6>
-                  <img src="https://nekib.helsekompetanse.no/wp-content/uploads/2021/11/Peristeen_bilde_coloplast.jpg" alt="Peristeen irrigation system" className={styles.taiProductImage} />
+                  <img src="https://www.bekkenbunnsportalen.no/wp-content/uploads/2021/11/Peristeen_bilde_coloplast.jpg" alt="Peristeen irrigation system" className={styles.taiProductImage} />
                   <p className={styles.taiProductCaption}>
                     <a href="https://www.coloplast.no/blare-og-tarm-/bruksanvisninger/veiledninger-for-tarmirrigasjon/" target="_blank" rel="noopener noreferrer" className={styles.externalLink}>
                       {language === 'no' ? 'Instruksjon i Peristeen irrigasjonssystem' : 'Instructions for Peristeen irrigation system'}
@@ -486,7 +486,7 @@ export const Treatment = () => {
                 </div>
                 <div className={styles.taiProductItem}>
                   <h6 className={styles.taiProductTitle}>Qufora Irrisedo Ballonsystem irrigasjonssystem</h6>
-                  <img src="https://nekib.helsekompetanse.no/wp-content/uploads/2021/11/KvinTo.jpg" alt="Qufora Irrisedo Balloon system irrigation system" className={styles.taiProductImage} />
+                  <img src="https://www.bekkenbunnsportalen.no/wp-content/uploads/2021/11/KvinTo.jpg" alt="Qufora Irrisedo Balloon system irrigation system" className={styles.taiProductImage} />
                   <p className={styles.taiProductCaption}>
                     <a href="https://www.youtube.com/watch?v=kZmcg19m0So" target="_blank" rel="noopener noreferrer" className={styles.externalLink}>
                       {language === 'no' ? 'Instruksjon i Qufora Irrisedo Ballonsystem irrigasjonssystem' : 'Instructions for Qufora Irrisedo Balloon system irrigation system'}
@@ -496,7 +496,7 @@ export const Treatment = () => {
                 </div>
                 <div className={styles.taiProductItem}>
                   <h6 className={styles.taiProductTitle}>Aquaflush Irrigasjonssystemer</h6>
-                  <img src="https://nekib.helsekompetanse.no/wp-content/uploads/2024/09/Bilde-Aquaflush-Komplett-A-og-L-1-scaled-e1726039190981.jpg" alt="Aquaflush Irrigation systems" className={styles.taiProductImage} />
+                  <img src="https://www.bekkenbunnsportalen.no/wp-content/uploads/2024/09/Bilde-Aquaflush-Komplett-A-og-L-1-scaled-e1726039190981.jpg" alt="Aquaflush Irrigation systems" className={styles.taiProductImage} />
                   <p className={styles.taiProductCaption}>
                     <a href="https://www.globalhealthtechnology.no/aquaflush-analirrigasjon" target="_blank" rel="noopener noreferrer" className={styles.externalLink}>
                       {language === 'no' ? 'Instruksjon i Aquaflush Irrigasjonssystemer' : 'Instructions for Aquaflush Irrigation systems'}
@@ -536,7 +536,7 @@ export const Treatment = () => {
               <div className={styles.anatomySection}>
                 <div className={styles.anatomyGrid}>
                   <div className={styles.anatomyItem}>
-                    <img src="https://nekib.helsekompetanse.no/wp-content/uploads/2024/04/Sacral-nerve-stimulation.jpg" alt="Sacral nerve modulation illustration" className={styles.anatomyImage} />
+                    <img src="https://www.bekkenbunnsportalen.no/wp-content/uploads/2024/04/Sacral-nerve-stimulation.jpg" alt="Sacral nerve modulation illustration" className={styles.anatomyImage} />
                     <p className={styles.anatomyCaption}>{language === 'no' ? 'Illustrasjon: Sakral nervemodulering' : 'Illustration: Sacral nerve modulation'}</p>
                   </div>
                 </div>
@@ -565,7 +565,7 @@ export const Treatment = () => {
               <div className={styles.anatomySection}>
                 <div className={styles.anatomyGrid}>
                   <div className={styles.anatomyItem}>
-                    <img src="https://nekib.helsekompetanse.no/wp-content/uploads/2024/04/Indre-og-ytre-sfinkter.jpg" alt="Internal and external sphincters" className={styles.anatomyImage} />
+                    <img src="https://www.bekkenbunnsportalen.no/wp-content/uploads/2024/04/Indre-og-ytre-sfinkter.jpg" alt="Internal and external sphincters" className={styles.anatomyImage} />
                     <p className={styles.anatomyCaption}>{language === 'no' ? 'Indre og ytre sfinkter' : 'Internal and external sphincters'}</p>
                   </div>
                 </div>
@@ -583,7 +583,7 @@ export const Treatment = () => {
               <div className={styles.anatomySection}>
                 <div className={styles.anatomyGrid}>
                   <div className={styles.anatomyItem}>
-                    <img src="https://nekib.helsekompetanse.no/wp-content/uploads/2024/04/stomi.png" alt="Colostomy stoma" className={styles.anatomyImage} />
+                    <img src="https://www.bekkenbunnsportalen.no/wp-content/uploads/2024/04/stomi.png" alt="Colostomy stoma" className={styles.anatomyImage} />
                     <p className={styles.anatomyCaption}>{language === 'no' ? 'Kolostomi' : 'Colostomy'}</p>
                   </div>
                 </div>
@@ -627,7 +627,7 @@ export const Treatment = () => {
             <div className={styles.anatomySection}>
               <div className={styles.anatomyGrid}>
                 <div className={styles.anatomyItem}>
-                  <img src="https://nekib.helsekompetanse.no/wp-content/uploads/2021/11/mann-mestring-web-254x300.jpg" alt="Man coping with fecal incontinence" className={styles.anatomyImage} />
+                  <img src="https://www.bekkenbunnsportalen.no/wp-content/uploads/2021/11/mann-mestring-web-254x300.jpg" alt="Man coping with fecal incontinence" className={styles.anatomyImage} />
                 </div>
               </div>
             </div>

@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react'
-import { useLocation } from 'react-router-dom'
 import styles from './SectionAccordion.module.css'
 
 interface SectionAccordionProps {
@@ -18,12 +17,11 @@ export const SectionAccordion = ({
   id
 }: SectionAccordionProps) => {
   const [isOpen, setIsOpen] = useState(defaultOpen)
-  const { hash } = useLocation()
 
   useEffect(() => {
     // Check if URL hash matches this accordion's ID OR a sub-section of it
     if (id) {
-      const currentHash = hash.replace('#', '')
+      const currentHash = window.location.hash.replace('#', '')
       if (currentHash === id || currentHash.startsWith(`${id}-`)) {
         setIsOpen(true)
         // Scroll only if this is the exact match
@@ -34,7 +32,7 @@ export const SectionAccordion = ({
         }
       }
     }
-  }, [id, hash])
+  }, [id])
 
   const toggleAccordion = () => {
     const nextOpen = !isOpen

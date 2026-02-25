@@ -52,7 +52,7 @@ const SYMPTOMS_DATA: Record<'no' | 'en', SymptomsData> = {
         description: "En kan rammes av ulike typer urinlekkasje:",
         images: [
           {
-            src: "https://nekib.helsekompetanse.no/wp-content/uploads/2021/11/toverud_ul_symptomer.png",
+            src: "https://www.bekkenbunnsportalen.no/wp-content/uploads/2021/11/toverud_ul_symptomer.png",
             alt: "Tverrsnitt av urinrør",
             caption: "Illustrasjon til venstre: urininkontinens ved overaktiv blære. Illustrasjon til høyre: stressinkontinens."
           }
@@ -114,7 +114,7 @@ const SYMPTOMS_DATA: Record<'no' | 'en', SymptomsData> = {
         description: "One can be affected by different types of urinary incontinence:",
         images: [
           {
-            src: "https://nekib.helsekompetanse.no/wp-content/uploads/2021/11/toverud_ul_symptomer.png",
+            src: "https://www.bekkenbunnsportalen.no/wp-content/uploads/2021/11/toverud_ul_symptomer.png",
             alt: "Cross-section of urethra",
             caption: "Left illustration: urinary incontinence with overactive bladder. Right illustration: stress incontinence."
           }

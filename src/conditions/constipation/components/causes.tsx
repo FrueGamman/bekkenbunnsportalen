@@ -88,7 +88,7 @@ export const Causes = () => {
             <div className={styles.anatomySection}>
               <div className={styles.anatomyImageContainer}>
                 <img 
-                  src="https://nekib.helsekompetanse.no/wp-content/uploads/2021/11/COLOURBOX12002837_0.jpg" 
+                  src="https://www.bekkenbunnsportalen.no/wp-content/uploads/2021/11/COLOURBOX12002837_0.jpg" 
                   alt={data.imageAlt}
                   className={styles.anatomyImage}
                 />

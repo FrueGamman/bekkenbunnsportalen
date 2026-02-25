@@ -9,7 +9,7 @@
   "conditions": [
     {
       "condition_id": "urinary-incontinence",
-      "base_url": "https://nekib.helsekompetanse.no/urinlekkasje/",
+      "base_url": "https://www.bekkenbunnsportalen.no/urinlekkasje/",
       "subpages_found": 6,
       "subpages_analyzed": 7,
       "subpages_with_content": 5,
@@ -69,7 +69,7 @@
       ],
       "available_subpages": [
         {
-          "url": "https://nekib.helsekompetanse.no/urinlekkasje/normalfunksjon/",
+          "url": "https://www.bekkenbunnsportalen.no/urinlekkasje/normalfunksjon/",
           "title": "Normalfunksjon – Bekkenbunnsportalen",
           "content_length": 2437,
           "headings": [
@@ -88,7 +88,7 @@
           ]
         },
         {
-          "url": "https://nekib.helsekompetanse.no/urinlekkasje/symptomer/",
+          "url": "https://www.bekkenbunnsportalen.no/urinlekkasje/symptomer/",
           "title": "Symptomer – Bekkenbunnsportalen",
           "content_length": 1900,
           "headings": [
@@ -103,26 +103,26 @@
           ]
         },
         {
-          "url": "https://nekib.helsekompetanse.no/urinlekkasje/utredning/",
+          "url": "https://www.bekkenbunnsportalen.no/urinlekkasje/utredning/",
           "title": "Utredning – Bekkenbunnsportalen",
           "content_length": 587,
           "headings": []
         },
         {
-          "url": "https://nekib.helsekompetanse.no/urinlekkasje/behandling/",
+          "url": "https://www.bekkenbunnsportalen.no/urinlekkasje/behandling/",
           "title": "Behandling – Bekkenbunnsportalen",
           "content_length": 744,
           "headings": []
         },
         {
-          "url": "https://nekib.helsekompetanse.no/urinlekkasje/ressurser/",
+          "url": "https://www.bekkenbunnsportalen.no/urinlekkasje/ressurser/",
           "title": "Ressurser – Bekkenbunnsportalen",
           "content_length": 1929,
           "headings": []
         }
       ],
       "missing_subpages": [
-        "https://nekib.helsekompetanse.no/urinlekkasje/ovelser/"
+        "https://www.bekkenbunnsportalen.no/urinlekkasje/ovelser/"
       ],
       "content_gap_analysis": {
         "has_sufficient_local_components": true,
@@ -136,7 +136,7 @@
     },
     {
       "condition_id": "fecal-incontinence",
-      "base_url": "https://nekib.helsekompetanse.no/avforingslekkasje/",
+      "base_url": "https://www.bekkenbunnsportalen.no/avforingslekkasje/",
       "subpages_found": 6,
       "subpages_analyzed": 7,
       "subpages_with_content": 6,
@@ -196,7 +196,7 @@
       ],
       "available_subpages": [
         {
-          "url": "https://nekib.helsekompetanse.no/avforingslekkasje/normalfunksjon/",
+          "url": "https://www.bekkenbunnsportalen.no/avforingslekkasje/normalfunksjon/",
           "title": "Normalfunksjon – Bekkenbunnsportalen",
           "content_length": 3313,
           "headings": [
@@ -215,7 +215,7 @@
           ]
         },
         {
-          "url": "https://nekib.helsekompetanse.no/avforingslekkasje/symptomer/",
+          "url": "https://www.bekkenbunnsportalen.no/avforingslekkasje/symptomer/",
           "title": "Symptomer – Bekkenbunnsportalen",
           "content_length": 1298,
           "headings": [
@@ -226,32 +226,32 @@
           ]
         },
         {
-          "url": "https://nekib.helsekompetanse.no/avforingslekkasje/arsaker/",
+          "url": "https://www.bekkenbunnsportalen.no/avforingslekkasje/arsaker/",
           "title": "Årsaker – Bekkenbunnsportalen",
           "content_length": 1067,
           "headings": []
         },
         {
-          "url": "https://nekib.helsekompetanse.no/avforingslekkasje/utredning/",
+          "url": "https://www.bekkenbunnsportalen.no/avforingslekkasje/utredning/",
           "title": "Utredning – Bekkenbunnsportalen",
           "content_length": 1220,
           "headings": []
         },
         {
-          "url": "https://nekib.helsekompetanse.no/avforingslekkasje/behandling/",
+          "url": "https://www.bekkenbunnsportalen.no/avforingslekkasje/behandling/",
           "title": "Behandling – Bekkenbunnsportalen",
           "content_length": 863,
           "headings": []
         },
         {
-          "url": "https://nekib.helsekompetanse.no/avforingslekkasje/ressurser/",
+          "url": "https://www.bekkenbunnsportalen.no/avforingslekkasje/ressurser/",
           "title": "Ressurser – Bekkenbunnsportalen",
           "content_length": 2585,
           "headings": []
         }
       ],
       "missing_subpages": [
-        "https://nekib.helsekompetanse.no/avforingslekkasje/ovelser/"
+        "https://www.bekkenbunnsportalen.no/avforingslekkasje/ovelser/"
       ],
       "content_gap_analysis": {
         "has_sufficient_local_components": true,
@@ -265,7 +265,7 @@
     },
     {
       "condition_id": "constipation",
-      "base_url": "https://nekib.helsekompetanse.no/tommingsproblemer-og-forstoppelse-for-avforing/",
+      "base_url": "https://www.bekkenbunnsportalen.no/tommingsproblemer-og-forstoppelse-for-avforing/",
       "subpages_found": 6,
       "subpages_analyzed": 7,
       "subpages_with_content": 5,
@@ -325,7 +325,7 @@
       ],
       "available_subpages": [
         {
-          "url": "https://nekib.helsekompetanse.no/tommingsproblemer-og-forstoppelse-for-avforing/normalfunksjon/",
+          "url": "https://www.bekkenbunnsportalen.no/tommingsproblemer-og-forstoppelse-for-avforing/normalfunksjon/",
           "title": "Normalfunksjon – Bekkenbunnsportalen",
           "content_length": 2437,
           "headings": [
@@ -344,7 +344,7 @@
           ]
         },
         {
-          "url": "https://nekib.helsekompetanse.no/tommingsproblemer-og-forstoppelse-for-avforing/symptomer/",
+          "url": "https://www.bekkenbunnsportalen.no/tommingsproblemer-og-forstoppelse-for-avforing/symptomer/",
           "title": "Symptomer – Bekkenbunnsportalen",
           "content_length": 1298,
           "headings": [
@@ -355,13 +355,13 @@
           ]
         },
         {
-          "url": "https://nekib.helsekompetanse.no/tommingsproblemer-og-forstoppelse-for-avforing/arsaker/",
+          "url": "https://www.bekkenbunnsportalen.no/tommingsproblemer-og-forstoppelse-for-avforing/arsaker/",
           "title": "Årsaker – Bekkenbunnsportalen",
           "content_length": 944,
           "headings": []
         },
         {
-          "url": "https://nekib.helsekompetanse.no/tommingsproblemer-og-forstoppelse-for-avforing/utredning/",
+          "url": "https://www.bekkenbunnsportalen.no/tommingsproblemer-og-forstoppelse-for-avforing/utredning/",
           "title": "Utredning – Bekkenbunnsportalen",
           "content_length": 897,
           "headings": [
@@ -372,14 +372,14 @@
           ]
         },
         {
-          "url": "https://nekib.helsekompetanse.no/tommingsproblemer-og-forstoppelse-for-avforing/ressurser/",
+          "url": "https://www.bekkenbunnsportalen.no/tommingsproblemer-og-forstoppelse-for-avforing/ressurser/",
           "title": "Ressurser – Bekkenbunnsportalen",
           "content_length": 1734,
           "headings": []
         }
       ],
       "missing_subpages": [
-        "https://nekib.helsekompetanse.no/tommingsproblemer-og-forstoppelse-for-avforing/ovelser/"
+        "https://www.bekkenbunnsportalen.no/tommingsproblemer-og-forstoppelse-for-avforing/ovelser/"
       ],
       "content_gap_analysis": {
         "has_sufficient_local_components": true,
@@ -393,7 +393,7 @@
     },
     {
       "condition_id": "pelvic-pain",
-      "base_url": "https://nekib.helsekompetanse.no/langvarige-underlivssmerter/",
+      "base_url": "https://www.bekkenbunnsportalen.no/langvarige-underlivssmerter/",
       "subpages_found": 6,
       "subpages_analyzed": 7,
       "subpages_with_content": 7,
@@ -463,7 +463,7 @@
       ],
       "available_subpages": [
         {
-          "url": "https://nekib.helsekompetanse.no/langvarige-underlivssmerter/normalfunksjon/",
+          "url": "https://www.bekkenbunnsportalen.no/langvarige-underlivssmerter/normalfunksjon/",
           "title": "Normalfunksjon – Bekkenbunnsportalen",
           "content_length": 2437,
           "headings": [
@@ -482,7 +482,7 @@
           ]
         },
         {
-          "url": "https://nekib.helsekompetanse.no/langvarige-underlivssmerter/symptomer/",
+          "url": "https://www.bekkenbunnsportalen.no/langvarige-underlivssmerter/symptomer/",
           "title": "Symptomer – Bekkenbunnsportalen",
           "content_length": 5201,
           "headings": [
@@ -501,7 +501,7 @@
           ]
         },
         {
-          "url": "https://nekib.helsekompetanse.no/langvarige-underlivssmerter/arsaker/",
+          "url": "https://www.bekkenbunnsportalen.no/langvarige-underlivssmerter/arsaker/",
           "title": "Årsaker – Bekkenbunnsportalen",
           "content_length": 2301,
           "headings": [
@@ -520,7 +520,7 @@
           ]
         },
         {
-          "url": "https://nekib.helsekompetanse.no/langvarige-underlivssmerter/utredning/",
+          "url": "https://www.bekkenbunnsportalen.no/langvarige-underlivssmerter/utredning/",
           "title": "Utredning – Bekkenbunnsportalen",
           "content_length": 3612,
           "headings": [
@@ -535,7 +535,7 @@
           ]
         },
         {
-          "url": "https://nekib.helsekompetanse.no/langvarige-underlivssmerter/behandling/",
+          "url": "https://www.bekkenbunnsportalen.no/langvarige-underlivssmerter/behandling/",
           "title": "Behandling – Bekkenbunnsportalen",
           "content_length": 4248,
           "headings": [
@@ -554,14 +554,14 @@
           ]
         },
         {
-          "url": "https://nekib.helsekompetanse.no/langvarige-underlivssmerter/ressurser/",
+          "url": "https://www.bekkenbunnsportalen.no/langvarige-underlivssmerter/ressurser/",
           "title": "Ressurser – Bekkenbunnsportalen",
           "content_length": 1250,
           "headings": []
         }
       ],
       "missing_subpages": [
-        "https://nekib.helsekompetanse.no/langvarige-underlivssmerter/ovelser/"
+        "https://www.bekkenbunnsportalen.no/langvarige-underlivssmerter/ovelser/"
       ],
       "content_gap_analysis": {
         "has_sufficient_local_components": true,
@@ -576,7 +576,7 @@
     },
     {
       "condition_id": "pregnancy",
-      "base_url": "https://nekib.helsekompetanse.no/plager-under-graviditet-og-etter-fodsel/",
+      "base_url": "https://www.bekkenbunnsportalen.no/conditions/pregnancy?section=overview",
       "subpages_found": 5,
       "subpages_analyzed": 6,
       "subpages_with_content": 6,
@@ -636,7 +636,7 @@
       ],
       "available_subpages": [
         {
-          "url": "https://nekib.helsekompetanse.no/plager-under-graviditet-og-etter-fodsel/vanlige-plager/",
+          "url": "https://www.bekkenbunnsportalen.no/conditions/pregnancy?section=overviewvanlige-plager/",
           "title": "Vanlige plager – Bekkenbunnsportalen",
           "content_length": 10169,
           "headings": [
@@ -655,13 +655,13 @@
           ]
         },
         {
-          "url": "https://nekib.helsekompetanse.no/plager-under-graviditet-og-etter-fodsel/laerebok/",
+          "url": "https://www.bekkenbunnsportalen.no/conditions/pregnancy?section=overviewlaerebok/",
           "title": "Lærebok – Bekkenbunnsportalen",
           "content_length": 907,
           "headings": []
         },
         {
-          "url": "https://nekib.helsekompetanse.no/plager-under-graviditet-og-etter-fodsel/laerebok/bekkenbunnen/",
+          "url": "https://www.bekkenbunnsportalen.no/conditions/pregnancy?section=overviewlaerebok/bekkenbunnen/",
           "title": "Bekkenbunnen – Bekkenbunnsportalen",
           "content_length": 7703,
           "headings": [
@@ -680,7 +680,7 @@
           ]
         },
         {
-          "url": "https://nekib.helsekompetanse.no/plager-under-graviditet-og-etter-fodsel/laerebok/sok-hjelp/",
+          "url": "https://www.bekkenbunnsportalen.no/conditions/pregnancy?section=overviewlaerebok/sok-hjelp/",
           "title": "Søk hjelp – Bekkenbunnsportalen",
           "content_length": 1753,
           "headings": [
@@ -699,14 +699,14 @@
           ]
         },
         {
-          "url": "https://nekib.helsekompetanse.no/plager-under-graviditet-og-etter-fodsel/ressurser/",
+          "url": "https://www.bekkenbunnsportalen.no/conditions/pregnancy?section=overviewressurser/",
           "title": "Ressurser – Bekkenbunnsportalen",
           "content_length": 1929,
           "headings": []
         }
       ],
       "missing_subpages": [
-        "https://nekib.helsekompetanse.no/plager-under-graviditet-og-etter-fodsel/ovelser/"
+        "https://www.bekkenbunnsportalen.no/conditions/pregnancy?section=overviewovelser/"
       ],
       "content_gap_analysis": {
         "has_sufficient_local_components": true,

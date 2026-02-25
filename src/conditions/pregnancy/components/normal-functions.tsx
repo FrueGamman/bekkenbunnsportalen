@@ -595,7 +595,7 @@ export const NormalFunctions = () => {
       "Læreboken inneholder utfyllende og samlet informasjon."
     ],
     image: {
-      src: "https://nekib.helsekompetanse.no/wp-content/uploads/2021/11/topp2-1024x514.jpg",
+      src: "https://www.bekkenbunnsportalen.no/wp-content/uploads/2021/11/topp2-1024x514.jpg",
       alt: "Bekkenbunnens anatomi under graviditet",
       caption: "Oversikt over bekkenbunnens funksjon"
     }
@@ -608,7 +608,7 @@ export const NormalFunctions = () => {
       "The textbook contains comprehensive and collected information."
     ],
     image: {
-      src: "https://nekib.helsekompetanse.no/wp-content/uploads/2021/11/topp2-1024x514.jpg",
+      src: "https://www.bekkenbunnsportalen.no/wp-content/uploads/2021/11/topp2-1024x514.jpg",
       alt: "Pelvic floor anatomy during pregnancy",
       caption: "Overview of pelvic floor function"
     }

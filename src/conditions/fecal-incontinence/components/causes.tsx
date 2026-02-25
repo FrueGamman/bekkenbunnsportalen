@@ -56,7 +56,7 @@ const CAUSES_DATA: Record<"no" | "en", CausesContent> = {
         },
         hasSideBySide: true,
         sideBySideImage: {
-          src: "https://nekib.helsekompetanse.no/wp-content/uploads/2021/11/morogbarn-web-600x399.jpg",
+          src: "https://www.bekkenbunnsportalen.no/wp-content/uploads/2021/11/morogbarn-web-600x399.jpg",
           alt: "Mor og barn illustrasjon",
           caption: "Illustrasjonsfoto. Avføringslekkasje er 10-20 ganger hyppigere hos kvinner enn hos menn. Årsaken er skade på lukkemuskelen som oppstår i forbindelse med fødsel."
         },

@@ -15,7 +15,7 @@ const VEILIDERI_DATA = {
         id: "anorectal-guidelines",
         title: "Faglige retningslinjer for utredning og konservativ behandling av anorektale funksjonsforstyrrelser",
         source: "NBH/Helsebiblioteket",
-        link: "https://nekib.helsekompetanse.no/wp-content/uploads/2023/02/AI-retningslinjer-2019-pdf.pdf",
+        link: "https://www.bekkenbunnsportalen.no/wp-content/uploads/2023/02/AI-retningslinjer-2019-pdf.pdf",
       },
       {
         id: "bladder-bowel-training",
@@ -88,7 +88,7 @@ const VEILIDERI_DATA = {
         id: "anorectal-guidelines",
         title: "Professional guidelines for assessment and conservative treatment of anorectal functional disorders",
         source: "NBH/Helsebiblioteket",
-        link: "https://nekib.helsekompetanse.no/wp-content/uploads/2023/02/AI-retningslinjer-2019-pdf.pdf",
+        link: "https://www.bekkenbunnsportalen.no/wp-content/uploads/2023/02/AI-retningslinjer-2019-pdf.pdf",
       },
       {
         id: "bladder-bowel-training",

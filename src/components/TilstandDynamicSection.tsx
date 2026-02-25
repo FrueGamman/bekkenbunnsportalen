@@ -108,31 +108,261 @@ export const TilstandDynamicSection = ({ tilstand, activeSection }: TilstandDyna
         return { textHtml: clone.innerHTML.trim(), images };
     };
 
-    // Render content (text + embedded images) with anatomy card design for images
+    // Render content using the original CSS module classes
+    // Splits HTML at h4 boundaries and renders each sub-cause using the
+    // same component structure as the original causes.tsx:
+    //   normalFunctionSection → card wrapper
+    //   normalFunctionTitle  → h4 heading with blue left bar
+    //   sideBySideContainer  → image+text side-by-side for certain causes
+    //   resourceLink         → pill-style link buttons
+    //   enhancedParagraph    → text paragraphs
     const renderContentWithImageCards = (html: string) => {
-        const { textHtml, images } = parseContentAndImages(html);
+        const doc = new DOMParser().parseFromString(`<div>${html}</div>`, 'text/html');
+        const root = doc.body.firstChild as HTMLElement;
+
+        // Split content at h4/h3 boundaries into separate sections
+        type CardSection = {
+            headingText: string;
+            headingTag: string;
+            paragraphs: string[];
+            links: { text: string; url: string }[];
+            images: { src: string; alt: string; caption: string }[];
+        };
+
+        const introElements: string[] = [];
+        const cards: CardSection[] = [];
+        let currentCard: CardSection | null = null;
+
+        Array.from(root.childNodes).forEach((node) => {
+            const el = node as HTMLElement;
+            const isHeading = el.nodeType === 1 && (el.tagName === 'H4' || el.tagName === 'H3');
+
+            if (isHeading) {
+                if (currentCard) cards.push(currentCard);
+                currentCard = {
+                    headingText: el.textContent?.trim() || '',
+                    headingTag: el.tagName.toLowerCase(),
+                    paragraphs: [],
+                    links: [],
+                    images: []
+                };
+            } else if (currentCard) {
+                // Check if this node is purely an image element
+                const isPureImg = el.nodeType === 1 && (
+                    el.tagName === 'IMG' ||
+                    (el.tagName === 'FIGURE' && !el.querySelector('p'))
+                );
+                // Check if this node is a container that has an image mixed with text
+                const isMixedContainer = el.nodeType === 1 && !isPureImg &&
+                    el.querySelector && el.querySelector('img');
+
+                if (isPureImg) {
+                    const img = el.tagName === 'IMG' ? el : (el.querySelector('img') as HTMLImageElement);
+                    if (img) {
+                        const src = img.getAttribute('src') || '';
+                        const alt = img.getAttribute('alt') || '';
+                        let caption = '';
+                        const figure = el.tagName === 'FIGURE' ? el : img.closest('figure');
+                        if (figure) {
+                            const fc = figure.querySelector('figcaption');
+                            caption = fc?.textContent?.trim() || '';
+                        }
+                        if (!caption) caption = alt;
+                        currentCard.images.push({ src, alt, caption });
+                    }
+                } else if (isMixedContainer) {
+                    // Container has both text and images — extract both
+                    // Extract images
+                    el.querySelectorAll('img').forEach((img: HTMLImageElement) => {
+                        const src = img.getAttribute('src') || '';
+                        const alt = img.getAttribute('alt') || '';
+                        let caption = '';
+                        const figure = img.closest('figure');
+                        if (figure) {
+                            const fc = figure.querySelector('figcaption');
+                            caption = fc?.textContent?.trim() || '';
+                        }
+                        if (!caption) caption = alt;
+                        currentCard!.images.push({ src, alt, caption });
+                    });
+                    // Extract text content (remove image elements first)
+                    const clone = el.cloneNode(true) as HTMLElement;
+                    clone.querySelectorAll('figure, img').forEach(el => {
+                        const parent = el.parentElement;
+                        el.remove();
+                        // Clean up empty parent divs
+                        if (parent && !parent.textContent?.trim() && parent !== clone) {
+                            parent.remove();
+                        }
+                    });
+                    // Extract remaining text paragraphs
+                    const remainingText = clone.textContent?.trim();
+                    if (remainingText) {
+                        // Check for links
+                        const anchors = clone.querySelectorAll('a');
+                        if (anchors.length > 0) {
+                            anchors.forEach((a) => {
+                                currentCard!.links.push({
+                                    text: a.textContent?.trim() || '',
+                                    url: a.getAttribute('href') || '#'
+                                });
+                            });
+                        }
+                        currentCard.paragraphs.push(clone.innerHTML.trim());
+                    }
+                } else if (el.nodeType === 1) {
+                    // Extract links from paragraphs
+                    const anchors = el.querySelectorAll('a');
+                    if (anchors.length > 0) {
+                        const textWithoutLinks = el.textContent?.trim() || '';
+                        anchors.forEach((a) => {
+                            currentCard!.links.push({
+                                text: a.textContent?.trim() || '',
+                                url: a.getAttribute('href') || '#'
+                            });
+                        });
+                        if (anchors.length > 0 && textWithoutLinks !== anchors[0].textContent?.trim()) {
+                            currentCard.paragraphs.push(el.innerHTML);
+                        }
+                    } else {
+                        const text = el.textContent?.trim();
+                        if (text) {
+                            currentCard.paragraphs.push(el.innerHTML || text);
+                        }
+                    }
+                }
+            } else {
+                // Before any h4 — intro text
+                if (el.nodeType === 1) {
+                    const text = el.textContent?.trim();
+                    if (text) introElements.push(el.outerHTML);
+                }
+            }
+        });
+
+        if (currentCard) cards.push(currentCard);
+
+        // If there are no h4 cards, render as a simple block
+        if (cards.length === 0) {
+            const { textHtml, images } = parseContentAndImages(html);
+            return (
+                <>
+                    {textHtml && (
+                        <p
+                            className={styles.enhancedParagraph}
+                            dangerouslySetInnerHTML={{ __html: textHtml }}
+                        />
+                    )}
+                    {images.length > 0 && (
+                        <div className={styles.anatomySection}>
+                            <div className={styles.anatomyGrid}>
+                                {images.map((img, i) => (
+                                    <div key={i} className={styles.anatomyItem2}>
+                                        <img src={img.src} alt={img.alt} className={styles.anatomyImage} />
+                                        {img.caption && (
+                                            <p className={styles.anatomyCaption}>{img.caption}</p>
+                                        )}
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    )}
+                </>
+            );
+        }
+
+        // Render using original CSS module classes
         return (
             <>
-                {textHtml && (
-                    <div
-                        className={styles.enhancedParagraph}
-                        dangerouslySetInnerHTML={{ __html: textHtml }}
-                    />
-                )}
-                {images.length > 0 && (
-                    <div className={styles.anatomySection}>
-                        <div className={styles.anatomyGrid}>
-                            {images.map((img, i) => (
-                                <div key={i} className={styles.anatomyItem2}>
-                                    <img src={img.src} alt={img.alt} className={styles.anatomyImage} />
-                                    {img.caption && (
-                                        <p className={styles.anatomyCaption}>{img.caption}</p>
+                {/* Intro text before first h4 */}
+                {introElements.map((html, i) => (
+                    <p key={`intro-${i}`} className={styles.enhancedParagraph}
+                        dangerouslySetInnerHTML={{ __html: html }} />
+                ))}
+
+                {/* Each sub-cause in its own card */}
+                {cards.map((card, i) => (
+                    <div key={i} className={styles.normalFunctionSection}>
+                        <h4 className={styles.normalFunctionTitle}>{card.headingText}</h4>
+
+                        {/* Side-by-side layout for causes with images */}
+                        {card.images.length > 0 ? (
+                            <div className={styles.sideBySideContainer}>
+                                <div className={styles.sideBySideText}>
+                                    {card.paragraphs.map((p, j) => (
+                                        <p key={j} className={styles.enhancedParagraph}
+                                            dangerouslySetInnerHTML={{ __html: p }} />
+                                    ))}
+                                    {card.links.length > 0 && card.links.length <= 1 && (
+                                        <p className={styles.enhancedParagraph}>
+                                            {card.links.map((link, j) => (
+                                                <a key={j}
+                                                    href={link.url}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    className={styles.resourceLink}
+                                                >
+                                                    {link.text}
+                                                </a>
+                                            ))}
+                                        </p>
                                     )}
                                 </div>
-                            ))}
-                        </div>
+                                <div className={styles.sideBySideImage}>
+                                    {card.images.map((img, j) => (
+                                        <div key={j}>
+                                            <img src={img.src} alt={img.alt} />
+                                            {img.caption && (
+                                                <p className={styles.sideBySideImageCaption}>{img.caption}</p>
+                                            )}
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        ) : (
+                            /* Default layout (no images) */
+                            <>
+                                {card.paragraphs.map((p, j) => (
+                                    <p key={j} className={styles.enhancedParagraph}
+                                        dangerouslySetInnerHTML={{ __html: p }} />
+                                ))}
+
+                                {/* Single link */}
+                                {card.links.length === 1 && !card.paragraphs.some(p => p.includes('<a ')) && (
+                                    <p className={styles.enhancedParagraph}>
+                                        <a
+                                            href={card.links[0].url}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className={styles.resourceLink}
+                                        >
+                                            {card.links[0].text}
+                                        </a>
+                                    </p>
+                                )}
+
+                                {/* Multiple links (e.g., Obstipasjon) */}
+                                {card.links.length > 1 && !card.paragraphs.some(p => p.includes('<a ')) && (
+                                    <p className={styles.enhancedParagraph}>
+                                        {card.links.map((link, j) => (
+                                            <span key={j}>
+                                                <a
+                                                    href={link.url}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    className={styles.resourceLink}
+                                                >
+                                                    {link.text}
+                                                </a>
+                                                {j < card.links.length - 1 && ' og '}
+                                            </span>
+                                        ))}
+                                    </p>
+                                )}
+                            </>
+                        )}
                     </div>
-                )}
+                ))}
             </>
         );
     };
@@ -167,7 +397,7 @@ export const TilstandDynamicSection = ({ tilstand, activeSection }: TilstandDyna
         return (
             <div style={{ marginTop: '1rem' }}>
                 {item.lenker.map((link, i) => (
-                        <p key={i} className={styles.enhancedParagraph}>
+                    <p key={i} className={styles.enhancedParagraph}>
                         <a
                             href={link.url}
                             target={link.url.startsWith('http') ? '_blank' : undefined}

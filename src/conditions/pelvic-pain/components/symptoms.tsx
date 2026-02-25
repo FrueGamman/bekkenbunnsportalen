@@ -237,7 +237,7 @@ export const Symptoms = () => {
       ", en oversettelse gjort av Universitetssykehuset Nord Norge."
     ],
     image: {
-      src: "https://nekib.helsekompetanse.no/wp-content/uploads/2021/11/montasje_smerter_hd-1024x273.jpg",
+      src: "https://www.bekkenbunnsportalen.no/wp-content/uploads/2021/11/montasje_smerter_hd-1024x273.jpg",
       alt: "Symptomer ved langvarige underlivssmerter",
       caption: "Forstå og gjenkjenn symptomer for bedre håndtering"
     }

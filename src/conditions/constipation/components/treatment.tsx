@@ -107,10 +107,10 @@ const treatmentData = {
           ],
           hasImages: true,
           images: [
-            { src: "https://nekib.helsekompetanse.no/wp-content/uploads/2021/11/Navina-Classic_bilde_wellspect.png", alt: "Navina Classic irrigasjonssystem", caption: "Navina Classic irrigasjonssystem (Wellspect)" },
-            { src: "https://nekib.helsekompetanse.no/wp-content/uploads/2021/11/Peristeen_bilde_coloplast.jpg", alt: "Peristeen irrigasjonssystem", caption: "Peristeen irrigasjonssystem (Coloplast)" },
-            { src: "https://nekib.helsekompetanse.no/wp-content/uploads/2021/11/KvinTo.jpg", alt: "Qufora Irrisedo Ballonsystem irrigasjonssystem", caption: "Qufora Irrisedo Ballonsystem irrigasjonssystem (KvinTo AS)" },
-            { src: "https://nekib.helsekompetanse.no/wp-content/uploads/2024/09/Bilde-Aquaflush-Komplett-A-og-L-1-scaled-e1726039190981-2048x1778.jpg", alt: "Aquaflush Irrigasjonssystemer", caption: "Aquaflush Irrigasjonssystemer (Global Health Technology)" }
+            { src: "https://www.bekkenbunnsportalen.no/wp-content/uploads/2021/11/Navina-Classic_bilde_wellspect.png", alt: "Navina Classic irrigasjonssystem", caption: "Navina Classic irrigasjonssystem (Wellspect)" },
+            { src: "https://www.bekkenbunnsportalen.no/wp-content/uploads/2021/11/Peristeen_bilde_coloplast.jpg", alt: "Peristeen irrigasjonssystem", caption: "Peristeen irrigasjonssystem (Coloplast)" },
+            { src: "https://www.bekkenbunnsportalen.no/wp-content/uploads/2021/11/KvinTo.jpg", alt: "Qufora Irrisedo Ballonsystem irrigasjonssystem", caption: "Qufora Irrisedo Ballonsystem irrigasjonssystem (KvinTo AS)" },
+            { src: "https://www.bekkenbunnsportalen.no/wp-content/uploads/2024/09/Bilde-Aquaflush-Komplett-A-og-L-1-scaled-e1726039190981-2048x1778.jpg", alt: "Aquaflush Irrigasjonssystemer", caption: "Aquaflush Irrigasjonssystemer (Global Health Technology)" }
           ]
         }
       ],
@@ -336,10 +336,10 @@ const treatmentData = {
           ],
           hasImages: true,
           images: [
-            { src: "https://nekib.helsekompetanse.no/wp-content/uploads/2021/11/Navina-Classic_bilde_wellspect.png", alt: "Navina Classic irrigation system", caption: "Navina Classic irrigation system (Wellspect)" },
-            { src: "https://nekib.helsekompetanse.no/wp-content/uploads/2021/11/Peristeen_bilde_coloplast.jpg", alt: "Peristeen irrigation system", caption: "Peristeen irrigation system (Coloplast)" },
-            { src: "https://nekib.helsekompetanse.no/wp-content/uploads/2021/11/KvinTo.jpg", alt: "Qufora Irrisedo Balloon system irrigation system", caption: "Qufora Irrisedo Balloon system (KvinTo AS)" },
-            { src: "https://nekib.helsekompetanse.no/wp-content/uploads/2024/09/Bilde-Aquaflush-Komplett-A-og-L-1-scaled-e1726039190981-2048x1778.jpg", alt: "Aquaflush Irrigation Systems", caption: "Aquaflush Irrigation Systems (Global Health Technology)" }
+            { src: "https://www.bekkenbunnsportalen.no/wp-content/uploads/2021/11/Navina-Classic_bilde_wellspect.png", alt: "Navina Classic irrigation system", caption: "Navina Classic irrigation system (Wellspect)" },
+            { src: "https://www.bekkenbunnsportalen.no/wp-content/uploads/2021/11/Peristeen_bilde_coloplast.jpg", alt: "Peristeen irrigation system", caption: "Peristeen irrigation system (Coloplast)" },
+            { src: "https://www.bekkenbunnsportalen.no/wp-content/uploads/2021/11/KvinTo.jpg", alt: "Qufora Irrisedo Balloon system irrigation system", caption: "Qufora Irrisedo Balloon system (KvinTo AS)" },
+            { src: "https://www.bekkenbunnsportalen.no/wp-content/uploads/2024/09/Bilde-Aquaflush-Komplett-A-og-L-1-scaled-e1726039190981-2048x1778.jpg", alt: "Aquaflush Irrigation Systems", caption: "Aquaflush Irrigation Systems (Global Health Technology)" }
           ]
         }
       ]

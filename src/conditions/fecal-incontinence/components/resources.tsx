@@ -71,7 +71,7 @@ const RESOURCES_DATA = {
         resources: [
           { 
             name: "Faglige retningslinjer for utredning og konservativ behandling av anorektale funksjonsforstyrrelser (NBH)", 
-            url: "https://nekib.helsekompetanse.no/wp-content/uploads/2023/02/AI-retningslinjer-2019-pdf.pdf", 
+            url: "https://www.bekkenbunnsportalen.no/wp-content/uploads/2023/02/AI-retningslinjer-2019-pdf.pdf", 
             type: "Gå til veileder" 
           }
         ]
@@ -81,7 +81,7 @@ const RESOURCES_DATA = {
         resources: [
           { 
             name: "Pasientinformasjon fra UNN - Tiltak som kan hjelpe ved lekkasje, forstoppelse og tømmingsproblemer for avføring", 
-            url: "https://nekib.helsekompetanse.no/wp-content/uploads/2023/02/Pasientinformasjon-KIPS-Tiltak-som-kan-hjelpe-ved-lekkasje-forstoppelse-og-tommingsproblemer-for-avforing.pdf", 
+            url: "https://www.bekkenbunnsportalen.no/wp-content/uploads/2023/02/Pasientinformasjon-KIPS-Tiltak-som-kan-hjelpe-ved-lekkasje-forstoppelse-og-tommingsproblemer-for-avforing.pdf", 
             type: "Pasientinformasjon" 
           }
         ]
@@ -91,7 +91,7 @@ const RESOURCES_DATA = {
         resources: [
           { 
             name: "Informasjonsbrosjyre om sakral nervemodulering - Interstim-behandling for problemer med tarmkontroll, en pasientveiledning. Medtronic", 
-            url: "https://nekib.helsekompetanse.no/wp-content/uploads/2023/02/UC201808131NO_Interstim_Patient_Brochure_Bowel_Rebrand_A5_Pres.pdf", 
+            url: "https://www.bekkenbunnsportalen.no/wp-content/uploads/2023/02/UC201808131NO_Interstim_Patient_Brochure_Bowel_Rebrand_A5_Pres.pdf", 
             type: "Brosjyre" 
           }
         ]
@@ -223,7 +223,7 @@ const RESOURCES_DATA = {
         resources: [
           { 
             name: "Clinical Guidelines for Assessment and Conservative Treatment of Anorectal Functional Disorders (NBH)", 
-            url: "https://nekib.helsekompetanse.no/wp-content/uploads/2023/02/AI-retningslinjer-2019-pdf.pdf", 
+            url: "https://www.bekkenbunnsportalen.no/wp-content/uploads/2023/02/AI-retningslinjer-2019-pdf.pdf", 
             type: "Go to Guidelines" 
           }
         ]
@@ -233,7 +233,7 @@ const RESOURCES_DATA = {
         resources: [
           { 
             name: "Patient Information from UNN - Measures that can help with leakage, constipation and emptying problems for bowel movements", 
-            url: "https://nekib.helsekompetanse.no/wp-content/uploads/2023/02/Pasientinformasjon-KIPS-Tiltak-som-kan-hjelpe-ved-lekkasje-forstoppelse-og-tommingsproblemer-for-avforing.pdf", 
+            url: "https://www.bekkenbunnsportalen.no/wp-content/uploads/2023/02/Pasientinformasjon-KIPS-Tiltak-som-kan-hjelpe-ved-lekkasje-forstoppelse-og-tommingsproblemer-for-avforing.pdf", 
             type: "Patient Information" 
           }
         ]
@@ -243,7 +243,7 @@ const RESOURCES_DATA = {
         resources: [
           { 
             name: "Information Brochure about Sacral Nerve Modulation - Interstim treatment for bowel control problems, a patient guide. Medtronic", 
-            url: "https://nekib.helsekompetanse.no/wp-content/uploads/2023/02/UC201808131NO_Interstim_Patient_Brochure_Bowel_Rebrand_A5_Pres.pdf", 
+            url: "https://www.bekkenbunnsportalen.no/wp-content/uploads/2023/02/UC201808131NO_Interstim_Patient_Brochure_Bowel_Rebrand_A5_Pres.pdf", 
             type: "Brochure" 
           }
         ]

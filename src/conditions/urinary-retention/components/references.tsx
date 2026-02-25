@@ -15,7 +15,7 @@ const INTRODUCTION_DATA = {
       "Finn kilder til videre studier"
     ],
     image: {
-      src: "https://nekib.helsekompetanse.no/wp-content/uploads/2021/11/COLOURBOX12986833.jpg",
+      src: "https://www.bekkenbunnsportalen.no/wp-content/uploads/2021/11/COLOURBOX12986833.jpg",
       alt: "Referanser for urinretensjon",
       caption: "Oversikt over faglige kilder og referanser"
     }
@@ -29,7 +29,7 @@ const INTRODUCTION_DATA = {
       "Find sources for further study"
     ],
     image: {
-      src: "https://nekib.helsekompetanse.no/wp-content/uploads/2021/11/COLOURBOX12986833.jpg",
+      src: "https://www.bekkenbunnsportalen.no/wp-content/uploads/2021/11/COLOURBOX12986833.jpg",
       alt: "References for urinary retention",
       caption: "Overview of professional sources and references"
     }
