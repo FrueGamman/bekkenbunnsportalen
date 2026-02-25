@@ -8,9 +8,31 @@ interface TilstandIntroductionProps {
     tilstand: Tilstand;
 }
 
+/** Build embed URL for Vimeo or YouTube (full URL or video ID). */
+function getVideoEmbedUrl(videoId: string): string {
+    if (!videoId) return "";
+    const id = videoId.trim();
+    if (id.startsWith("http")) {
+        if (id.includes("youtube.com/embed/")) return id;
+        if (id.includes("youtube.com/watch?v=")) {
+            const match = id.match(/[?&]v=([^&]+)/);
+            return match ? `https://www.youtube.com/embed/${match[1]}` : id;
+        }
+        if (id.includes("youtu.be/")) {
+            const match = id.match(/youtu\.be\/([^?]+)/);
+            return match ? `https://www.youtube.com/embed/${match[1]}` : id;
+        }
+        return id;
+    }
+    if (id.length === 11 && /^[a-zA-Z0-9_-]+$/.test(id)) {
+        return `https://www.youtube.com/embed/${id}`;
+    }
+    return `https://player.vimeo.com/video/${id}?autopause=0&loop=0&muted=0&title=0&portrait=0&byline=0`;
+}
+
 /**
  * Renders the introduction box ABOVE the section container.
- * Contains: side_intro description, Forekomst box, and video OR image.
+ * Contains: side_intro description, Forekomst box, and video OR image (side-by-side with text).
  */
 export const TilstandIntroduction = ({ tilstand }: TilstandIntroductionProps) => {
     const { language } = useLanguage();
@@ -24,6 +46,8 @@ export const TilstandIntroduction = ({ tilstand }: TilstandIntroductionProps) =>
     const hasImage = !!tilstand.side_intro_Image;
 
     if (!hasSideIntro && !hasForekomst && !hasVideo && !hasImage) return null;
+
+    const videoEmbedUrl = hasVideo ? getVideoEmbedUrl(tilstand.funksjon_video_id!) : "";
 
     return (
         <div className={`${styles.introductionContainer} ${resolvedTheme === 'dark' ? styles.darkMode : ''}`}>
@@ -49,14 +73,12 @@ export const TilstandIntroduction = ({ tilstand }: TilstandIntroductionProps) =>
                 </div>
 
                 <div className={styles.introductionImage}>
-                    {hasVideo ? (
+                    {hasVideo && videoEmbedUrl ? (
                         <div className={styles.introVideoWrapper}>
                             <div className={styles.introVideoContainer}>
                                 <iframe
                                     className={styles.introVideoIframe}
-                                    src={tilstand.funksjon_video_id!.startsWith('http')
-                                        ? tilstand.funksjon_video_id!
-                                        : `https://player.vimeo.com/video/${tilstand.funksjon_video_id}?autopause=0&loop=0&muted=0&title=0&portrait=0&byline=0`}
+                                    src={videoEmbedUrl}
                                     title={tilstand.funksjon_video_tittel || "Video"}
                                     allow="autoplay; fullscreen; picture-in-picture"
                                     allowFullScreen

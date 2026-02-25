@@ -16,16 +16,15 @@
 }
 
 .sectionIcon {
-  width: 64px;
-  height: 64px;
+  width: 48px;
+  height: 48px;
   background: #08488a;
   border-radius: 50%;
   display: flex;
-  position: relative;
-  top: 30px;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .sectionIcon img {
@@ -641,27 +640,31 @@
 }
 
 .exerciseCard {
-  background: none;
-  border-radius: 0.75rem;
+  background: white;
+  border-radius: 1rem;
   overflow: hidden;
-  transition: all 0.3s ease;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   display: flex;
-  margin: 13px;
+  margin-bottom: 1.5rem;
+  border: 1px solid rgba(8, 72, 138, 0.1);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
 .exerciseCard:hover {
   transform: translateY(-4px);
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 12px 24px rgba(5, 56, 112, 0.12);
+  border-color: rgba(8, 72, 138, 0.2);
 }
 
 .exerciseImageContainer {
   position: relative;
-  width: 100%;
-  height: 200px;
+  width: 40%;
+  min-width: 120px;
+  overflow: hidden;
 }
 
 .exerciseImage {
-  width: 50%;
+  width: 100%;
   height: 100%;
   object-fit: cover;
 }
@@ -670,24 +673,25 @@
   position: absolute;
   top: 50%;
   left: 50%;
-  transform: translate(-180px, -24px);
+  transform: translate(-50%, -50%);
   cursor: pointer;
   transition: all 0.3s ease;
   width: 48px;
   height: 48px;
+  z-index: 2;
 }
 
 .playButton:hover {
-  /* transform: translate(0); */
   background-color: #053870;
   width: 48px;
   height: 48px;
   border-radius: 50%;
+  transform: scale(1.1);
 }
 
 .exerciseContent {
   padding: 1.5rem;
-  transform: translateX(-140px);
+  flex: 1;
 }
 
 .exerciseTitle {

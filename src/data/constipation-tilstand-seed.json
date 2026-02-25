@@ -1,0 +1,195 @@
+{
+  "slug": "constipation",
+  "navn": "Tømmingsproblemer og forstoppelse for avføring",
+  "status": "published",
+  "ikon": null,
+  "side_tittel": "Tømmingsproblemer og forstoppelse for avføring",
+  "side_tittel_en": "Constipation and bowel emptying problems",
+  "side_undertittel": "",
+  "side_undertittel_en": "",
+  "side_beskrivelse": "På disse sidene finner du informasjon om tømmingsproblemer for avføring og forstoppelse.",
+  "side_beskrivelse_en": "On these pages you will find information about bowel emptying problems and constipation.",
+  "side_intro": null,
+  "side_intro_en": null,
+  "funksjon_tittel": "Funksjon",
+  "funksjon_tittel_en": "Normal Functions",
+  "funksjon_intro": "<p>På disse sidene finner du informasjon om tømmingsproblemer for avføring og forstoppelse. Her er informasjon om symptomer på, utredning og behandling av slike plager. Kanskje har du slike problemer selv, eller du kjenner noen som er rammet.</p><p>Normal tarmfunksjon innebærer regelmessig og komplett tømming av tarmen uten ubehag eller anstrengelse. Tarminnholdet beveger seg normalt gjennom fordøyelsessystemet.</p>",
+  "funksjon_intro_en": "<p>On these pages you will find information about bowel emptying problems and constipation. Here is information about symptoms, assessment and treatment of such problems. Maybe you have such problems yourself, or you know someone who is affected.</p><p>Normal bowel function involves regular and complete emptying of the bowel without discomfort or straining. Bowel contents move normally through the digestive system.</p>",
+  "funksjon_forekomst_tittel": null,
+  "funksjon_forekomst_tittel_en": null,
+  "funksjon_forekomst_innhold": null,
+  "funksjon_forekomst_innhold_en": null,
+  "funksjon_video_id": null,
+  "funksjon_video_tittel": null,
+  "funksjon_video_tittel_en": null,
+  "funksjon_trekkspill": [
+    {
+      "tittel": "Normal tarmfunksjon",
+      "tittel_en": "Normal Bowel Function",
+      "innhold": "<p>Normal tarmfunksjon innebærer regelmessig og komplett tømming av tarmen uten ubehag eller anstrengelse. Tarminnholdet beveger seg normalt gjennom fordøyelsessystemet.</p>",
+      "innhold_en": "<p>Normal bowel function involves regular and complete emptying of the bowel without discomfort or straining. Bowel contents move normally through the digestive system.</p>",
+      "bilde_posisjon": "none"
+    },
+    {
+      "tittel": "Normal frekvens",
+      "tittel_en": "Normal Frequency",
+      "innhold": "<p>Normal avføringsfrekvens varierer fra person til person, men ligger vanligvis mellom tre ganger daglig til tre ganger ukentlig.</p>",
+      "innhold_en": "<p>Normal bowel frequency varies from person to person, but usually ranges from three times daily to three times weekly.</p>",
+      "bilde_posisjon": "none"
+    },
+    {
+      "tittel": "Normal tømming",
+      "tittel_en": "Normal Evacuation",
+      "innhold": "<p>En normal tarmtømming skal føles komplett, uten behov for pressing eller manuell hjelp. Avføringen skal være lett å passere.</p>",
+      "innhold_en": "<p>A normal bowel movement should feel complete, without the need for straining or manual assistance. Stool should be easy to pass.</p>",
+      "bilde_posisjon": "none"
+    },
+    {
+      "tittel": "Normal konsistens",
+      "tittel_en": "Normal Consistency",
+      "innhold": "<p>Normal avføringskonsistens tilsvarer type 3-4 på Bristol-skalaen, som er formet og myk.</p>",
+      "innhold_en": "<p>Normal stool consistency corresponds to type 3-4 on the Bristol scale, which is formed and soft.</p>",
+      "bilde_posisjon": "none"
+    },
+    {
+      "tittel": "Normal peristaltikk",
+      "tittel_en": "Normal Peristalsis",
+      "innhold": "<p>Peristaltikk er tarmens rytmiske sammentrekninger som driver innholdet fremover. Normal peristaltikk sikrer jevn transport gjennom tarmen.</p>",
+      "innhold_en": "<p>Peristalsis is the bowel's rhythmic contractions that propel contents forward. Normal peristalsis ensures smooth transport through the intestine.</p>",
+      "bilde_posisjon": "none"
+    }
+  ],
+  "symptomer_tittel": "Symptomer",
+  "symptomer_tittel_en": "Symptoms",
+  "symptomer_intro": "",
+  "symptomer_intro_en": "",
+  "symptomer_sitat": "Jeg gruer meg for å gå på do borte. Jeg må ofte hjelpe til å få ut avføringen med fingrene, det har jeg aldri fortalt til noen.",
+  "symptomer_sitat_en": "I dread going to the toilet when I'm away from home. I often have to help get the stool out with my fingers, which I've never told anyone about.",
+  "symptomer_sitat_kilde": "Kvinne, 37 år",
+  "symptomer_sitat_kilde_en": "Woman, 37 years",
+  "symptomer_trekkspill": [
+    {
+      "tittel": "Hovedsymptomer",
+      "tittel_en": "Main Symptoms",
+      "innhold": "<ul><li>Følelse av ufullstendig tømming</li><li>Oppblåsthet</li><li>Luftplager</li><li>Må returnere til toalettet flere ganger</li><li>Vanskelig å tørke seg rein</li><li>Avføringslekkasje er vanlig</li></ul>",
+      "innhold_en": "<ul><li>Feeling of incomplete evacuation</li><li>Bloating</li><li>Gas problems</li><li>Must return to toilet multiple times</li><li>Difficult to clean properly</li><li>Fecal incontinence is common</li></ul>",
+      "bilde_posisjon": "none"
+    },
+    {
+      "tittel": "Tømmingsvansker vs. forstoppelse",
+      "tittel_en": "Evacuation difficulties vs. constipation",
+      "innhold": "<p>Ved tømmingsvansker er man ofte på toalettet daglig og gjerne flere ganger daglig i motsetning til forstoppelse. Ved problemer med langsom peristaltikk i tarmen kan det gå 4-5 dager mellom tømmingene.</p>",
+      "innhold_en": "<p>With evacuation difficulties, one is often on the toilet daily and often several times daily, unlike constipation. With problems of slow peristalsis in the bowel, it can be 4-5 days between evacuations.</p>",
+      "bilde_posisjon": "none"
+    },
+    {
+      "tittel": "Alarmsymptomer",
+      "tittel_en": "Alarm Symptoms",
+      "innhold": "<p>Dersom man ser blod og slim i avføringen er det et alarmsymptom som betinger nærmere utredning av endetarm og tykktarm. Lege bør alltid oppsøkes i slike tilfeller.</p>",
+      "innhold_en": "<p>If you see blood and mucus in the stool, this is an alarm symptom that requires further investigation of the rectum and colon. A doctor should always be consulted in such cases.</p>",
+      "bilde_posisjon": "none"
+    }
+  ],
+  "arsaker_tittel": "Årsaker",
+  "arsaker_tittel_en": "Causes",
+  "arsaker_intro": "",
+  "arsaker_intro_en": "",
+  "arsaker_sitat": "Jeg føler meg aldri helt tømt og må returnere tilbake til do flere ganger i løpet av dagen.",
+  "arsaker_sitat_en": "I never feel completely emptied and have to return to the toilet several times during the day.",
+  "arsaker_sitat_kilde": "Mann, 42 år",
+  "arsaker_sitat_kilde_en": "Man, 42 years",
+  "arsaker_trekkspill": [
+    {
+      "tittel": "Problemer med å tømme tarmen kan skyldes ulike tilstander",
+      "tittel_en": "Problems with bowel evacuation can be due to various conditions",
+      "innhold": "<ul><li>Forstoppelse kan oppstå dersom toalettvaner endrer seg, ved for eksempel stress, endret aktivitetsnivå, vanskeligheter med tilgang på toalett, og ved endring i inntak av mat, drikke og ulike medisiner.</li><li>Stenoser/forsnevring i tarmen etter kirurgi eller andre sykdomstilstander i tarmen kan gi tømmingsvansker.</li><li>Nevrologiske tilstander som for eksempel Multippelsklerose, Parkinson sykdom og ryggmargskade.</li><li>Mulig årsak til tømmingsvansker er rectocele, analprolaps, slimhinne prolaps i nedre del av tarmen.</li><li>Overdreven pressing over lang tid kan være årsak til et tømmingsproblem.</li><li>Oppfylninger i blæren, som store mengder urin eller blæretumor, kan gi forstoppelsesplager.</li></ul>",
+      "innhold_en": "<ul><li>Constipation can occur if toilet habits change, for example: stress, changed activity level, difficulties with access to toilet, and changes in intake of food, drink and various medications.</li><li>Stenoses/narrowing in the bowel after surgery or other disease conditions in the bowel can cause evacuation difficulties.</li><li>Neurological conditions such as Multiple Sclerosis, Parkinson's Disease, and spinal cord injury.</li><li>Possible causes of evacuation difficulties are rectocele, anal prolapse, mucosal prolapse in the lower part of the bowel.</li><li>Excessive straining over a long time can be a cause of evacuation problems.</li><li>Bladder filling, such as large amounts of urine or bladder tumor, can cause constipation problems.</li></ul>",
+      "bilde_posisjon": "none"
+    }
+  ],
+  "utredning_tittel": "Utredning",
+  "utredning_tittel_en": "Diagnosis",
+  "utredning_intro": "",
+  "utredning_intro_en": "",
+  "utredning_trekkspill": [
+    {
+      "tittel": "Aktuelle undersøkelser",
+      "tittel_en": "Relevant Examinations",
+      "innhold": "<p>For å få så god forståelse og informasjon som mulig om plagene, er det viktig å få frem hele symptombildet.</p>",
+      "innhold_en": "<p>To get the best possible understanding and information about the problems, it is important to reveal the complete symptom picture.</p>",
+      "bilde_posisjon": "none"
+    },
+    {
+      "tittel": "Kartlegging av symptomer",
+      "tittel_en": "Symptom Mapping",
+      "innhold": "<p>Ofte blir man bedt om å føre en dagbok i forkant av legetimen hvor man under vanlige omstendigheter kartlegger hvor ofte man er på toalettet og eventuelle problemer knyttet til tømmingen.</p><h5>Dagbok</h5><p>Avføringskonsistens og eventuelle hjelpemidler kartlegges i dagboken.</p><h5>Spørreskjema</h5><p>I tillegg brukes ulike spørreskjema for å beskrive symptomene ytterligere.</p>",
+      "innhold_en": "<p>Often you are asked to keep a diary before the doctor's appointment where you map how often you are on the toilet and any problems related to evacuation under normal circumstances.</p><h5>Diary</h5><p>Stool consistency and any aids are mapped in the diary.</p><h5>Questionnaires</h5><p>In addition, various questionnaires are used to describe the symptoms further.</p>",
+      "bilde_posisjon": "none"
+    }
+  ],
+  "behandling_tittel": "Behandling",
+  "behandling_tittel_en": "Treatment",
+  "behandling_intro": "",
+  "behandling_intro_en": "",
+  "behandling_trekkspill": [
+    {
+      "tittel": "Konservative tiltak",
+      "tittel_en": "Conservative Treatment",
+      "innhold": "<p>Optimal avføringskonsistens er ofte første steget i behandlingen både når det gjelder lekkasje og tømmingsproblemer for avføring. Noen tiltak for optimalisering kan man gjøre selv, men dersom man ikke når ønsket effekt er det hjelp å få.</p><h4>Regulering av avføringskonsistens</h4><p>Optimal avføringskonsistens er ofte første steget i behandlingen både når det gjelder lekkasje og tømmingsproblemer for avføring.</p><h4>Kostråd</h4><p>Alle kostråd er generelle. Det finnes få studier med evidens for hvilke konkrete matvarer som påvirker avføringskonsistensen. Det er derfor viktig å ta utgangspunkt i egne erfaringer og kostråd for så å prøve seg frem for å finne de matsortene som fungerer og de som fører til forverring.</p><h4>Fysisk aktivitet</h4><p>Det er mange positive helseeffekter av fysisk aktivitet og mosjon. Dette gjelder også på tarmfunksjonen. Fysisk aktivitet fremmer tarmens bevegelse (peristaltikk) og bidrar positivt, spesielt ved hard avføring. Helsedirektoratet anbefaler minimum 30 minutters daglig fysisk aktivitet med moderat intensitet.</p><h4>Avspenning av muskulatur</h4><p>For at avføringen skal passere er det viktig at lukkemuskelen i endetarmen og muskulaturen i bekkenbunnen slapper av. Det er viktig å unngå og knipe/spenne muskulaturen. Det kan være en fordel å trene på å knipe og slippe for å kjenne når muskelaturen slapper godt av. Noen kan ha hjelp av å trene på avspenning individuelt med fysioterpeut.</p><h4>Transanal irrigasjon</h4><p>I tilfeller der forstoppelse og tømmingsproblem ikke løses ved tiltakene som nevnt over, kan det være behov for assistert tømming. Transanal irrigasjon (TAI) er en metode som tømmer tarmen ved at vann føres inn i tykktarmen via et kateter (plastrør) i endetarmen. Vannet stimulerer tarmens peristaltiske bevegelser til å kvitte seg med avføring fra endetarmen og nedre del av tykktarmen. For mange er dette en effektiv metode som har som mål å sørge for regelmessig og forutsigbar tømming som forebygger forstoppelse og lekkasjer. Utstyret er på blåresept og opplæring må gis av helsepersonell.</p>",
+      "innhold_en": "<p>Optimal stool consistency is often the first step in treating both leakage and emptying problems. Some optimization can be done by yourself, but if you do not reach the desired effect, help is available.</p><h4>Stool Consistency Regulation</h4><p>Optimal stool consistency is often the first step in treatment.</p><h4>Diet</h4><p>All dietary advice is general. There is limited evidence for which specific foods affect stool consistency. It is therefore important to use your own experience and dietary advice and try to find what works for you.</p><h4>Physical Activity</h4><p>There are many positive health effects of physical activity and exercise. This also applies to bowel function. Physical activity promotes bowel movement (peristalsis) and contributes positively, especially with hard stool. The Norwegian Directorate of Health recommends at least 30 minutes of daily physical activity of moderate intensity.</p><h4>Muscle Relaxation</h4><p>For stool to pass, it is important that the sphincter in the rectum and the pelvic floor muscles relax. It is important to avoid squeezing/tensing the muscles. Training to squeeze and release can help you recognize when the muscles are fully relaxed. Some may benefit from individual relaxation training with a physiotherapist.</p><h4>Transanal Irrigation</h4><p>In cases where constipation and emptying problems are not resolved by the measures mentioned above, assisted evacuation may be needed. Transanal irrigation (TAI) is a method that empties the bowel by introducing water into the large intestine via a catheter in the rectum. The water stimulates peristaltic movements to remove stool from the rectum and lower part of the large intestine. For many this is an effective method aimed at regular and predictable evacuation that prevents constipation and leakage. The equipment is on prescription and training must be provided by healthcare personnel.</p>",
+      "bilde_posisjon": "none"
+    },
+    {
+      "tittel": "Kirurgisk behandling",
+      "tittel_en": "Surgical Treatment",
+      "innhold": "<p>Dersom man ikke kommer til mål med konservativ behandling vurderes andre tiltak. Flere ulike kirurgiske tilnærminger kan være et alternativ.</p><ul><li>Utlagt tykktarm (colostomi) med eller uten tarmskylling via stomien (retrograd irrigasjon)</li><li>Utlagt tykk- og blindtarm (appendikostomi) med henblikk på tarmskylling via blindtarmen (antegrad irrigasjon)</li><li>Utlagt tynntarm (bøyleileostomi eller endeileostomi)</li><li>Fjernelse av tykktarm og sammenføyning av tynntarm til endetarm (kolektomi og ileorektalanastomose)</li></ul>",
+      "innhold_en": "<p>If conservative treatment does not achieve the desired result, other measures may be considered. Several different surgical approaches may be an option.</p><ul><li>Colostomy with or without bowel irrigation via the stoma (retrograde irrigation)</li><li>Appendicostomy for antegrade irrigation</li><li>Ileostomy (loop or end)</li><li>Colectomy and ileorectal anastomosis</li></ul>",
+      "bilde_posisjon": "none"
+    },
+    {
+      "tittel": "Mestring",
+      "tittel_en": "Coping",
+      "innhold": "<p>Ufullstendig tarmtømming og tømmingsproblemer kan påvirke både hverdagsliv og livskvalitet. Behandling av slike plager medfører ofte endring av vaner og rutiner. Slike endringer i hverdagen kan være utfordrende å komme i gang med samt det krever en egeninnsats for å greie å gjennomføre det. Imidlertid opplever de aller fleste at innsatsen de selv bidrar med gjør situasjonen lettere og målet må være å leve så normalt som mulig.</p>",
+      "innhold_en": "<p>Incomplete bowel evacuation and evacuation problems can affect both daily life and quality of life. Treatment of such problems often involves changing habits and routines. Such changes in daily life can be challenging to get started with and require personal effort to carry through. However, most people find that the effort they put in makes the situation easier and the goal must be to live as normally as possible.</p>",
+      "bilde_posisjon": "none"
+    }
+  ],
+  "ovelse_tittel": "Øvelser",
+  "ovelse_tittel_en": "Exercises",
+  "ovelse_intro": "<p>Prøv selv: Knip (lukk) igjen rundt urinrør, skjede- og endetarmsåpning. Kjenn at området trekker seg litt opp og inn i kroppen. Mage-, lår- og setemusklene skal være avslappet. Begynn med å holde i 2-3 sekunder, slipp like lenge. Gjenta 15 ganger morgen og kveld.</p>",
+  "ovelse_intro_en": "<p>Try yourself: Squeeze (close) around the urethra, vaginal and anal openings. Feel the area pull slightly up and into the body. Abdominal, thigh and buttock muscles should be relaxed. Start by holding for 2-3 seconds, release for the same duration. Repeat 15 times morning and evening.</p>",
+  "ovelse_trekkspill": [],
+  "ressurser_tittel": "Ressurser",
+  "ressurser_tittel_en": "Resources",
+  "ressurser_intro": "<p>Her finner du lenker til relevante nettsider som kan gi deg mer informasjon om forstoppelse og tømmingsproblemer for avføring, og hjelpe deg å komme i kontakt med andre som har de samme problemene.</p>",
+  "ressurser_intro_en": "<p>Here you will find links to relevant websites that can give you more information about constipation and bowel evacuation problems, and help you get in touch with others who have the same problems.</p>",
+  "ressurser_trekkspill": [
+    {
+      "tittel": "Kompetansetjenester",
+      "tittel_en": "Competence Services",
+      "innhold": "<p><a href=\"https://www.unn.no/nbh\" target=\"_blank\" rel=\"noopener noreferrer\">Nasjonalt senter for Bekkenbunnshelse (NBH)</a></p><p><a href=\"https://www.facebook.com/nbh.unn/\" target=\"_blank\" rel=\"noopener noreferrer\">NBH Facebook</a></p>",
+      "innhold_en": "<p><a href=\"https://www.unn.no/nbh\" target=\"_blank\" rel=\"noopener noreferrer\">National Center for Pelvic Health (NBH)</a></p><p><a href=\"https://www.facebook.com/nbh.unn/\" target=\"_blank\" rel=\"noopener noreferrer\">NBH Facebook</a></p>",
+      "bilde_posisjon": "none"
+    },
+    {
+      "tittel": "Helsenorge.no",
+      "tittel_en": "Helsenorge.no",
+      "innhold": "<p><a href=\"https://helsenorge.no/sykdom/mage-og-tarm/forstoppelse\" target=\"_blank\" rel=\"noopener noreferrer\">Om forstoppelse</a></p>",
+      "innhold_en": "<p><a href=\"https://helsenorge.no/sykdom/mage-og-tarm/forstoppelse\" target=\"_blank\" rel=\"noopener noreferrer\">About constipation</a></p>",
+      "bilde_posisjon": "none"
+    }
+  ],
+  "referanser_tittel": "Referanser",
+  "referanser_tittel_en": "References",
+  "referanser_intro": "<p>Emnet \"Tømmingsproblemer og forstoppelse for avføring\" er utviklet av en gruppe spesialister med kunnskap på fagområdet. Sidene er utarbeidet på bakgrunn av evidensbasert kunnskap og i tillegg gir erfaringsbasert kunnskap en viktig tilleggsinformasjon i formidlingen.</p><p><strong>Sist endret 01.07.2020.</strong></p>",
+  "referanser_intro_en": "<p>The topic \"Bowel Evacuation Problems and Constipation\" is developed by a group of specialists with knowledge in the field. The pages are based on evidence-based knowledge and in addition, experience-based knowledge provides important additional information in the communication.</p><p><strong>Last updated 01.07.2020.</strong></p>",
+  "referanser_trekkspill": [
+    {
+      "tittel": "Retningslinje",
+      "tittel_en": "Guidelines",
+      "innhold": "<p><a href=\"http://nkib.helsekompetanse.no/sites/nkib.helsekompetanse.no/files/AI%20retningslinjer%202019%20pdf_0.pdf\" target=\"_blank\" rel=\"noopener noreferrer\">Faglige retningslinjer for utredning og konservativ behandling av anorektale funksjonsforstyrrelser (2019).</a></p><p>Retningslinjen er utarbeidet av Norsk gruppe for konservativ behandling av anorektale funksjonsforstyrrlser.</p>",
+      "innhold_en": "<p><a href=\"http://nkib.helsekompetanse.no/sites/nkib.helsekompetanse.no/files/AI%20retningslinjer%202019%20pdf_0.pdf\" target=\"_blank\" rel=\"noopener noreferrer\">Clinical Guidelines for Assessment and Conservative Treatment of Anorectal Functional Disorders (2019).</a></p><p>The guidelines are developed by the Norwegian Group for Conservative Treatment of Anorectal Functional Disorders.</p>",
+      "bilde_posisjon": "none"
+    }
+  ]
+}

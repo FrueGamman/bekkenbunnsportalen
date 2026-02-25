@@ -263,7 +263,6 @@ const CONDITION_SECTIONS_MAP = {
   },
   "constipation": {
     no: [
-      { id: "normal-functions", title: "Funksjon", icon: "/normal.png" },
       { id: "symptoms", title: "Symptomer", icon: "/symptoms.png" },
       { id: "causes", title: "Årsaker", icon: "/couse.png" },
       { id: "diagnosis", title: "Utredning", icon: "/solae.png" },
@@ -273,7 +272,6 @@ const CONDITION_SECTIONS_MAP = {
       { id: "references", title: "Referanser", icon: "/resource.png" },
     ],
     en: [
-      { id: "normal-functions", title: "Normal Functions", icon: "/normal.png" },
       { id: "symptoms", title: "Symptoms", icon: "/symptoms.png" },
       { id: "causes", title: "Causes", icon: "/couse.png" },
       { id: "diagnosis", title: "Diagnosis", icon: "/solae.png" },
@@ -347,7 +345,7 @@ export default function ConditionPage() {
     "textbook": "funksjon"
   };
 
-  // Fetch CMS data for the active condition
+  // Fetch CMS data for the active condition (all non-pregnancy conditions use Directus)
   const { tilstand: cmsTilstand, loading: cmsLoading } = useConditionDetails(activeCondition, language);
 
   const ALL_CONDITIONS = ALL_CONDITIONS_DATA[language];

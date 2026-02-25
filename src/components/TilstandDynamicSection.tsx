@@ -1,7 +1,9 @@
+import React, { useState } from "react";
 import { useLanguage } from "../context/LanguageContext";
 import { useTheme } from "../context/ThemeContext";
 import { SectionAccordion } from "./SectionAccordion";
 import { CommonExerciseSection } from "./CommonExerciseSection";
+import { ImageModal } from "./ui/ImageModal";
 import type { Tilstand, TilstandAccordionItem } from "../types/cms";
 import { getImageUrl } from "../lib/directus";
 import styles from "../conditions/urinary-incontinence/components/section-content.module.css";
@@ -14,6 +16,7 @@ interface TilstandDynamicSectionProps {
 export const TilstandDynamicSection = ({ tilstand, activeSection }: TilstandDynamicSectionProps) => {
     const { language } = useLanguage();
     const { resolvedTheme } = useTheme();
+    const [selectedImage, setSelectedImage] = useState<{ src: string; alt: string } | null>(null);
 
     // Map activeSection to tilstand field prefixes
     const sectionMap: Record<string, string> = {
@@ -63,8 +66,10 @@ export const TilstandDynamicSection = ({ tilstand, activeSection }: TilstandDyna
 
     // Extract images+captions from Directus HTML; handles grid containers, <figure>, and standalone <img>
     const parseContentAndImages = (html: string): { textHtml: string; images: { src: string; alt: string; caption: string }[] } => {
+        if (!html) return { textHtml: '', images: [] };
         const doc = new DOMParser().parseFromString(`<div>${html}</div>`, 'text/html');
         const root = doc.body.firstChild as HTMLElement;
+        if (!root) return { textHtml: '', images: [] };
         const images: { src: string; alt: string; caption: string }[] = [];
 
         root.querySelectorAll('img').forEach((img) => {
@@ -108,17 +113,46 @@ export const TilstandDynamicSection = ({ tilstand, activeSection }: TilstandDyna
         return { textHtml: clone.innerHTML.trim(), images };
     };
 
-    // Render content using the original CSS module classes
-    // Splits HTML at h4 boundaries and renders each sub-cause using the
-    // same component structure as the original causes.tsx:
-    //   normalFunctionSection → card wrapper
-    //   normalFunctionTitle  → h4 heading with blue left bar
-    //   sideBySideContainer  → image+text side-by-side for certain causes
-    //   resourceLink         → pill-style link buttons
-    //   enhancedParagraph    → text paragraphs
-    const renderContentWithImageCards = (html: string) => {
+    // Render HTML with blockquote → highlightBox support
+    const renderRichText = (html: string, style?: React.CSSProperties): React.ReactNode => {
+        if (!html) return null;
         const doc = new DOMParser().parseFromString(`<div>${html}</div>`, 'text/html');
         const root = doc.body.firstChild as HTMLElement;
+        if (!root) return <div className={styles.enhancedParagraph} style={style} dangerouslySetInnerHTML={{ __html: html }} />;
+
+        const nodes = Array.from(root.childNodes);
+        const hasBlockquote = nodes.some(n => (n as HTMLElement).tagName === 'BLOCKQUOTE');
+
+        if (!hasBlockquote) {
+            return <div className={styles.enhancedParagraph} style={style} dangerouslySetInnerHTML={{ __html: html }} />;
+        }
+
+        return (
+            <>
+                {nodes.map((node, i) => {
+                    const el = node as HTMLElement;
+                    if (el.nodeType === 1 && el.tagName === 'BLOCKQUOTE') {
+                        return (
+                            <div key={i} className={styles.highlightBox}>
+                                <div dangerouslySetInnerHTML={{ __html: el.innerHTML }} />
+                            </div>
+                        );
+                    }
+                    if (el.nodeType === 1 && el.textContent?.trim()) {
+                        return <div key={i} className={styles.enhancedParagraph} style={style} dangerouslySetInnerHTML={{ __html: el.outerHTML }} />;
+                    }
+                    return null;
+                })}
+            </>
+        );
+    };
+
+    const renderContentWithImageCards = (html: string) => {
+        if (!html) return null;
+        try {
+        const doc = new DOMParser().parseFromString(`<div>${html}</div>`, 'text/html');
+        const root = doc.body.firstChild as HTMLElement;
+        if (!root) return null;
 
         // Split content at h4/h3 boundaries into separate sections
         type CardSection = {
@@ -187,11 +221,11 @@ export const TilstandDynamicSection = ({ tilstand, activeSection }: TilstandDyna
                     });
                     // Extract text content (remove image elements first)
                     const clone = el.cloneNode(true) as HTMLElement;
-                    clone.querySelectorAll('figure, img').forEach(el => {
-                        const parent = el.parentElement;
-                        el.remove();
-                        // Clean up empty parent divs
-                        if (parent && !parent.textContent?.trim() && parent !== clone) {
+                    const imgEls = Array.from(clone.querySelectorAll('figure, img'));
+                    imgEls.forEach(imgEl => {
+                        const parent = imgEl.parentElement;
+                        imgEl.remove();
+                        if (parent && parent !== clone && !parent.textContent?.trim()) {
                             parent.remove();
                         }
                     });
@@ -210,8 +244,9 @@ export const TilstandDynamicSection = ({ tilstand, activeSection }: TilstandDyna
                         }
                         currentCard.paragraphs.push(clone.innerHTML.trim());
                     }
+                } else if (el.nodeType === 1 && el.tagName === 'BLOCKQUOTE') {
+                    currentCard.paragraphs.push(el.outerHTML);
                 } else if (el.nodeType === 1) {
-                    // Extract links from paragraphs
                     const anchors = el.querySelectorAll('a');
                     if (anchors.length > 0) {
                         const textWithoutLinks = el.textContent?.trim() || '';
@@ -247,18 +282,19 @@ export const TilstandDynamicSection = ({ tilstand, activeSection }: TilstandDyna
             const { textHtml, images } = parseContentAndImages(html);
             return (
                 <>
-                    {textHtml && (
-                        <p
-                            className={styles.enhancedParagraph}
-                            dangerouslySetInnerHTML={{ __html: textHtml }}
-                        />
-                    )}
-                    {images.length > 0 && (
-                        <div className={styles.anatomySection}>
+                    {textHtml && renderRichText(textHtml, { width: '100%' })}
+                    {images && images.length > 0 && (
+                        <div className={styles.anatomySection} style={{ width: '100%' }}>
                             <div className={styles.anatomyGrid}>
                                 {images.map((img, i) => (
-                                    <div key={i} className={styles.anatomyItem2}>
-                                        <img src={img.src} alt={img.alt} className={styles.anatomyImage} />
+                                    <div key={i} className={styles.anatomyItem}>
+                                        <img
+                                            src={img.src}
+                                            alt={img.alt}
+                                            className={styles.anatomyImage}
+                                            onClick={() => setSelectedImage({ src: img.src, alt: img.alt })}
+                                            style={{ cursor: 'pointer' }}
+                                        />
                                         {img.caption && (
                                             <p className={styles.anatomyCaption}>{img.caption}</p>
                                         )}
@@ -274,10 +310,10 @@ export const TilstandDynamicSection = ({ tilstand, activeSection }: TilstandDyna
         // Render using original CSS module classes
         return (
             <>
-                {/* Intro text before first h4 */}
-                {introElements.map((html, i) => (
-                    <p key={`intro-${i}`} className={styles.enhancedParagraph}
-                        dangerouslySetInnerHTML={{ __html: html }} />
+                {introElements.map((elHtml, i) => (
+                    <React.Fragment key={`intro-${i}`}>
+                        {renderRichText(elHtml)}
+                    </React.Fragment>
                 ))}
 
                 {/* Each sub-cause in its own card */}
@@ -290,8 +326,9 @@ export const TilstandDynamicSection = ({ tilstand, activeSection }: TilstandDyna
                             <div className={styles.sideBySideContainer}>
                                 <div className={styles.sideBySideText}>
                                     {card.paragraphs.map((p, j) => (
-                                        <p key={j} className={styles.enhancedParagraph}
-                                            dangerouslySetInnerHTML={{ __html: p }} />
+                                        <React.Fragment key={j}>
+                                            {renderRichText(p)}
+                                        </React.Fragment>
                                     ))}
                                     {card.links.length > 0 && card.links.length <= 1 && (
                                         <p className={styles.enhancedParagraph}>
@@ -320,11 +357,11 @@ export const TilstandDynamicSection = ({ tilstand, activeSection }: TilstandDyna
                                 </div>
                             </div>
                         ) : (
-                            /* Default layout (no images) */
                             <>
                                 {card.paragraphs.map((p, j) => (
-                                    <p key={j} className={styles.enhancedParagraph}
-                                        dangerouslySetInnerHTML={{ __html: p }} />
+                                    <React.Fragment key={j}>
+                                        {renderRichText(p)}
+                                    </React.Fragment>
                                 ))}
 
                                 {/* Single link */}
@@ -365,6 +402,10 @@ export const TilstandDynamicSection = ({ tilstand, activeSection }: TilstandDyna
                 ))}
             </>
         );
+        } catch (e) {
+            console.error('renderContentWithImageCards error:', e);
+            return html ? <div className={styles.enhancedParagraph} dangerouslySetInnerHTML={{ __html: html }} /> : null;
+        }
     };
 
     // Render image based on positioning
@@ -372,17 +413,22 @@ export const TilstandDynamicSection = ({ tilstand, activeSection }: TilstandDyna
         const imgSrc = item.bilde_id ? getImageUrl(item.bilde_id) : item.bilde_url;
         if (!imgSrc || item.bilde_posisjon === 'none') return null;
 
+        const altText = (language === 'en' && item.bilde_alt_en) ? item.bilde_alt_en : (item.bilde_alt || item.tittel);
+        const captionText = (language === 'en' && item.bilde_caption_en) ? item.bilde_caption_en : item.bilde_caption;
+
         return (
             <div className={styles.anatomySection}>
                 <div className={styles.anatomyGrid}>
-                    <div className={styles.anatomyItem2}>
+                    <div className={styles.anatomyItem}>
                         <img
                             src={imgSrc}
-                            alt={(language === 'en' && item.bilde_alt_en) ? item.bilde_alt_en : (item.bilde_alt || item.tittel)}
+                            alt={altText}
                             className={styles.anatomyImage}
+                            onClick={() => setSelectedImage({ src: imgSrc, alt: altText })}
+                            style={{ cursor: 'pointer' }}
                         />
-                        {((language === 'en' && item.bilde_caption_en) || item.bilde_caption) && (
-                            <p className={styles.anatomyCaption}>{(language === 'en' && item.bilde_caption_en) ? item.bilde_caption_en : item.bilde_caption}</p>
+                        {captionText && (
+                            <p className={styles.anatomyCaption}>{captionText}</p>
                         )}
                     </div>
                 </div>
@@ -442,7 +488,7 @@ export const TilstandDynamicSection = ({ tilstand, activeSection }: TilstandDyna
 
                 {trekkspill?.map((item: TilstandAccordionItem, index: number) => {
                     const itemTitle = getField(item, 'tittel');
-                    const itemTitleNo = item.tittel; // Use Norwegian title for persistent IDs
+                    const itemTitleNo = item.tittel;
                     const itemContent = getField(item, 'innhold');
                     const imgSrc = item.bilde_id ? getImageUrl(item.bilde_id) : item.bilde_url;
                     const isSideBySide = item.bilde_posisjon === 'side' && imgSrc;
@@ -457,17 +503,18 @@ export const TilstandDynamicSection = ({ tilstand, activeSection }: TilstandDyna
                             defaultOpen={false}
                         >
                             {isSideBySide ? (
-                                /* Side-by-side layout: text left, image right (with card design) */
                                 <div className={styles.sideBySideContainer}>
                                     <div className={styles.sideBySideText}>
                                         {renderContentWithImageCards(itemContent)}
                                         {renderLinks(item)}
                                     </div>
-                                    <div className={`${styles.sideBySideImage} ${styles.anatomyItem2}`}>
+                                    <div className={`${styles.sideBySideImage} ${styles.anatomyItem}`}>
                                         <img
                                             src={imgSrc}
                                             alt={(language === 'en' && item.bilde_alt_en) ? item.bilde_alt_en : (item.bilde_alt || itemTitle)}
                                             className={styles.anatomyImage}
+                                            onClick={() => setSelectedImage({ src: imgSrc!, alt: (language === 'en' && item.bilde_alt_en) ? item.bilde_alt_en! : (item.bilde_alt || itemTitle) })}
+                                            style={{ cursor: 'pointer' }}
                                         />
                                         {((language === 'en' && item.bilde_caption_en) || item.bilde_caption) && (
                                             <p className={styles.anatomyCaption}>{(language === 'en' && item.bilde_caption_en) ? item.bilde_caption_en : item.bilde_caption}</p>
@@ -475,7 +522,6 @@ export const TilstandDynamicSection = ({ tilstand, activeSection }: TilstandDyna
                                     </div>
                                 </div>
                             ) : (
-                                /* Standard layout: content (with image cards), then bilde_id if present, then links */
                                 <>
                                     {renderContentWithImageCards(itemContent)}
                                     {renderImage(item)}
@@ -486,6 +532,15 @@ export const TilstandDynamicSection = ({ tilstand, activeSection }: TilstandDyna
                     );
                 })}
             </div>
+
+            {selectedImage && (
+                <ImageModal
+                    isOpen={!!selectedImage}
+                    imageSrc={selectedImage.src}
+                    imageAlt={selectedImage.alt}
+                    onClose={() => setSelectedImage(null)}
+                />
+            )}
         </div>
     );
 };
