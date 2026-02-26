@@ -1,0 +1,104 @@
+# Detailed Structure: Pregnancy & Postpartum Textbook
+
+This document provides a granular 1:1 mapping of the content structure within the **Lærebok** (Textbook) module. Each section is designed to guide the user from basic anatomy to complex physiological changes and medical interventions.
+
+## 1. Top-Level Hierarchy (Extended Graph)
+
+The textbook follows a logical progression: Foundation -> Changes -> Birth -> Recovery -> Specialized Topics.
+
+```mermaid
+graph TD
+    Textbook[Pregnancy & Postpartum Textbook] --> Foundation[Foundation]
+    Textbook --> Changes[Changes & Birth]
+    Textbook --> Recovery[Recovery & Issues]
+    Textbook --> Specialized[Specialized Care]
+
+    Foundation --> C1[1. Pelvic Floor]
+    C1 --> C1a[Anatomy & Nerves]
+    C1 --> C1b[Training: Step-by-Step]
+    C1 --> C1c[Instructional Videos]
+
+    Changes --> C2[2. Genitals in Pregnancy]
+    C2 --> C2a[Mucous Membranes & Blood Volume]
+    C2 --> C2b[Discharge vs. Infection]
+    C2 --> C2c[Pelvic Pressure/Bulging]
+
+    Changes --> C3[3. Delivery Methods]
+    C3 --> C3a[Vaginal & Instrumental: Forceps/Vacuum]
+    C3 --> C3b[Cesarean Section: Medical Reasons]
+
+    Changes --> C4[4. Birth Tears]
+    C4 --> C4a[Grading 1-4: Sphinxter Tears]
+    C4 --> C4b[Prevention: Finskegrep & Episiotomy]
+    C4 --> C4c[Wound Healing & Infection Signs]
+
+    Recovery --> C5[5. Pelvic Organ Prolapse]
+    C5 --> C5a[Cystocele, Rectocele, Uterine]
+
+    Recovery --> C6[6. Bladder Function]
+    C6 --> C6a[Normal: ADH Hormone]
+    C6 --> C6b[Pregnancy: Progesterone Impact]
+    C6 --> C6c[Postpartum: Epidural & Catheterization]
+    C6 --> C6d[Incontinence: Stress, Urge, Mixed]
+    C6 --> C6e[UTI: Symptoms & Antibiotics]
+
+    Recovery --> C7[7. Bowel Function]
+    C7 --> C7a[Toilet Posture: The 3-Step Method]
+    C7 --> C7b[Constipation & Bristol Scale 1-7]
+    C7 --> C7c[Fecal Leakage & Nerve Damage]
+    C7 --> C7d[Anal Fissure: Acute vs. Chronic]
+    C7 --> C7e[Hemorrhoids: Grades 1-4 & THD Surgery]
+
+    Recovery --> C8[8. Intercourse]
+    C8 --> C8a[Sensitivity, Pain, & Lubrication]
+
+    Specialized --> C9[9. Female Circumcision]
+    C9 --> C9a[Deinfibulation & Birth Planning]
+
+    Specialized --> C10[10. Seeking Help]
+    C10 --> C10a[GP, Midwife, Physiotherapist, Urotherapist]
+
+    style Textbook fill:#053870,color:#fff
+    style Foundation fill:#e2e8f0
+    style Changes fill:#e2e8f0
+    style Recovery fill:#e2e8f0
+    style Specialized fill:#e2e8f0
+```
+
+## 2. Granular Content Breakdown
+
+### Chapter 1: The Pelvic Floor
+- **Anatomy**: Muscles (Levator Ani), bindevev, and nerve supply (spinal cord).
+- **Function**: Stabilization, control over urine/stool, and sexual function.
+- **Training (Kniping)**: 
+    - **How-to**: Focus on the area between vagina and rectum.
+    - **Schedule**: 15 reps, 2x daily. Hold for 2-3s (initially) up to 10-12s.
+- **Resources**: Integrated Vimeo (UNN) and YouTube (St. Olavs) videos.
+
+### Chapter 4: Birth Tears (Sfinkterrifter)
+- **Grading**:
+    - **Grade 1-2**: Superficial or muscle-only (sutured in delivery room).
+    - **Grade 3-4**: Involves anal sphincter (Grade 3a, 3b, 3c) or rectal mucosa (Grade 4). Requires operating room repair.
+- **Clinical Techniques**: 
+    - **Finskegrep**: Hands-on protection technique used by midwives.
+    - **Episiotomy**: Controlled cut to prevent Grade 3/4 tears.
+
+### Chapter 6: Bladder Function
+- **Physiology**: Role of **ADH (Anti-Diuretic Hormone)** in nighttime production.
+- **Pregnancy**: Progesterone's relaxing effect on the ureters; 40-50% blood volume increase.
+- **Postpartum**: Impact of **epidural/spinal anesthesia** on bladder sensation; risk of "overstretch" (>500ml).
+- **Pathology**: **UTI/Cystitis** (10-15% of pregnancies); treatment with Pivmecillinam or Nitrofurantoin.
+
+### Chapter 7: Bowel Function (Most Large Section)
+- **Toilet Posture**: 3-step guide (knees above hips, lean forward, relax belly).
+- **Diagnostics**: Use of the **Bristol Stool Scale** (Type 1-7, ideal is Type 4).
+- **Anal Fissure**: 
+    - **Treatments**: Rectogesic/Anoheal (spasm relief), Botox injections, or Tailored Lateral Internal Sphincterotomy.
+- **Hemorrhoids**: 
+    - **Grades**: Grade 1 (internal) to Grade 4 (prolapsed/irreducible). 
+    - **Procedures**: Rubber band ligation and THD (Transanal Hemorrhoidal Dearterialization).
+
+## 3. Design & Interactive Elements
+- **Visual Aids**: Embedded clinical photos/diagrams (e.g., proper toilet position, pelvic anatomy).
+- **Navigation**: Deep-linkable IDs (e.g., `#bladder-function-leakage`) allow components like [UpgradedPregnancyContent](file:///Users/sandrinegamman/privateapp/pelvic-react/src/conditions/pregnancy/components/UpgradedPregnancyContent.tsx#47-331) to link directly into specific textbook chapters.
+- **Dark Mode Syntax**: Uses CSS variables to invert colors for diagrams and accordion borders to maintain medical clarity in dark themes.

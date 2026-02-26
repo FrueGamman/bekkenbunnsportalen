@@ -13,6 +13,8 @@ import { TilstandIntroduction } from "../../components/TilstandIntroduction";
 // Import pregnancy components (pregnancy has unique UI not in standard CMS pattern)
 import { NormalFunctions as PregnancyNormalFunctions } from "../../conditions/pregnancy/components/normal-functions";
 import { UpgradedPregnancyContent } from "../../conditions/pregnancy/components/UpgradedPregnancyContent";
+import { TextbookAccordion } from "../../conditions/pregnancy/components/TextbookAccordion";
+import { usePregnancyData } from "../../hooks/usePregnancyData";
 
 const PREGNANCY_SECTION_CARDS = {
   no: [
@@ -347,6 +349,7 @@ export default function ConditionPage() {
 
   // Fetch CMS data for the active condition (all non-pregnancy conditions use Directus)
   const { tilstand: cmsTilstand, loading: cmsLoading } = useConditionDetails(activeCondition, language);
+  const { data: pregnancyData, loading: pregnancyLoading } = usePregnancyData(language);
 
   const ALL_CONDITIONS = ALL_CONDITIONS_DATA[language];
   const CONDITION_SECTIONS = CONDITION_SECTIONS_MAP[activeCondition as keyof typeof CONDITION_SECTIONS_MAP]?.[language] || [];
@@ -431,8 +434,17 @@ export default function ConditionPage() {
   const renderSectionContent = () => {
     // Pregnancy has unique UI components not in the standard CMS pattern
     if (activeCondition === "pregnancy") {
+      if (pregnancyLoading) return <div className={styles.loadingState}>{language === 'no' ? 'Laster...' : 'Loading...'}</div>;
+      if (!pregnancyData) return null;
+
       if (activeSection === "overview") {
-        return <UpgradedPregnancyContent />;
+        return <UpgradedPregnancyContent data={pregnancyData} />;
+      }
+      if (activeSection === "textbook") {
+        return <TextbookAccordion chapters={pregnancyData.chapters as any} language={language} />;
+      }
+      if (["exercises", "resources", "references"].includes(activeSection)) {
+        return <TilstandDynamicSection tilstand={pregnancyData as any} activeSection={activeSection} />;
       }
       if (activeSection === "normal-functions") {
         return (
@@ -470,6 +482,8 @@ export default function ConditionPage() {
           </>
         );
       }
+
+      return null;
     }
 
     // All content from Directus CMS
