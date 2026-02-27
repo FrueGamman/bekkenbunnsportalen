@@ -2563,7 +2563,8 @@
   .contentParagraph {
     font-size: clamp(1.25rem, 1.3vw, 1.625rem);
     line-height: 1.8;
-    max-width: 85ch;
+    max-width: 100%;
+    width: 100%;
   }
 
   .contentSubtitle,

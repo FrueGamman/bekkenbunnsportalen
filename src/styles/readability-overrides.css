@@ -26,16 +26,18 @@ li {
   letter-spacing: 0.02em !important;
 }
 
-/* Enhanced text classes */
+/* Enhanced text classes - full width when no image or multiple images */
 .enhancedParagraph {
   font-size: 1.125rem !important;
   line-height: 2 !important;
   color: var(--color-text-primary) !important;
-  max-width: 75ch !important;
+  max-width: 100% !important;
+  width: 100% !important;
   letter-spacing: 0.02em !important;
   text-align: left !important;
   margin-bottom: 2.5rem !important;
   margin-top: 1rem !important;
+  box-sizing: border-box !important;
 }
 
 /* Content sections */

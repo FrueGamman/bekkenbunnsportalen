@@ -102,9 +102,9 @@
   color: #334155;
   /* Darker slate for better readability */
   line-height: 1.7;
-  /* Increased line spacing */
-  max-width: 85ch;
-  /* Optimized line length */
+  max-width: 100%;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 @media (min-width: 768px) {
@@ -668,9 +668,10 @@
   line-height: 1.75;
   color: #334155;
   margin-bottom: 1.5rem;
-  max-width: 85ch;
+  max-width: 100%;
+  width: 100%;
   text-align: left;
-  /* Avoid justify for easier reading */
+  box-sizing: border-box;
 }
 
 /* Dark mode styles */
@@ -1406,7 +1407,8 @@
   line-height: 1.75;
   font-size: clamp(0.9375rem, 1.6vw, 1rem);
   color: #475569;
-  max-width: 85ch;
+  max-width: 100%;
+  width: 100%;
 }
 
 .normalFunctionContent p {
@@ -1565,7 +1567,8 @@
   line-height: 1.75;
   color: #334155;
   text-align: left;
-  max-width: 85ch;
+  max-width: 100%;
+  width: 100%;
   font-weight: 400;
 }
 

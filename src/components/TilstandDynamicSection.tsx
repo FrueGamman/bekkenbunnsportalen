@@ -344,8 +344,7 @@ export const TilstandDynamicSection = ({ tilstand, activeSection }: TilstandDyna
                 <>
                     {textHtml && renderRichText(textHtml, { width: '100%' })}
                     {images && images.length > 0 && (
-                        <div className={styles.anatomySection} style={{ width: '100%' }}>
-                            <div className={styles.anatomyGrid}>
+                        <div className={styles.anatomyGrid} style={{ width: '100%' }}>
                                 {images.map((img, i) => (
                                     <div key={i} className={styles.anatomyItem}>
                                         <img
@@ -360,7 +359,6 @@ export const TilstandDynamicSection = ({ tilstand, activeSection }: TilstandDyna
                                         )}
                                     </div>
                                 ))}
-                            </div>
                         </div>
                     )}
                 </>
@@ -477,21 +475,17 @@ export const TilstandDynamicSection = ({ tilstand, activeSection }: TilstandDyna
         const captionText = (language === 'en' && item.bilde_caption_en) ? item.bilde_caption_en : item.bilde_caption;
 
         return (
-            <div className={styles.anatomySection}>
-                <div className={styles.anatomyGrid}>
-                    <div className={styles.anatomyItem}>
-                        <img
-                            src={imgSrc}
-                            alt={altText}
-                            className={styles.anatomyImage}
-                            onClick={() => setSelectedImage({ src: imgSrc, alt: altText })}
-                            style={{ cursor: 'pointer' }}
-                        />
-                        {captionText && (
-                            <p className={styles.anatomyCaption}>{captionText}</p>
-                        )}
-                    </div>
-                </div>
+            <div className={`${styles.anatomyItem} ${styles.anatomyItemStandalone}`}>
+                <img
+                    src={imgSrc}
+                    alt={altText}
+                    className={styles.anatomyImage}
+                    onClick={() => setSelectedImage({ src: imgSrc, alt: altText })}
+                    style={{ cursor: 'pointer' }}
+                />
+                {captionText && (
+                    <p className={styles.anatomyCaption}>{captionText}</p>
+                )}
             </div>
         );
     };
