@@ -94,7 +94,7 @@ export const PelvicPainIntroduction = ({ content }: PelvicPainIntroductionProps)
           <div className={styles.heroTextContent}>
             <div className={styles.heroDescription}>
               {typeof filteredDescription === 'string' ? (
-                <p>{filteredDescription}</p>
+                <div dangerouslySetInnerHTML={{ __html: filteredDescription }} />
               ) : (
                 filteredDescription.map((item, index) => (
                   <p key={index}>

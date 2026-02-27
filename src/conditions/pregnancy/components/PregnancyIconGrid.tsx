@@ -44,7 +44,7 @@ export const PregnancyIconGrid = ({ language, problems = [], onNavigate, selecte
         // Fallback to English name if Norwegian name is missing (though unlikely in a NO-first project)
         const label = language === "en" && problem.name_en ? problem.name_en : problem.name_no
         // Use slug if available for the DOM ID, otherwise a sanitized name
-        const problemId = problem.slug || problem.name_en?.toLowerCase().replace(/\s+/g, '-') || `problem-${problem.id}`
+        const problemId = problem.slug || problem.name_no?.toLowerCase().replace(/\s+/g, '-') || `problem-${problem.id}`
 
         return (
           <button

@@ -39,7 +39,7 @@ export const UpgradedPregnancyContent = ({ data }: Props) => {
   const problems = (data?.problems || []) as PregnancyProblem[];
 
   // Get all valid section IDs based on CMS problems
-  const validSectionIds = problems.map(p => p.slug || p.name_en?.toLowerCase().replace(/\s+/g, '-') || `problem-${p.id}`)
+  const validSectionIds = problems.map(p => p.slug || p.name_no?.toLowerCase().replace(/\s+/g, '-') || `problem-${p.id}`)
 
   // Get the first section ID as default
   const firstSectionId = validSectionIds[0] || null
@@ -155,11 +155,11 @@ export const UpgradedPregnancyContent = ({ data }: Props) => {
 
           {selectedSection && problems
             .filter(problem => {
-              const pId = problem.slug || problem.name_en?.toLowerCase().replace(/\s+/g, '-') || `problem-${problem.id}`
+              const pId = problem.slug || problem.name_no?.toLowerCase().replace(/\s+/g, '-') || `problem-${problem.id}`
               return pId === selectedSection
             })
             .map((problem) => {
-              const problemId = problem.slug || problem.name_en?.toLowerCase().replace(/\s+/g, '-') || `problem-${problem.id}`
+              const problemId = problem.slug || problem.name_no?.toLowerCase().replace(/\s+/g, '-') || `problem-${problem.id}`
               const title = (language === 'en' && problem.name_en) ? problem.name_en : problem.name_no
 
               const about = language === 'en' && problem.about_en ? problem.about_en : problem.about_no;

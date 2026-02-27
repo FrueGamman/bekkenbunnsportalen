@@ -145,18 +145,3 @@ This project is provided for educational and internal use. Content originates fr
 
 - [Bekkenbunnsportalen](https://www.bekkenbunnsportalen.no/)
 - [Plager under graviditet og etter fødsel](https://www.bekkenbunnsportalen.no/conditions/pregnancy?section=overview)
-┌──────────────────┬─────────────────────────────────┐
-│  [Image]         │                                  │
-│  (centered)      │   Intro text from side_intro     │
-│                  │   (cleaned HTML, no images/h2)   │
-│  [Video below]   │                                  │
-└──────────────────┴─────────────────────────────────┘
-   LEFT col (42%)         RIGHT col
-Key changes:
-
-Parses side_intro HTML to extract the image (montage photo) and put it in the left col, centered
-Strips h2 headings from the text (already shown as section title above)
-Strips empty nbsp paragraphs (the image caption lines full of spaces)
-Uses funksjon_video_id (E9tVWoRhPKU) for the YouTube video embedded below the image
-Right col gets the clean intro text
-Image is clickable → opens in the image modal

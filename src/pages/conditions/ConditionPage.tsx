@@ -13,6 +13,34 @@ import { TilstandIntroduction } from "../../components/TilstandIntroduction";
 // Import pregnancy components (pregnancy has unique UI not in standard CMS pattern)
 import { NormalFunctions as PregnancyNormalFunctions } from "../../conditions/pregnancy/components/normal-functions";
 import { UpgradedPregnancyContent } from "../../conditions/pregnancy/components/UpgradedPregnancyContent";
+// Pelvic-pain has its own intro layout (image top, video + text below)
+import { PelvicPainIntroduction } from "../../conditions/pelvic-pain/components/shared-introduction";
+
+function parsePelvicPainIntro(html: string) {
+  if (typeof document === "undefined" || !html) return { title: "", subtitle: "", description: "", imageSrc: "" };
+  const doc = new DOMParser().parseFromString(`<div>${html}</div>`, "text/html");
+  const root = doc.body.firstChild as HTMLElement;
+  if (!root) return { title: "", subtitle: "", description: html, imageSrc: "" };
+
+  const h2 = root.querySelector("h2");
+  const title = h2?.textContent?.trim() || "";
+  h2?.remove();
+
+  const subtitle = root.querySelector("p[class*='heroSubtitle']");
+  const subtitleText = subtitle?.textContent?.trim() || "";
+  subtitle?.remove();
+
+  const img = root.querySelector("img");
+  const imageSrc = img?.getAttribute("src") || "";
+  const imgParent = img?.closest("p, figure, div");
+  if (imgParent) imgParent.remove(); else img?.remove();
+
+  root.querySelectorAll("p").forEach((p) => {
+    if (!p.textContent?.replace(/\u00a0|\s/g, "").trim()) p.remove();
+  });
+
+  return { title, subtitle: subtitleText, description: root.innerHTML.trim(), imageSrc };
+}
 import { TextbookAccordion } from "../../conditions/pregnancy/components/TextbookAccordion";
 import { usePregnancyData } from "../../hooks/usePregnancyData";
 
@@ -496,9 +524,31 @@ export default function ConditionPage() {
     // All content from Directus CMS
     if (!cmsTilstand) return null;
 
-    // Show TilstandIntroduction on the first section of this condition
     const firstSectionId = CONDITION_SECTIONS[0]?.id;
     const showIntro = activeSection === firstSectionId;
+
+    if (showIntro && activeCondition === "pelvic-pain" && cmsTilstand) {
+      const t = cmsTilstand as any;
+      const sideIntro = (language === 'en' && t.side_intro_en) || t.side_intro || '';
+      const title = (language === 'en' && t.side_tittel_en) || t.side_tittel || '';
+      const subtitle = (language === 'en' && t.side_undertittel_en) || t.side_undertittel || '';
+      const videoId = t.funksjon_video_id || '';
+
+      const parsed = parsePelvicPainIntro(sideIntro);
+
+      return (
+        <>
+          <PelvicPainIntroduction content={{
+            title: parsed.title || title,
+            subtitle: parsed.subtitle || subtitle,
+            description: parsed.description,
+            image: parsed.imageSrc ? { src: parsed.imageSrc, alt: title, caption: "" } : undefined,
+            video: videoId ? { videoId, title: language === 'no' ? "Informasjonsfilm om smerte" : "Information video about pain" } : undefined,
+          }} />
+          <TilstandDynamicSection tilstand={cmsTilstand} activeSection={activeSection} />
+        </>
+      );
+    }
 
     return (
       <>
