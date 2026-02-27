@@ -1493,12 +1493,28 @@
     min-width: 0;
 }
 
+/* Full-width image above the two-column row */
+.heroTopImage {
+    width: 100%;
+    border-radius: 1.25rem;
+    overflow: hidden;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+    margin-bottom: 2rem;
+}
+
+.heroTopImage img {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
 .heroImageContainer {
     width: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
 }
+
 
 .heroImageWrapper {
     width: 100%;

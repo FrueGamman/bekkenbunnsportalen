@@ -303,6 +303,10 @@ export interface Tilstand {
   funksjon_video_tittel: string | null;
   funksjon_video_tittel_en?: string | null;
   funksjon_trekkspill: TilstandAccordionItem[] | null;
+  /** Hero image for the funksjon intro section (Directus files UUID) */
+  funksjon_bilde_id?: string | null;
+  /** Embeddable video URL for the funksjon intro section */
+  funksjon_video_url?: string | null;
 
   // Symptoms (Directus: symptomer_*)
   symptomer_tittel: string;
@@ -314,6 +318,10 @@ export interface Tilstand {
   symptomer_sitat_kilde: string;
   symptomer_sitat_kilde_en?: string | null;
   symptomer_trekkspill: TilstandAccordionItem[] | null;
+  /** Hero image for the symptoms intro (Directus files UUID) */
+  symptomer_bilde_id?: string | null;
+  /** Embeddable video URL (e.g. Vimeo/YouTube iframe src) for the symptoms section intro */
+  symptomer_video_url?: string | null;
 
   // Causes (Directus: arsaker_*)
   arsaker_tittel: string;
@@ -471,4 +479,94 @@ export interface PageWithSections {
   tittel_no?: string;
   tittel_en?: string;
   seksjoner: PageSection[];
+}
+
+export interface PregnancyProblem {
+  id: number;
+  sort: number;
+  slug?: string;
+  name_no: string;
+  name_en?: string;
+  icon?: string;
+  about_no?: string;
+  about_en?: string;
+  symptoms_no?: string;
+  symptoms_en?: string;
+  self_help_no?: string;
+  self_help_en?: string;
+  seek_help_no?: string;
+  seek_help_en?: string;
+  image?: string;
+  link_url?: string;
+  link_text_no?: string;
+  link_text_en?: string;
+  pdf_file?: string;
+  pdf_button_text_no?: string;
+  pdf_button_text_en?: string;
+  condition_id?: number | ConditionPregnancy;
+}
+
+export interface PregnancySection {
+  id: number;
+  sort: number;
+  title_no: string;
+  title_en?: string;
+  content_no?: string;
+  content_en?: string;
+  trekkspill?: TilstandAccordionItem[];
+  media_file?: string;
+  links?: { link_text_no?: string; link_text_en?: string; link_url?: string }[];
+}
+
+export interface PregnancyChapter {
+  id: number;
+  sort: number;
+  title_no: string;
+  title_en?: string;
+  condition_id?: number | ConditionPregnancy;
+  sections?: number[] | PregnancySection[];
+}
+
+export interface ConditionPregnancy {
+  id: number;
+  hero_title_no: string;
+  hero_title_en?: string;
+  hero_description_no?: string;
+  hero_description_en?: string;
+  hero_image?: string;
+  slug?: string;
+  problems?: number[] | PregnancyProblem[];
+  chapters?: number[] | PregnancyChapter[];
+  // Included fields
+  ovelse_tittel?: string;
+  ovelse_tittel_en?: string;
+  ovelse_intro?: string;
+  ovelse_intro_en?: string;
+  ovelse_trekkspill?: TilstandAccordionItem[];
+  ovelse_try_yourself_title?: string;
+  ovelse_try_yourself_title_en?: string;
+  ovelse_step1_text?: string;
+  ovelse_step1_text_en?: string;
+  ovelse_tips_title?: string;
+  ovelse_tips_title_en?: string;
+  ovelse_tips_text?: string;
+  ovelse_tips_text_en?: string;
+  ovelse_video_section_title?: string;
+  ovelse_video_section_title_en?: string;
+  ovelse_video_section_description?: string;
+  ovelse_video_section_description_en?: string;
+  ovelse_videos?: { src: string; title?: string; title_en?: string }[];
+  ovelse_steps?: { number: number; text?: string; text_en?: string }[];
+  ovelse_gender_instructions?: { title?: string; title_en?: string; text?: string; text_en?: string; icon?: string; iconColor?: string }[];
+  ovelse_smartphone_apps?: { title?: string; title_en?: string; description?: string; description_en?: string; linkText?: string; linkText_en?: string; linkUrl?: string };
+  ressurser_tittel?: string;
+  ressurser_tittel_en?: string;
+  ressurser_intro?: string;
+  ressurser_intro_en?: string;
+  ressurser_trekkspill?: TilstandAccordionItem[];
+  referanser_tittel?: string;
+  referanser_tittel_en?: string;
+  referanser_intro?: string;
+  referanser_intro_en?: string;
+  referanser_trekkspill?: TilstandAccordionItem[];
 }

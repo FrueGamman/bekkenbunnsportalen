@@ -15,7 +15,12 @@ dist-ssr
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
+.cursor/mcp.json
 .idea
+
+# Directus scripts and docs (not part of app)
+docs/
+scripts/
 .DS_Store
 *.suo
 *.ntvs*

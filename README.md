@@ -88,6 +88,16 @@ npm run build
 npm run preview
 ```
 
+### Directus (pregnancy content layout)
+
+To add bookmarks and list layouts in Directus so the pregnancy content is easy for content managers (aligned with [the live pregnancy page](https://www.bekkenbunnsportalen.no/conditions/pregnancy)):
+
+```bash
+node scripts/directus-pregnancy-presets.js
+```
+
+Requires `.env` with `VITE_DIRECTUS_URL` and `VITE_DIRECTUS_TOKEN`. See [docs/DIRECTUS_PREGNANCY_LAYOUT.md](docs/DIRECTUS_PREGNANCY_LAYOUT.md) for details and form-layout steps.
+
 
 ## Project structure
 
