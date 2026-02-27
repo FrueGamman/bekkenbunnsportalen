@@ -30,7 +30,7 @@ export const PelvicPainIntroduction = ({ content }: PelvicPainIntroductionProps)
 
   if (!content) return null
 
-  // Helper to extract video info if not explicitly provided
+  // Helper to extract video info
   const extractVideo = () => {
     if (content.video) return content.video
 
@@ -47,28 +47,38 @@ export const PelvicPainIntroduction = ({ content }: PelvicPainIntroductionProps)
 
   const videoData = extractVideo()
 
+  // Filter out the bare youtube-link object from description text
+  const filteredDescription = Array.isArray(content.description)
+    ? content.description.filter(
+      item => !(typeof item === 'object' && item.link?.url.includes('youtube.com'))
+    )
+    : content.description
+
   return (
     <div className={`${styles.introductionHero} ${resolvedTheme === 'dark' ? styles.darkMode : ''}`}>
       <div className={styles.heroGlassContainer}>
-        {/* Cinematic Header */}
+        {/* Header */}
         <header className={styles.heroHeader}>
           {content.title && <h2 className={styles.heroTitle}>{content.title}</h2>}
           {content.subtitle && <p className={styles.heroSubtitle}>{content.subtitle}</p>}
         </header>
 
-        <div className={styles.heroBody}>
-          {/* Visual Media - Cinematic & Integrated Stack */}
-          <div className={styles.heroMediaStack}>
-            {content.image && (
-              <div className={styles.heroImageContainer}>
-                <div className={styles.heroImageWrapper}>
-                  <img src={content.image.src} alt={content.image.alt} className={styles.heroImage} />
-                </div>
-                {content.image.caption && <span className={styles.heroImageCaption}>{content.image.caption}</span>}
-              </div>
-            )}
+        {/* Image — full width on top */}
+        {content.image && (
+          <div className={styles.heroTopImage}>
+            <img
+              src={content.image.src}
+              alt={content.image.alt}
+              className={styles.heroImage}
+            />
+          </div>
+        )}
 
-            {videoData && (
+        {/* Two-column row below image: video left, text right */}
+        <div className={styles.heroBody}>
+          {/* Left: Video */}
+          {videoData && (
+            <div className={styles.heroMediaStack}>
               <div className={styles.heroVideoWrapper}>
                 <VideoPlayer
                   videoUrl={videoData.url}
@@ -77,16 +87,16 @@ export const PelvicPainIntroduction = ({ content }: PelvicPainIntroductionProps)
                   description={videoData.description}
                 />
               </div>
-            )}
-          </div>
+            </div>
+          )}
 
-          {/* Text Content - premium readability */}
+          {/* Right: Text */}
           <div className={styles.heroTextContent}>
             <div className={styles.heroDescription}>
-              {typeof content.description === 'string' ? (
-                <p>{content.description}</p>
+              {typeof filteredDescription === 'string' ? (
+                <div dangerouslySetInnerHTML={{ __html: filteredDescription }} />
               ) : (
-                content.description.map((item, index) => (
+                filteredDescription.map((item, index) => (
                   <p key={index}>
                     {typeof item === 'string' ? item : (
                       <>

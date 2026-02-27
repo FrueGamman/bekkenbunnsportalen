@@ -106,7 +106,7 @@
   /* .contentContainer {
     max-width: 1600px;
   } */
-  
+
   .problemsSection {
     max-width: 100%;
   }
@@ -116,7 +116,7 @@
   /* .contentContainer {
     max-width: 1800px;
   } */
-  
+
   .problemsSection {
     max-width: 100%;
   }
@@ -126,7 +126,7 @@
   /* .contentContainer {
     max-width: 2200px;
   } */
-  
+
   .problemsSection {
     max-width: 100%;
   }
@@ -292,7 +292,7 @@
   .mainContent {
     margin-top: 1rem;
   }
-  
+
   .problemsSection {
     padding: 2rem 1.5rem;
     max-width: 100%;
@@ -321,7 +321,7 @@
   .mainContent {
     margin-top: 1rem;
   }
-  
+
   .problemsSection {
     padding: 1.5rem 1rem;
     max-width: 100%;
@@ -363,40 +363,40 @@ html {
     gap: 2.5rem;
     padding: 0 2rem;
   }
-  
+
   /* .mainContent {
     padding: 0 2.5rem 3.5rem;
   } */
-  
+
   .heroSection {
     padding: 3rem 2.5rem;
   }
-  
+
   .heroTitle {
     font-size: clamp(2rem, 2.2vw, 2.5rem);
   }
-  
+
   .heroDescription,
   .heroNote {
     font-size: clamp(1.0625rem, 1.1vw, 1.25rem);
   }
-  
+
   .heroImageElement {
     max-width: 480px;
   }
-  
+
   .sectionTitle {
     font-size: clamp(2rem, 2.2vw, 2.5rem);
   }
-  
+
   .contentParagraph {
     font-size: clamp(1.0625rem, 1.1vw, 1.25rem);
   }
-  
+
   .contentList li {
     font-size: clamp(1.0625rem, 1.1vw, 1.25rem);
   }
-  
+
   .subsectionTitle {
     font-size: clamp(1.25rem, 1.3vw, 1.5rem);
   }
@@ -407,40 +407,40 @@ html {
     gap: 3rem;
     padding: 0 2.5rem;
   }
-  
+
   /* .mainContent {
     padding: 0 3rem 4rem;
   } */
-  
+
   .heroSection {
     padding: 3.5rem 3rem;
   }
-  
+
   .heroTitle {
     font-size: clamp(2.25rem, 2.5vw, 3rem);
   }
-  
+
   .heroDescription,
   .heroNote {
     font-size: clamp(1.125rem, 1.2vw, 1.375rem);
   }
-  
+
   .heroImageElement {
     max-width: 550px;
   }
-  
+
   .sectionTitle {
     font-size: clamp(2.25rem, 2.5vw, 3rem);
   }
-  
+
   .contentParagraph {
     font-size: clamp(1.125rem, 1.2vw, 1.375rem);
   }
-  
+
   .contentList li {
     font-size: clamp(1.125rem, 1.2vw, 1.375rem);
   }
-  
+
   .subsectionTitle {
     font-size: clamp(1.375rem, 1.4vw, 1.75rem);
   }
@@ -451,7 +451,7 @@ html {
     gap: 4rem;
     padding: 0 3rem;
   }
-  
+
   /* .mainContent {
     padding: 0 4rem 5rem;
   }
@@ -459,34 +459,34 @@ html {
   .heroSection {
     padding: 4.5rem 4rem;
   }
-  
+
   .heroTitle {
     font-size: clamp(2.75rem, 3vw, 3.75rem);
   }
-  
+
   .heroDescription,
   .heroNote {
     font-size: clamp(1.25rem, 1.35vw, 1.625rem);
     max-width: none;
   }
-  
+
   .heroImageElement {
     max-width: 650px;
   }
-  
+
   .sectionTitle {
     font-size: clamp(2.75rem, 3vw, 3.75rem);
   }
-  
+
   .contentParagraph {
     font-size: clamp(1.25rem, 1.3vw, 1.625rem);
     max-width: none;
   }
-  
+
   .contentList li {
     font-size: clamp(1.25rem, 1.3vw, 1.625rem);
   }
-  
+
   .subsectionTitle {
     font-size: clamp(1.625rem, 1.65vw, 2.125rem);
   }

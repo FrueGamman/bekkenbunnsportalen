@@ -57,6 +57,14 @@ interface ConditionSectionProps {
     src: string
     alt: string
   }
+  link?: {
+    url: string
+    text: string
+  }
+  pdf?: {
+    url: string
+    buttonText: string
+  }
 }
 
 export const ConditionSection = ({
@@ -65,7 +73,9 @@ export const ConditionSection = ({
   language,
   content,
   image,
-  video
+  video,
+  link,
+  pdf
 }: ConditionSectionProps) => {
   const { resolvedTheme } = useTheme()
   const [activeTab, setActiveTab] = useState<keyof TabContent>("about")
@@ -241,7 +251,27 @@ export const ConditionSection = ({
         </div>
       )}
 
-      <div className={styles.textbookLink}>
+      <div className={styles.sectionFooter}>
+        {link && (
+          <a
+            href={link.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className={styles.textbookButton}
+          >
+            {link.text} ↗
+          </a>
+        )}
+        {pdf && (
+          <a
+            href={pdf.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className={styles.textbookButton}
+          >
+            {pdf.buttonText} 📄
+          </a>
+        )}
         <button
           onClick={handleTextbookClick}
           className={styles.textbookButton}
