@@ -221,9 +221,16 @@
 /* Textbook Link */
 .textbookLink {
   padding: 1.25rem;
-  /* Reduced from 2.5rem */
   display: flex;
   justify-content: center;
+}
+
+.sectionFooter {
+  padding: 1.25rem;
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  flex-wrap: wrap;
 }
 
 .textbookButton {

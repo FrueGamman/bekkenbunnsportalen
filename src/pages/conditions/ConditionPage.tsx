@@ -285,7 +285,6 @@ const CONDITION_SECTIONS_MAP = {
   },
   "pelvic-pain": {
     no: [
-      { id: "normal-functions", title: "Funksjon", icon: "/normal.png" },
       { id: "symptoms", title: "Symptomer", icon: "/symptoms.png" },
       { id: "causes", title: "Årsaker", icon: "/couse.png" },
       { id: "diagnosis", title: "Utredning", icon: "/solae.png" },
@@ -295,7 +294,6 @@ const CONDITION_SECTIONS_MAP = {
       { id: "references", title: "Referanser", icon: "/resource.png" },
     ],
     en: [
-      { id: "normal-functions", title: "Normal Functions", icon: "/normal.png" },
       { id: "symptoms", title: "Symptoms", icon: "/symptoms.png" },
       { id: "causes", title: "Causes", icon: "/couse.png" },
       { id: "diagnosis", title: "Diagnosis", icon: "/solae.png" },
@@ -381,13 +379,22 @@ export default function ConditionPage() {
     }
 
     const hasHash = window.location.hash && window.location.hash.length > 1;
-    const validSection = sectionParam
-      ? navigableSectionIds.has(sectionParam as any)
+
+    // Section aliases: old/removed section IDs mapped to their replacement for specific conditions
+    const SECTION_ALIASES: Record<string, Record<string, string>> = {
+      "pelvic-pain": { "normal-functions": "symptoms" }
+    };
+    const resolvedSectionParam = (sectionParam && SECTION_ALIASES[activeCondition]?.[sectionParam])
+      ? SECTION_ALIASES[activeCondition][sectionParam]
+      : sectionParam;
+
+    const validSection = resolvedSectionParam
+      ? navigableSectionIds.has(resolvedSectionParam as any)
       : false;
 
-    if (sectionParam && validSection) {
-      if (sectionParam !== activeSection) {
-        setActiveSection(sectionParam);
+    if (resolvedSectionParam && validSection) {
+      if (resolvedSectionParam !== activeSection) {
+        setActiveSection(resolvedSectionParam);
       }
     } else {
       if (activeCondition === "pregnancy" && hasHash) {
@@ -489,9 +496,13 @@ export default function ConditionPage() {
     // All content from Directus CMS
     if (!cmsTilstand) return null;
 
+    // Show TilstandIntroduction on the first section of this condition
+    const firstSectionId = CONDITION_SECTIONS[0]?.id;
+    const showIntro = activeSection === firstSectionId;
+
     return (
       <>
-        {activeSection === "normal-functions" && (
+        {showIntro && (
           <TilstandIntroduction tilstand={cmsTilstand} />
         )}
         <TilstandDynamicSection tilstand={cmsTilstand} activeSection={activeSection} />

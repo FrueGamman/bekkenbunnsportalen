@@ -10,7 +10,8 @@ import { ConditionSection } from "./ConditionSection"
 import type { ConditionPregnancy, PregnancyProblem } from "../../../types/cms"
 import { getImageUrl } from "../../../lib/directus"
 
-// Hardcoded text fallback for empty CMS values or structural labels
+// Pregnancy content is from Directus only (usePregnancyData). No duplicate hardcoded body content.
+// Hardcoded text fallback for empty CMS values or structural labels only:
 const PAGE_CONTENT = {
   no: {
     sectionTitle: "Vanlige plager under graviditet og etter fødsel",
@@ -166,6 +167,9 @@ export const UpgradedPregnancyContent = ({ data }: Props) => {
               const selfHelp = language === 'en' && problem.self_help_en ? problem.self_help_en : problem.self_help_no;
               const seekHelp = language === 'en' && problem.seek_help_en ? problem.seek_help_en : problem.seek_help_no;
 
+              const linkText = language === 'en' && problem.link_text_en ? problem.link_text_en : problem.link_text_no;
+              const pdfText = language === 'en' && problem.pdf_button_text_en ? problem.pdf_button_text_en : problem.pdf_button_text_no;
+
               return (
                 <ConditionSection
                   key={problem.id}
@@ -173,6 +177,8 @@ export const UpgradedPregnancyContent = ({ data }: Props) => {
                   title={title}
                   language={language}
                   image={problem.image ? { src: getImageUrl(problem.image), alt: title } : undefined}
+                  link={problem.link_url ? { url: problem.link_url, text: linkText || problem.link_url } : undefined}
+                  pdf={problem.pdf_file ? { url: getImageUrl(problem.pdf_file), buttonText: pdfText || 'Last ned PDF' } : undefined}
                   content={{
                     about: renderRichText(about),
                     symptoms: renderRichText(symptoms),
