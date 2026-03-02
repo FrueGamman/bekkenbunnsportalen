@@ -3,6 +3,8 @@
   border-radius: 16px;
   overflow: hidden;
   width: 100%;
+  max-width: 100%;
+  max-height: min(70vh, 540px);
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   background: #f8fafc;
@@ -13,6 +15,8 @@
   width: 100%;
   max-width: 100%;
   aspect-ratio: 16 / 9;
+  max-height: min(70vh, 540px);
+  height: auto;
   border: none;
   display: block;
 }
@@ -30,6 +34,7 @@
   justify-content: center;
   width: 100%;
   aspect-ratio: 16 / 9;
+  max-height: min(70vh, 540px);
   box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1);
 }
 

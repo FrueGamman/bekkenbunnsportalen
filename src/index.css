@@ -212,10 +212,27 @@ p, li, span, div {
   box-sizing: border-box;
 }
 
-/* Ensure images are responsive and zoom-friendly */
+/* Ensure images are responsive with reasonable size and height */
 img {
   max-width: 100%;
   height: auto;
+  max-height: min(80vh, 800px);
+  object-fit: contain;
+  box-sizing: border-box;
+}
+
+/* Native video elements – responsive and capped height */
+video {
+  max-width: 100%;
+  width: 100%;
+  height: auto;
+  max-height: min(80vh, 540px);
+  display: block;
+}
+
+/* Embedded iframes – responsive width so they don’t overflow */
+iframe {
+  max-width: 100%;
   box-sizing: border-box;
 }
 

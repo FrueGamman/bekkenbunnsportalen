@@ -194,9 +194,10 @@
   font-size: clamp(0.9375rem, 1.6vw, 1rem);
   line-height: 1.75;
   color: #334155;
-  /* Better contrast */
   margin-bottom: clamp(1.25rem, 2vw, 1.5rem);
-  max-width: 85ch;
+  max-width: 100%;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 @media (min-width: 768px) {
@@ -1207,6 +1208,13 @@
 .anatomyItem:hover {
   transform: translateY(-4px);
   box-shadow: 0 8px 32px rgba(30, 64, 175, 0.15);
+}
+
+/* Single image without section/grid wrappers */
+.anatomyItemStandalone {
+  margin: 2rem 0;
+  width: 100%;
+  max-width: 100%;
 }
 
 .anatomyImage {
@@ -4062,7 +4070,8 @@ html.dark .quoteAuthor {
   .contentParagraph {
     font-size: clamp(1.25rem, 1.3vw, 1.625rem);
     line-height: 1.8;
-    max-width: 85ch;
+    max-width: 100%;
+    width: 100%;
   }
 
   .contentSubtitle,
@@ -4105,7 +4114,8 @@ html.dark .quoteAuthor {
 
   .introductionDescription {
     font-size: clamp(1.5rem, 1.5vw, 1.875rem);
-    max-width: 85ch;
+    max-width: 100%;
+    width: 100%;
   }
 
   .keyPointsContainer {

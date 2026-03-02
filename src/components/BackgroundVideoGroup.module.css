@@ -6,7 +6,9 @@
   overflow: hidden;
   padding: clamp(2rem, 4vw, 3rem) clamp(1rem, 5vw, 4rem);
   background: rgba(0, 0, 0, 0.02);
-  min-height: 80vh;
+  /* Height from aspect-ratio so rounded corners frame the 16:9 video on all screen sizes */
+  aspect-ratio: 16 / 9;
+  width: 100%;
 }
 
 .background {
@@ -39,7 +41,6 @@
 @media (max-width: 768px) {
   .wrapper {
     padding: clamp(0.75rem, 2vw, 1rem);
-    min-height: 60vh;
   }
 }
 

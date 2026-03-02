@@ -153,7 +153,7 @@ export const NormalFunctions = () => {
                           {contentText}
                         </p>
                       ))
-                    ) : section.content && (
+                    ) : section.content && section.id !== 'anatomy' && (
                       <p className={styles.enhancedParagraph}>
                         {section.content}
                       </p>
@@ -210,7 +210,7 @@ export const NormalFunctions = () => {
                       {contentText}
                     </p>
                   ))
-                ) : section.content && (
+                ) : section.content && section.id !== 'anatomy' && (
                   <p className={styles.enhancedParagraph}>
                     {section.content}
                   </p>
