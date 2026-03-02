@@ -2,7 +2,7 @@ import { TextEncoder, TextDecoder } from 'util';
 import '@testing-library/jest-dom';
 
 global.TextEncoder = TextEncoder;
-global.TextDecoder = TextDecoder as any;
+global.TextDecoder = TextDecoder as unknown as typeof globalThis.TextDecoder;
 
 // Modern way to ensure matchers are registered if the automatic way fails
 import * as matchers from '@testing-library/jest-dom/matchers';

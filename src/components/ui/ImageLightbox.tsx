@@ -38,10 +38,12 @@ export const ImageLightbox = ({ isOpen, onClose, imageSrc, imageAlt, caption }: 
   }
 
   return (
-    <div 
+    <div // eslint-disable-line jsx-a11y/no-noninteractive-element-interactions
       className={styles.lightboxOverlay} 
       onClick={handleBackdropClick}
+      onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') onClose(); }}
       role="dialog"
+      tabIndex={0} // eslint-disable-line jsx-a11y/no-noninteractive-tabindex
       aria-modal="true"
       aria-label={`Enlarged image: ${imageAlt}`}
     >

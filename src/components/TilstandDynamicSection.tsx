@@ -36,23 +36,23 @@ export const TilstandDynamicSection = ({ tilstand, activeSection }: TilstandDyna
     if (!prefix) return null;
 
     // Use type assertion to access fields dynamically
-    const t = tilstand as any;
-    const title = (language === 'en' && t[`${prefix}_tittel_en`]) || t[`${prefix}_tittel`];
-    const intro = (language === 'en' && t[`${prefix}_intro_en`]) || t[`${prefix}_intro`];
-    const trekkspill = t[`${prefix}_trekkspill`];
+    const t = tilstand as Record<string, unknown>;
+    const title = ((language === 'en' && t[`${prefix}_tittel_en`]) || t[`${prefix}_tittel`]) as string | undefined;
+    const intro = ((language === 'en' && t[`${prefix}_intro_en`]) || t[`${prefix}_intro`]) as string | undefined;
+    const trekkspill = t[`${prefix}_trekkspill`] as TilstandAccordionItem[] | undefined;
 
     // Specific fields for symptoms/causes
-    const sitat = (language === 'en' && t[`${prefix}_sitat_en`]) || t[`${prefix}_sitat`];
-    const sitatKilde = (language === 'en' && t[`${prefix}_sitat_kilde_en`]) || t[`${prefix}_sitat_kilde`];
+    const sitat = ((language === 'en' && t[`${prefix}_sitat_en`]) || t[`${prefix}_sitat`]) as string | undefined;
+    const sitatKilde = ((language === 'en' && t[`${prefix}_sitat_kilde_en`]) || t[`${prefix}_sitat_kilde`]) as string | undefined;
 
     // Exercises: render original design (CommonExerciseSection) when structured data from Directus exists
     if (activeSection === "exercises") {
-        const tryTitle = (language === "en" && t.ovelse_try_yourself_title_en) || t.ovelse_try_yourself_title || "";
-        const step1 = (language === "en" && t.ovelse_step1_text_en) || t.ovelse_step1_text || "";
-        const tipsTitle = (language === "en" && t.ovelse_tips_title_en) || t.ovelse_tips_title || "";
-        const tipsText = (language === "en" && t.ovelse_tips_text_en) || t.ovelse_tips_text || "";
-        const videoSectionTitle = (language === "en" && t.ovelse_video_section_title_en) || t.ovelse_video_section_title || "";
-        const videoSectionDesc = (language === "en" && t.ovelse_video_section_description_en) || t.ovelse_video_section_description || "";
+        const tryTitle = ((language === "en" && t.ovelse_try_yourself_title_en) || t.ovelse_try_yourself_title || "") as string;
+        const step1 = ((language === "en" && t.ovelse_step1_text_en) || t.ovelse_step1_text || "") as string;
+        const tipsTitle = ((language === "en" && t.ovelse_tips_title_en) || t.ovelse_tips_title || "") as string;
+        const tipsText = ((language === "en" && t.ovelse_tips_text_en) || t.ovelse_tips_text || "") as string;
+        const videoSectionTitle = ((language === "en" && t.ovelse_video_section_title_en) || t.ovelse_video_section_title || "") as string;
+        const videoSectionDesc = ((language === "en" && t.ovelse_video_section_description_en) || t.ovelse_video_section_description || "") as string;
         const videosRaw = (t.ovelse_videos as { src: string; title?: string; title_en?: string }[] | null) || [];
         const stepsRaw = (t.ovelse_steps as { number: number; text?: string; text_en?: string }[] | null) || [];
         const genderRaw = (t.ovelse_gender_instructions as { title?: string; title_en?: string; text?: string; text_en?: string; icon?: string; iconColor?: string }[] | null) || [];
@@ -352,6 +352,9 @@ export const TilstandDynamicSection = ({ tilstand, activeSection }: TilstandDyna
                                             alt={img.alt}
                                             className={styles.anatomyImage}
                                             onClick={() => setSelectedImage({ src: img.src, alt: img.alt })}
+                                            onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setSelectedImage({ src: img.src, alt: img.alt }); } }}
+                                            role="button" // eslint-disable-line jsx-a11y/no-noninteractive-element-to-interactive-role
+                                            tabIndex={0}
                                             style={{ cursor: 'pointer' }}
                                         />
                                         {img.caption && (
@@ -481,6 +484,9 @@ export const TilstandDynamicSection = ({ tilstand, activeSection }: TilstandDyna
                     alt={altText}
                     className={styles.anatomyImage}
                     onClick={() => setSelectedImage({ src: imgSrc, alt: altText })}
+                    onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setSelectedImage({ src: imgSrc, alt: altText }); } }}
+                    role="button" // eslint-disable-line jsx-a11y/no-noninteractive-element-to-interactive-role
+                    tabIndex={0}
                     style={{ cursor: 'pointer' }}
                 />
                 {captionText && (
@@ -568,6 +574,9 @@ export const TilstandDynamicSection = ({ tilstand, activeSection }: TilstandDyna
                                             alt={(language === 'en' && item.bilde_alt_en) ? item.bilde_alt_en : (item.bilde_alt || itemTitle)}
                                             className={styles.anatomyImage}
                                             onClick={() => setSelectedImage({ src: imgSrc!, alt: (language === 'en' && item.bilde_alt_en) ? item.bilde_alt_en! : (item.bilde_alt || itemTitle) })}
+                                            onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setSelectedImage({ src: imgSrc!, alt: (language === 'en' && item.bilde_alt_en) ? item.bilde_alt_en! : (item.bilde_alt || itemTitle) }); } }}
+                                            role="button" // eslint-disable-line jsx-a11y/no-noninteractive-element-to-interactive-role
+                                            tabIndex={0}
                                             style={{ cursor: 'pointer' }}
                                         />
                                         {((language === 'en' && item.bilde_caption_en) || item.bilde_caption) && (

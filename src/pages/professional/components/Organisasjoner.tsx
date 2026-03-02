@@ -23,7 +23,7 @@ const Organisasjoner: React.FC = () => {
   const { language } = useLanguage()
   const [categories, setCategories] = useState<OrganizationCategory[]>([])
   const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
+  const [, setError] = useState<string | null>(null)
 
   useEffect(() => {
     const fetchData = async () => {

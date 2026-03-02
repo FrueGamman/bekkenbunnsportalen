@@ -55,7 +55,7 @@ export const Header = () => {
 
   const data = HEADER_DATA[language]
   const brandName = language === 'no' ? 'Bekkenbunnsportalen' : 'Pelvic Floor Portal'
-  const isHomePage = location.pathname === "/"
+  const _isHomePage = location.pathname === "/" // eslint-disable-line @typescript-eslint/no-unused-vars
 
   useEffect(() => {
     const handleScroll = () => {
@@ -114,7 +114,7 @@ export const Header = () => {
 
   const handleSearchKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
-      handleSearch(e as any)
+      handleSearch(e as unknown as React.FormEvent)
     }
   }
 

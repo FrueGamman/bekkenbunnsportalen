@@ -276,7 +276,7 @@ export const FemaleCircumcisionSection = () => {
 
             {/* Types of circumcision */}
             <div style={{ margin: '20px 0' }}>
-              {data.types.map((type: any, tIndex: number) => (
+              {data.types.map((type: { type: string; description: string }, tIndex: number) => (
                 <div key={tIndex} style={{
                   marginBottom: '12px',
                   padding: '12px',
@@ -299,7 +299,7 @@ export const FemaleCircumcisionSection = () => {
         </div>
 
         {/* Main sections */}
-        {data.sections.map((section: any, sectionIndex: number) => (
+        {data.sections.map((section: Record<string, unknown>, sectionIndex: number) => (
           <SectionAccordion
             key={sectionIndex}
             title={section.title}
@@ -342,7 +342,7 @@ export const FemaleCircumcisionSection = () => {
               {/* Items list */}
               {section.items && (
                 <ul className={styles.resourceList}>
-                  {section.items.map((item: any, iIndex: number) => (
+                  {(section.items as Array<string | { text: string; link?: { text: string; url: string } }>).map((item: string | { text: string; link?: { text: string; url: string } }, iIndex: number) => (
                     <li key={iIndex} className={styles.resourceListItem}>
                       {typeof item === 'string' ? (
                         item
@@ -383,7 +383,7 @@ export const FemaleCircumcisionSection = () => {
                   gap: '20px',
                   margin: '24px 0'
                 }}>
-                  {section.images.map((img: any, imgIndex: number) => (
+                  {(section.images as Array<{ src: string; alt: string; caption: string }>).map((img: { src: string; alt: string; caption: string }, imgIndex: number) => (
                     <figure key={imgIndex} style={{
                       margin: '0',
                       textAlign: 'center'

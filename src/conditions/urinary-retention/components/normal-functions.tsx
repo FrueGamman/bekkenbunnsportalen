@@ -84,9 +84,21 @@ const INTRODUCTION_DATA = {
   }
 };
 
+interface NormalFunctionSection {
+  id: string;
+  title: string;
+  content: string;
+  hasImage?: boolean;
+  image?: { src: string; alt: string; caption: string };
+  hasAnatomyImages?: boolean;
+  anatomyImages?: Array<{ src: string; alt: string; caption: string }>;
+  hasHighlight?: boolean;
+  highlight?: string;
+}
+
 const NORMAL_FUNCTIONS_DATA = {
-  no: { pageTitle: "Funksjon", sections: [] as any[] },
-  en: { pageTitle: "Normal function", sections: [] as any[] }
+  no: { pageTitle: "Funksjon", sections: [] as NormalFunctionSection[] },
+  en: { pageTitle: "Normal function", sections: [] as NormalFunctionSection[] }
 };
 
 

@@ -72,10 +72,23 @@ export const Textbook = () => {
           'seek-help'
         ];
 
+        const closeOtherAccordions = (keepId: string) => {
+          topLevelIds.forEach((id) => {
+            if (id === keepId) return
+            const container = document.getElementById(id)
+            if (!container) return
+            const button = container.querySelector('button')
+            if (button && button.getAttribute('aria-expanded') === 'true') {
+              button.click()
+            }
+          })
+        }
+
         // Check if the hash refers to a nested section within one of these
         const parentId = topLevelIds.find(id => hash.startsWith(`${id}-`) && hash !== id);
 
         if (parentId) {
+          closeOtherAccordions(parentId)
           const parentAccordion = document.getElementById(parentId)
           if (parentAccordion) {
             const button = parentAccordion.querySelector('button')
@@ -91,6 +104,7 @@ export const Textbook = () => {
         // Standard top-level accordion handling
         const element = document.getElementById(hash)
         if (element) {
+          closeOtherAccordions(hash)
           const accordionContainer = element.closest(`.${styles.accordionContainer}`) || element
           if (accordionContainer) {
             const button = accordionContainer.querySelector('button')

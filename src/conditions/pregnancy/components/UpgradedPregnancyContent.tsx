@@ -21,6 +21,10 @@ const PAGE_CONTENT = {
   }
 } as const
 
+const PROBLEM_VIDEO_FALLBACK: Record<string, string> = {
+  avforingslekkasje: "https://player.vimeo.com/video/367327819?autoplay=1&muted=1&autopause=0&loop=0&title=1&portrait=1&byline=1",
+}
+
 interface Props {
   data: ConditionPregnancy | null
 }
@@ -118,6 +122,26 @@ export const UpgradedPregnancyContent = ({ data }: Props) => {
     );
   }
 
+  const getDirectusAssetId = (value: unknown): string => {
+    if (!value) return ""
+    if (typeof value === "string") return value
+    if (typeof value === "number") return String(value)
+    if (typeof value === "object") {
+      const record = value as Record<string, unknown>
+      if (typeof record.id === "string") return record.id
+      if (typeof record.id === "number") return String(record.id)
+      if (typeof record.directus_files_id === "string") return record.directus_files_id
+      if (typeof record.directus_files_id === "number") return String(record.directus_files_id)
+      const nested = record.directus_files_id
+      if (nested && typeof nested === "object") {
+        const nestedRecord = nested as Record<string, unknown>
+        if (typeof nestedRecord.id === "string") return nestedRecord.id
+        if (typeof nestedRecord.id === "number") return String(nestedRecord.id)
+      }
+    }
+    return ""
+  }
+
   if (!data) return null;
 
   return (
@@ -162,6 +186,12 @@ export const UpgradedPregnancyContent = ({ data }: Props) => {
               const problemId = problem.slug || problem.name_no?.toLowerCase().replace(/\s+/g, '-') || `problem-${problem.id}`
               const title = (language === 'en' && problem.name_en) ? problem.name_en : problem.name_no
 
+              const iconAssetId = getDirectusAssetId((problem as PregnancyProblem & { icon?: unknown }).icon)
+              const imageAssetId = getDirectusAssetId((problem as PregnancyProblem & { image?: unknown }).image)
+              const headerAssetId = iconAssetId || imageAssetId
+              const pdfAssetId = getDirectusAssetId((problem as PregnancyProblem & { pdf_file?: unknown }).pdf_file)
+              const videoUrl = PROBLEM_VIDEO_FALLBACK[problemId]
+
               const about = language === 'en' && problem.about_en ? problem.about_en : problem.about_no;
               const symptoms = language === 'en' && problem.symptoms_en ? problem.symptoms_en : problem.symptoms_no;
               const selfHelp = language === 'en' && problem.self_help_en ? problem.self_help_en : problem.self_help_no;
@@ -176,9 +206,10 @@ export const UpgradedPregnancyContent = ({ data }: Props) => {
                   id={problemId}
                   title={title}
                   language={language}
-                  image={problem.image ? { src: getImageUrl(problem.image), alt: title } : undefined}
+                  video={videoUrl}
+                  image={headerAssetId ? { src: getImageUrl(headerAssetId), alt: title } : undefined}
                   link={problem.link_url ? { url: problem.link_url, text: linkText || problem.link_url } : undefined}
-                  pdf={problem.pdf_file ? { url: getImageUrl(problem.pdf_file), buttonText: pdfText || 'Last ned PDF' } : undefined}
+                  pdf={pdfAssetId ? { url: getImageUrl(pdfAssetId), buttonText: pdfText || 'Last ned PDF' } : undefined}
                   content={{
                     about: renderRichText(about),
                     symptoms: renderRichText(symptoms),

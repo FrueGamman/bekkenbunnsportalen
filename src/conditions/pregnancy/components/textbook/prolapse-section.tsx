@@ -2,7 +2,6 @@
 import { useLanguage } from "../../../../context/LanguageContext"
 import { useTheme } from "../../../../context/ThemeContext"
 import { SectionAccordion } from "../../../../components/SectionAccordion"
-import { TrendingDown } from 'lucide-react'
 import styles from "../section-content.module.css"
 
 const prolapseData = {
@@ -360,7 +359,7 @@ export const ProlapseSection = () => {
 
   return (
     <>
-        {data.sections.map((section: any, index: number) => (
+        {data.sections.map((section: Record<string, unknown>, index: number) => (
           <SectionAccordion
             key={index}
             title={section.title}
@@ -391,7 +390,7 @@ export const ProlapseSection = () => {
               )}
 
               {/* Types of prolapse with symptoms */}
-              {section.types && section.types.map((type: any, tIndex: number) => (
+              {section.types && (section.types as Array<{ name: string; image?: { src: string; alt: string; caption: string }; symptoms: readonly string[] }>).map((type: { name: string; image?: { src: string; alt: string; caption: string }; symptoms: readonly string[] }, tIndex: number) => (
                 <div key={tIndex} style={{ marginTop: tIndex > 0 ? '32px' : '0', marginBottom: '24px' }}>
                   <h5 className={styles.subsectionHeading} style={{ 
                     color: resolvedTheme === 'dark' ? '#6aaad6' : '#053870'
@@ -455,7 +454,7 @@ export const ProlapseSection = () => {
               ))}
 
               {/* Subsections for treatment section */}
-              {section.subsections && section.subsections.map((subsection: any, sIndex: number) => (
+              {section.subsections && (section.subsections as Array<Record<string, unknown>>).map((subsection: Record<string, unknown>, sIndex: number) => (
                 <div key={sIndex} style={{ marginTop: '24px' }}>
                   <h5 className={styles.subsectionHeading} style={{ 
                     color: resolvedTheme === 'dark' ? '#6aaad6' : '#053870'
@@ -477,7 +476,7 @@ export const ProlapseSection = () => {
 
                   {subsection.items && (
                     <ul className={styles.resourceList}>
-                      {subsection.items.map((item: any, iIndex: number) => (
+                      {(subsection.items as Array<string | Record<string, unknown>>).map((item: string | Record<string, unknown>, iIndex: number) => (
                         <li key={iIndex} className={styles.resourceListItem}>
                           {typeof item === 'string' ? (
                             item

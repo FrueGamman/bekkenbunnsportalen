@@ -645,7 +645,7 @@ export const BowelFunctionSection = () => {
                 marginBottom: '16px'
               }}>
                 {/* Step images */}
-                {data.toiletPosture.stepImages && data.toiletPosture.stepImages.map((stepImg: any, index: number) => (
+                {data.toiletPosture.stepImages && data.toiletPosture.stepImages.map((stepImg: { src: string; alt: string; caption: string }, index: number) => (
                   <div key={index} style={{ textAlign: 'center' }}>
                     <img
                       src={stepImg.src}
@@ -680,7 +680,7 @@ export const BowelFunctionSection = () => {
         </SectionAccordion>
 
         {/* Main sections */}
-        {data.sections.map((section: any, sectionIndex: number) => (
+        {data.sections.map((section: Record<string, unknown>, sectionIndex: number) => (
           <SectionAccordion
             key={sectionIndex}
             id={section.id ? `bowel-function-${section.id}` : undefined}
@@ -739,7 +739,7 @@ export const BowelFunctionSection = () => {
               )}
 
               {/* Subsections */}
-              {section.subsections?.map((subsection: any, subIndex: number) => (
+              {(section.subsections as Array<Record<string, unknown>> | undefined)?.map((subsection: Record<string, unknown>, subIndex: number) => (
                 <div key={`subsection-${subIndex}-${subsection.subtitle || subIndex}`} style={{ marginTop: '24px' }}>
                   <h5 className={styles.subsectionHeading} style={{
                     color: resolvedTheme === 'dark' ? '#6aaad6' : '#053870'
@@ -795,7 +795,7 @@ export const BowelFunctionSection = () => {
                   )}
 
                   {/* Nested sections within subsection */}
-                  {subsection.sections && subsection.sections.map((nestedSection: any, nsIndex: number) => (
+                  {subsection.sections && (subsection.sections as Array<Record<string, unknown>>).map((nestedSection: Record<string, unknown>, nsIndex: number) => (
                     <div key={nsIndex} style={{ marginTop: '20px', marginLeft: '12px' }}>
                       <h6 style={{
                         fontWeight: '600',
@@ -847,7 +847,7 @@ export const BowelFunctionSection = () => {
                   {/* Grades for hemorrhoids */}
                   {subsection.grades && (
                     <div style={{ margin: '16px 0' }}>
-                      {subsection.grades.map((grade: any, gIndex: number) => (
+                      {(subsection.grades as Array<{ grade: string; description: string }>).map((grade: { grade: string; description: string }, gIndex: number) => (
                         <div key={gIndex} style={{
                           marginBottom: '12px',
                           padding: '10px',
@@ -867,7 +867,7 @@ export const BowelFunctionSection = () => {
                   {/* List items */}
                   {subsection.items && (
                     <ul className={styles.resourceList}>
-                      {subsection.items.map((item: any, iIndex: number) => (
+                      {(subsection.items as Array<string | { text: string }>).map((item: string | { text: string }, iIndex: number) => (
                         <li key={iIndex} className={styles.resourceListItem}>
                           {typeof item === 'string' ? item : item.text}
                         </li>

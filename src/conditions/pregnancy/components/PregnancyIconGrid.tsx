@@ -15,6 +15,26 @@ interface PregnancyIconGridProps {
 export const PregnancyIconGrid = ({ language, problems = [], onNavigate, selectedSection }: PregnancyIconGridProps) => {
   const { resolvedTheme } = useTheme()
 
+  const getDirectusAssetId = (value: unknown): string => {
+    if (!value) return ""
+    if (typeof value === "string") return value
+    if (typeof value === "number") return String(value)
+    if (typeof value === "object") {
+      const record = value as Record<string, unknown>
+      if (typeof record.id === "string") return record.id
+      if (typeof record.id === "number") return String(record.id)
+      if (typeof record.directus_files_id === "string") return record.directus_files_id
+      if (typeof record.directus_files_id === "number") return String(record.directus_files_id)
+      const nested = record.directus_files_id
+      if (nested && typeof nested === "object") {
+        const nestedRecord = nested as Record<string, unknown>
+        if (typeof nestedRecord.id === "string") return nestedRecord.id
+        if (typeof nestedRecord.id === "number") return String(nestedRecord.id)
+      }
+    }
+    return ""
+  }
+
   const handleCardClick = (problemId: string) => {
     if (onNavigate) {
       if (selectedSection === problemId) {
@@ -45,6 +65,9 @@ export const PregnancyIconGrid = ({ language, problems = [], onNavigate, selecte
         const label = language === "en" && problem.name_en ? problem.name_en : problem.name_no
         // Use slug if available for the DOM ID, otherwise a sanitized name
         const problemId = problem.slug || problem.name_no?.toLowerCase().replace(/\s+/g, '-') || `problem-${problem.id}`
+        const iconAssetId = getDirectusAssetId(problem.Icon || problem.icon)
+          || getDirectusAssetId(problem.Image || problem.image)
+        const iconSrc = iconAssetId ? getImageUrl(iconAssetId) : ""
 
         return (
           <button
@@ -54,12 +77,14 @@ export const PregnancyIconGrid = ({ language, problems = [], onNavigate, selecte
             aria-label={language === "no" ? `Naviger til ${label} seksjon` : `Navigate to ${label} section`}
           >
             <div className={styles.iconContainer}>
-              <img
-                src={problem.icon ? getImageUrl(problem.icon) : "/placeholder.svg"}
-                alt={label}
-                className={styles.iconImage}
-                loading="lazy"
-              />
+              {iconSrc ? (
+                <img
+                  src={iconSrc}
+                  alt={label}
+                  className={styles.iconImage}
+                  loading="lazy"
+                />
+              ) : null}
             </div>
             <h3 className={styles.iconLabel}>{label}</h3>
           </button>

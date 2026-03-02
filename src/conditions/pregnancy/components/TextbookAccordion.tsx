@@ -3,8 +3,7 @@
 import { useTheme } from "../../../context/ThemeContext"
 import { SectionAccordion } from "../../../components/SectionAccordion"
 import styles from "./section-content.module.css"
-import type { PregnancyChapter, PregnancySection, TilstandAccordionItem } from "../../../types/cms"
-import React from 'react'
+import type { PregnancyChapter, PregnancySection } from "../../../types/cms"
 
 interface TextbookAccordionProps {
   language: "no" | "en"

@@ -503,7 +503,7 @@ const NORMAL_FUNCTIONS_DATA = {
 }
 
 // Helper component to render content based on type
-const ContentRenderer = ({ item, styles, isDarkMode }: { item: any; styles: any; isDarkMode: boolean }) => {
+const ContentRenderer = ({ item, styles, isDarkMode }: { item: Record<string, unknown>; styles: Record<string, string>; isDarkMode: boolean }) => {
   switch (item.type) {
     case "paragraph":
       return <p className={styles.enhancedParagraph}>{item.text}</p>
@@ -545,7 +545,7 @@ const ContentRenderer = ({ item, styles, isDarkMode }: { item: any; styles: any;
       return (
         <div className={styles.subsection}>
           <h4 className={styles.subsectionTitle}>{item.title}</h4>
-          {item.content.map((subItem: any, index: number) => (
+          {(item.content as Array<Record<string, unknown>>).map((subItem: Record<string, unknown>, index: number) => (
             <ContentRenderer key={index} item={subItem} styles={styles} isDarkMode={isDarkMode} />
           ))}
         </div>
@@ -555,7 +555,7 @@ const ContentRenderer = ({ item, styles, isDarkMode }: { item: any; styles: any;
       return (
         <div className={styles.exerciseSteps}>
           <h4 className={styles.exerciseCardTitle}>{item.title}</h4>
-          {item.steps.map((step: any, index: number) => (
+          {(item.steps as Array<{ title: string; description: string; tip?: string }>).map((step: { title: string; description: string; tip?: string }, index: number) => (
             <div key={index} className={styles.exerciseStep}>
               <div className={styles.stepNumber}>{index + 1}</div>
               <div className={styles.stepContent}>

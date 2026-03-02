@@ -2,7 +2,6 @@
 import { useLanguage } from "../../../../context/LanguageContext"
 import { useTheme } from "../../../../context/ThemeContext"
 import { SectionAccordion } from "../../../../components/SectionAccordion"
-import { Droplets } from 'lucide-react'
 import styles from "../section-content.module.css"
 
 const bladderFunctionData = {
@@ -263,7 +262,7 @@ export const BladderFunctionSection = () => {
 
   return (
     <>
-      {data.sections.map((section: any, index: number) => (
+      {data.sections.map((section: Record<string, unknown>, index: number) => (
         <SectionAccordion
           key={index}
           id={`bladder-function-${section.id}`}
@@ -288,7 +287,7 @@ export const BladderFunctionSection = () => {
             )}
 
             {/* Subsections */}
-            {section.subsections && section.subsections.map((subsection: any, sIndex: number) => (
+            {section.subsections && (section.subsections as Array<{ subtitle: string; content?: string | string[]; items?: string[] }>).map((subsection: { subtitle: string; content?: string | string[]; items?: string[] }, sIndex: number) => (
               <div key={sIndex} style={{ marginTop: '24px' }}>
                 <h5 className={styles.subsectionHeading} style={{
                   color: resolvedTheme === 'dark' ? '#6aaad6' : '#053870'

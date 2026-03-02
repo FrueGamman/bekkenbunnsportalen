@@ -488,6 +488,7 @@ export interface PregnancyProblem {
   name_no: string;
   name_en?: string;
   icon?: string;
+  Icon?: string;
   about_no?: string;
   about_en?: string;
   symptoms_no?: string;
@@ -497,6 +498,7 @@ export interface PregnancyProblem {
   seek_help_no?: string;
   seek_help_en?: string;
   image?: string;
+  Image?: string;
   link_url?: string;
   link_text_no?: string;
   link_text_en?: string;

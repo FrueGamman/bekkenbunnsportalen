@@ -42,7 +42,7 @@
 
 /* Apply dark blue color to all SVG icons - uses CSS filter to convert any color to #053870 */
 .sectionImage[src$=".svg"] {
-  filter: brightness(0) saturate(100%) invert(15%) sepia(88%) saturate(2421%) hue-rotate(194deg) brightness(95%) contrast(97%);
+  filter: var(--health-icon-filter);
 }
 
 /* Keep PNG/JPG images with original colors */
@@ -55,7 +55,7 @@
 .sectionTitle {
   font-size: clamp(1.5rem, 4vw, 1.875rem);
   font-weight: 700;
-  color: #0f172a;
+  color: var(--brand-navy);
   margin: 0;
   line-height: 1.2;
 }
@@ -274,12 +274,12 @@
 }
 
 .darkMode .sectionTitle {
-  color: #e2e8f0;
+  color: var(--brand-navy);
 }
 
 /* Dark mode - lighter blue for better contrast */
 .darkMode .sectionImage[src$=".svg"] {
-  filter: brightness(0) saturate(100%) invert(77%) sepia(27%) saturate(1085%) hue-rotate(176deg) brightness(103%) contrast(96%);
+  filter: var(--health-icon-filter);
 }
 
 .darkMode .sectionImage[src$=".png"],

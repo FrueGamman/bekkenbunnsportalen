@@ -444,7 +444,7 @@ export const Resources = () => {
                 </tr>
               </thead>
               <tbody>
-                {item.tableData.map((row: any, index: number) => (
+                {item.tableData.map((row: { resource: string; topic: string; link: { text: string; url: string } }, index: number) => (
                   <tr key={index} style={{
                     borderBottom: `1px solid ${resolvedTheme === 'dark' ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)'}`
                   }}>
@@ -524,7 +524,7 @@ export const Resources = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {item.healthcareSection.tableData.map((row: any, index: number) => (
+                  {item.healthcareSection.tableData.map((row: { resource: string; topic: string; link: { text: string; url: string } }, index: number) => (
                     <tr key={index} style={{
                       borderBottom: `1px solid ${resolvedTheme === 'dark' ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)'}`
                     }}>

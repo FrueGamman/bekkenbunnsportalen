@@ -334,8 +334,8 @@ export const Diagnosis = () => {
                     alignItems: 'flex-start'
                   }}>
                     <img
-                      src={(section as any).image.src}
-                      alt={(section as any).image.alt}
+                      src={('image' in section ? (section.image as { src: string; alt: string }).src : '')}
+                      alt={('image' in section ? (section.image as { src: string; alt: string }).alt : '')}
                       style={{ 
                         width: '100%',
                         height: '280px',
@@ -355,8 +355,8 @@ export const Diagnosis = () => {
               {'hasQuote' in section && section.hasQuote && 'quote' in section && (
                 <div className={styles.quoteContainer}>
                   <blockquote className={styles.patientQuote}>
-                    <p className={styles.quoteText}>"{(section as any).quote.text}"</p>
-                    <cite className={styles.quoteAuthor}>— {(section as any).quote.author}</cite>
+                    <p className={styles.quoteText}>"{'quote' in section ? (section.quote as { text: string }).text : ''}"</p>
+                    <cite className={styles.quoteAuthor}>— {'quote' in section ? (section.quote as { author: string }).author : ''}</cite>
                   </blockquote>
                 </div>
               )}
@@ -386,9 +386,9 @@ export const Diagnosis = () => {
                 </ul>
               )}
 
-              {'examinationLinks' in section && (section as any).examinationLinks && (
+              {'examinationLinks' in section && (section as unknown as Record<string, unknown>).examinationLinks && (
                 <ul className={styles.resourceList}>
-                  {(section as any).examinationLinks.map((exam: any, examIndex: number) => (
+                  {((section as unknown as Record<string, unknown>).examinationLinks as Array<{ text: string; linkText: string; url: string }>).map((exam: { text: string; linkText: string; url: string }, examIndex: number) => (
                     <li key={examIndex} className={styles.resourceListItem}>
                       {exam.text}.{' '}
                       <a 
@@ -412,13 +412,13 @@ export const Diagnosis = () => {
 
               {'additionalContent' in section && section.additionalContent && (
                 <p className={styles.enhancedParagraph} style={{ marginTop: '15px' }}>
-                  {(section as any).additionalContent}
+                  {'additionalContent' in section ? (section.additionalContent as string) : ''}
                 </p>
               )}
 
               {'closingContent' in section && section.closingContent && (
                 <p className={styles.enhancedParagraph} style={{ marginTop: '15px' }}>
-                  {(section as any).closingContent}
+                  {'closingContent' in section ? (section.closingContent as string) : ''}
                 </p>
               )}
             </div>

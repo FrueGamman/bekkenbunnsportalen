@@ -838,7 +838,7 @@
   flex-shrink: 0;
   position: relative;
   border-radius: 16px;
-  background: #E5E7EB; /* gray-200 */
+  background: #eff1f5;
   overflow: hidden;
   transform: translateZ(0);
 }
@@ -892,6 +892,7 @@
   width: 72px !important;
   height: 72px !important;
   object-fit: contain;
+  color: var(--brand-navy);
   /* In light mode, show native blue; in dark, invert via global vars */
   filter: var(--health-icon-filter);
   transition: all 0.3s ease;

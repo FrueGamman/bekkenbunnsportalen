@@ -141,17 +141,17 @@ export const References = () => {
                 {referencesData[language].currentArticles.map((article, index) => (
                   <li key={index} className={styles.resourceListItem}>
                     {article.text}
-                    {(article as any).linkText && (article as any).url && (
+                    {'linkText' in article && 'url' in article && (
                       <a 
-                        href={(article as any).url} 
+                        href={(article as unknown as Record<string, string>).url} 
                         target="_blank" 
                         rel="noopener noreferrer"
                         className={styles.inlineLink}
                       >
-                        {(article as any).linkText}
+                        {(article as unknown as Record<string, string>).linkText}
                       </a>
                     )}
-                    {(article as any).linkAfter && (article as any).linkAfter}
+                    {'linkAfter' in article && (article as unknown as Record<string, string>).linkAfter}
                   </li>
                 ))}
               </ul>

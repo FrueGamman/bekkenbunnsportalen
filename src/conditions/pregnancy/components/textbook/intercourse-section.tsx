@@ -2,7 +2,6 @@
 import { useLanguage } from "../../../../context/LanguageContext"
 import { useTheme } from "../../../../context/ThemeContext"
 import { SectionAccordion } from "../../../../components/SectionAccordion"
-import { Heart } from 'lucide-react'
 import styles from "../section-content.module.css"
 
 const intercourseData = {

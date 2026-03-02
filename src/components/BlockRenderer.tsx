@@ -4,7 +4,6 @@ import { getImageUrl } from '../lib/directus';
 import { HeroSection } from './hero-section';
 import { SectionAccordion } from './SectionAccordion';
 import { VideoPlayer } from './ui/VideoPlayer';
-import { Card, CardHeader, CardTitle, CardContent, CardDescription } from './ui/Card';
 import type { PageSection, BlockHero, BlockRichText, BlockAccordion, BlockImage, BlockLink, BlockVideo, BlockCardGrid } from '../types/cms';
 import styles from './BlockRenderer.module.css';
 
@@ -121,9 +120,9 @@ const RenderLink: React.FC<{ data: BlockLink; language: string }> = ({ data, lan
     let url = data.url;
 
     if (data.type === 'internal_tilstand' && typeof data.lenke_tilstand === 'object' && data.lenke_tilstand !== null) {
-        url = `/conditions/${(data.lenke_tilstand as any).slug}`;
+        url = `/conditions/${(data.lenke_tilstand as { slug: string }).slug}`;
     } else if (data.type === 'internal_side' && typeof data.lenke_side === 'object' && data.lenke_side !== null) {
-        url = `/${(data.lenke_side as any).slug}`;
+        url = `/${(data.lenke_side as { slug: string }).slug}`;
     }
 
     return (

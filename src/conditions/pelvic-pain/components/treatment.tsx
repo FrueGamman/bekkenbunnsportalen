@@ -387,7 +387,7 @@ export const Treatment = () => {
 
               {'hasMultipleQuotes' in section && section.hasMultipleQuotes && 'quotes' in section && (
                 <>
-                  {(section as any).quotes.map((quote: any, quoteIndex: number) => (
+                  {('quotes' in section ? (section.quotes as Array<{ text: string; author: string }>) : []).map((quote: { text: string; author: string }, quoteIndex: number) => (
                     <div key={quoteIndex} className={styles.highlightBox} style={{ marginBottom: '20px' }}>
                       <p className={styles.enhancedParagraph}>
                         "<em>{quote.text}</em>"
@@ -403,7 +403,7 @@ export const Treatment = () => {
               {(() => {
                 // Handle side-by-side layout for mestring section with text and image
                 if ('hasImage' in section && section.hasImage && 'additionalContent' in section && section.content) {
-                  const img = (section as any).image;
+                  const img = 'image' in section ? (section.image as { src: string; alt: string }) : null;
                   if (img) {
                     return (
                       <div style={{ 
@@ -454,7 +454,7 @@ export const Treatment = () => {
                 
                 // Handle standalone images (no additionalContent) - center them
                 if ('hasImage' in section && section.hasImage && !('additionalContent' in section) && section.content) {
-                  const img = (section as any).image;
+                  const img = 'image' in section ? (section.image as { src: string; alt: string }) : null;
                   if (img) {
                     return (
                       <>
@@ -503,14 +503,14 @@ export const Treatment = () => {
 
               {'additionalContent' in section && (
                 <p className={styles.enhancedParagraph}>
-                  {(section as any).additionalContent}
+                  {'additionalContent' in section ? (section.additionalContent as string) : ''}
                 </p>
               )}
 
-              {'externalLink' in section && (section as any).externalLink && (
+              {'externalLink' in section && (section as unknown as Record<string, unknown>).externalLink && (
                 <p className={styles.enhancedParagraph} style={{ marginTop: '15px' }}>
                   <a 
-                    href={(section as any).externalLink.url}
+                    href={((section as unknown as Record<string, unknown>).externalLink as { url: string; text: string }).url}
                     target="_blank"
                     rel="noopener noreferrer"
                     style={{
@@ -521,7 +521,7 @@ export const Treatment = () => {
                     onMouseEnter={(e) => e.currentTarget.style.textDecoration = 'underline'}
                     onMouseLeave={(e) => e.currentTarget.style.textDecoration = 'none'}
                   >
-                    {(section as any).externalLink.text} →
+                    {((section as unknown as Record<string, unknown>).externalLink as { url: string; text: string }).text} →
                   </a>
                 </p>
               )}
@@ -529,7 +529,7 @@ export const Treatment = () => {
               {(() => {
                 // Handle relaxation icons with audio
                 if ('hasRelaxationIcons' in section && 'relaxationIcons' in section) {
-                  const icons = (section as any).relaxationIcons;
+                  const icons = (section as unknown as Record<string, unknown>).relaxationIcons as Array<{ src: string; alt: string; audioUrl?: string }> | undefined;
                   if (icons && Array.isArray(icons)) {
                     return (
                       <div style={{ 
@@ -554,7 +554,7 @@ export const Treatment = () => {
                           maxWidth: '1200px',
                           margin: '0 auto'
                         }}>
-                          {icons.map((icon: any, iconIndex: number) => (
+                          {icons.map((icon: { src: string; alt: string; audioUrl?: string }, iconIndex: number) => (
                             <div key={iconIndex} style={{ 
                               display: 'flex', 
                               flexDirection: 'column', 
@@ -670,7 +670,7 @@ export const Treatment = () => {
                             marginLeft: '20px',
                             listStyle: 'circle'
                           }}>
-                            {(section as any).pustLinks.map((link: any, linkIndex: number) => (
+                            {('pustLinks' in section ? (section.pustLinks as Array<{ text: string; url: string }>) : []).map((link: { text: string; url: string }, linkIndex: number) => (
                               <li key={linkIndex} style={{ marginBottom: '5px' }}>
                                 <a 
                                   href={link.url}
@@ -701,9 +701,9 @@ export const Treatment = () => {
               {'hasPatientStories' in section && section.hasPatientStories && 'patientStories' in section && (
                 <>
                   <h4 className={styles.normalFunctionTitle} style={{ marginTop: '30px' }}>
-                    {(section as any).patientStoriesTitle}
+                    {'patientStoriesTitle' in section ? (section.patientStoriesTitle as string) : ''}
                   </h4>
-                  {(section as any).patientStories.map((story: any, storyIndex: number) => (
+                  {('patientStories' in section ? (section.patientStories as Array<{ text: string; author: string }>) : []).map((story: { text: string; author: string }, storyIndex: number) => (
                     <div key={storyIndex} className={styles.highlightBox} style={{ 
                       marginBottom: '20px',
                       background: resolvedTheme === 'dark' ? 'rgba(255, 255, 255, 0.03)' : 'rgba(0, 0, 0, 0.02)',
@@ -722,7 +722,7 @@ export const Treatment = () => {
                       marginTop: '20px',
                       fontStyle: 'italic'
                     }}>
-                      {(section as any).closingText}
+                      {'closingText' in section ? (section.closingText as string) : ''}
                     </p>
                   )}
                 </>

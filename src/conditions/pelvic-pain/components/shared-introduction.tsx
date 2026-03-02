@@ -25,19 +25,28 @@ interface PelvicPainIntroductionProps {
   content?: IntroductionContent
 }
 
+type DescriptionItemWithTrailing = {
+  text: string
+  link?: { text: string; url: string }
+  trailingText?: string
+}
+
 export const PelvicPainIntroduction = ({ content }: PelvicPainIntroductionProps) => {
   const { resolvedTheme } = useTheme()
 
   if (!content) return null
+
+  const hasYouTubeLink = (item: string | { text: string; link?: { text: string; url: string } }) =>
+    typeof item === 'object' &&
+    typeof item.link?.url === 'string' &&
+    item.link.url.includes('youtube.com')
 
   // Helper to extract video info
   const extractVideo = () => {
     if (content.video) return content.video
 
     if (Array.isArray(content.description)) {
-      const ytLink = content.description.find(
-        item => typeof item === 'object' && item.link?.url.includes('youtube.com')
-      )
+      const ytLink = content.description.find(item => hasYouTubeLink(item))
       if (typeof ytLink === 'object' && ytLink?.link) {
         return { url: ytLink.link.url, title: ytLink.link.text }
       }
@@ -47,11 +56,36 @@ export const PelvicPainIntroduction = ({ content }: PelvicPainIntroductionProps)
 
   const videoData = extractVideo()
 
-  // Filter out the bare youtube-link object from description text
-  const filteredDescription = Array.isArray(content.description)
-    ? content.description.filter(
-      item => !(typeof item === 'object' && item.link?.url.includes('youtube.com'))
-    )
+  // Keep link objects in the text flow; merge link-only item + trailing punctuation fragment.
+  const normalizedDescription = Array.isArray(content.description)
+    ? content.description.reduce<Array<string | DescriptionItemWithTrailing>>((acc, item, index, arr) => {
+      if (
+        typeof item === 'object' &&
+        item.link &&
+        item.text === '' &&
+        typeof arr[index + 1] === 'string' &&
+        arr[index + 1].trimStart().startsWith(',')
+      ) {
+        acc.push({
+          text: '',
+          link: item.link,
+          trailingText: arr[index + 1] as string
+        })
+        return acc
+      }
+
+      if (typeof arr[index - 1] === 'object' &&
+        typeof item === 'string' &&
+        item.trimStart().startsWith(',') &&
+        (arr[index - 1] as { text?: string; link?: { text: string; url: string } }).text === '' &&
+        (arr[index - 1] as { text?: string; link?: { text: string; url: string } }).link
+      ) {
+        return acc
+      }
+
+      acc.push(item)
+      return acc
+    }, [])
     : content.description
 
   return (
@@ -93,10 +127,10 @@ export const PelvicPainIntroduction = ({ content }: PelvicPainIntroductionProps)
           {/* Right: Text */}
           <div className={styles.heroTextContent}>
             <div className={styles.heroDescription}>
-              {typeof filteredDescription === 'string' ? (
-                <div dangerouslySetInnerHTML={{ __html: filteredDescription }} />
+              {typeof normalizedDescription === 'string' ? (
+                <div dangerouslySetInnerHTML={{ __html: normalizedDescription }} />
               ) : (
-                filteredDescription.map((item, index) => (
+                normalizedDescription.map((item, index) => (
                   <p key={index}>
                     {typeof item === 'string' ? item : (
                       <>
@@ -106,6 +140,7 @@ export const PelvicPainIntroduction = ({ content }: PelvicPainIntroductionProps)
                             {item.link.text}
                           </a>
                         )}
+                        {item.trailingText}
                       </>
                     )}
                   </p>

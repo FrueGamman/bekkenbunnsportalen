@@ -91,7 +91,7 @@ export const PelvisPregnancySection = () => {
             <div className={styles.normalFunctionContent}>
               {section.content.map((paragraph, pIndex) => {
                 // Check if this paragraph should have a link
-                const sectionAny = section as any;
+                const sectionAny = section as unknown as Record<string, unknown>;
                 const hasLink = sectionAny.link && pIndex === section.content.length - 1 && paragraph.includes(sectionAny.link.text)
                 
                 if (hasLink && sectionAny.link) {

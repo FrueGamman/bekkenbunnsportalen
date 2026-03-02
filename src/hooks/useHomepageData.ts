@@ -6,7 +6,6 @@ import type {
   ELearningCourse,
   Event,
   Pasientorganisasjon,
-  Condition
 } from "../types/cms";
 
 export interface HomepageData {
@@ -95,7 +94,7 @@ export const useHomepageData = (language: string) => {
           directusFetch<ELearningCourse[]>(`/items/e_learning_courses?fields=*,translations.*`).catch(() => []),
           directusFetch<Event[]>(`/items/events?fields=*,translations.*`).catch(() => []),
           directusFetch<Pasientorganisasjon[]>(`/items/pasientorganisasjoner?filter[aktiv][_eq]=true`),
-          directusFetch<any[]>(`/items/tilstander?fields=slug,navn,side_tittel,side_tittel_en,ikon`)
+          directusFetch<Record<string, string>[]>(`/items/tilstander?fields=slug,navn,side_tittel,side_tittel_en,ikon`)
         ]);
 
         const [

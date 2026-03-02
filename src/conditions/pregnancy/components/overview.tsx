@@ -33,7 +33,7 @@ export const PregnancyOverview = ({ onNavigate }: PregnancyOverviewProps) => {
       {
         id: "common-problems",
         title: "Vanlige plager",
-        icon: "/famicons_people-outline(1).png",
+        icon: "/ion-people-outline.svg",
         description: "Informasjon om vanlige underlivsplager under graviditet og etter fødsel",
         color: "#4A90E2"
       },
@@ -103,7 +103,7 @@ export const PregnancyOverview = ({ onNavigate }: PregnancyOverviewProps) => {
       {
         id: "common-problems",
         title: "Common Problems",
-        icon: "/famicons_people-outline(1).png",
+        icon: "/ion-people-outline.svg",
         description: "Information about common pelvic floor problems during pregnancy and after childbirth",
         color: "#4A90E2"
       },

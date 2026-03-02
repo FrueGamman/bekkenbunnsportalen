@@ -43,6 +43,7 @@ function parsePelvicPainIntro(html: string) {
 }
 import { TextbookAccordion } from "../../conditions/pregnancy/components/TextbookAccordion";
 import { usePregnancyData } from "../../hooks/usePregnancyData";
+import type { PregnancyChapter, Tilstand } from "../../types/cms";
 
 const PREGNANCY_SECTION_CARDS = {
   no: [
@@ -360,21 +361,8 @@ export default function ConditionPage() {
   );
   const [activeSection, setActiveSection] = useState("overview");
 
-  // Map activeSection to tilstand field prefixes for fallback check
-  const sectionMap: Record<string, string> = {
-    "normal-functions": "funksjon",
-    "symptoms": "symptomer",
-    "causes": "arsaker",
-    "diagnosis": "utredning",
-    "treatment": "behandling",
-    "exercises": "ovelse",
-    "resources": "ressurser",
-    "references": "referanser",
-    "textbook": "funksjon"
-  };
-
   // Fetch CMS data for the active condition (all non-pregnancy conditions use Directus)
-  const { tilstand: cmsTilstand, loading: cmsLoading } = useConditionDetails(activeCondition, language);
+  const { tilstand: cmsTilstand } = useConditionDetails(activeCondition, language);
   const { data: pregnancyData, loading: pregnancyLoading } = usePregnancyData(language);
 
   const ALL_CONDITIONS = ALL_CONDITIONS_DATA[language];
@@ -417,7 +405,7 @@ export default function ConditionPage() {
       : sectionParam;
 
     const validSection = resolvedSectionParam
-      ? navigableSectionIds.has(resolvedSectionParam as any)
+      ? navigableSectionIds.has(resolvedSectionParam)
       : false;
 
     if (resolvedSectionParam && validSection) {
@@ -476,10 +464,10 @@ export default function ConditionPage() {
         return <UpgradedPregnancyContent data={pregnancyData} />;
       }
       if (activeSection === "textbook") {
-        return <TextbookAccordion chapters={pregnancyData.chapters as any} language={language} />;
+        return <TextbookAccordion chapters={pregnancyData.chapters as PregnancyChapter[] | undefined} language={language} />;
       }
       if (["exercises", "resources", "references"].includes(activeSection)) {
-        return <TilstandDynamicSection tilstand={pregnancyData as any} activeSection={activeSection} />;
+        return <TilstandDynamicSection tilstand={pregnancyData as unknown as Tilstand} activeSection={activeSection} />;
       }
       if (activeSection === "normal-functions") {
         return (
@@ -492,7 +480,7 @@ export default function ConditionPage() {
                 aria-label={language === "no" ? "Utforsk flere temasider for graviditet" : "Explore additional pregnancy topics"}
               >
                 {pregnancyCards.map((card) => {
-                  const isActive = activeSection === (card.id as any);
+                  const isActive = activeSection === card.id;
                   return (
                     <button
                       key={card.id}
@@ -528,11 +516,10 @@ export default function ConditionPage() {
     const showIntro = activeSection === firstSectionId;
 
     if (showIntro && activeCondition === "pelvic-pain" && cmsTilstand) {
-      const t = cmsTilstand as any;
-      const sideIntro = (language === 'en' && t.side_intro_en) || t.side_intro || '';
-      const title = (language === 'en' && t.side_tittel_en) || t.side_tittel || '';
-      const subtitle = (language === 'en' && t.side_undertittel_en) || t.side_undertittel || '';
-      const videoId = t.funksjon_video_id || '';
+      const sideIntro = (language === 'en' && cmsTilstand.side_intro_en) || cmsTilstand.side_intro || '';
+      const title = (language === 'en' && cmsTilstand.side_tittel_en) || cmsTilstand.side_tittel || '';
+      const subtitle = (language === 'en' && cmsTilstand.side_undertittel_en) || cmsTilstand.side_undertittel || '';
+      const videoId = cmsTilstand.funksjon_video_id || '';
 
       const parsed = parsePelvicPainIntro(sideIntro);
 

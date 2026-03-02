@@ -8,7 +8,6 @@ import { useLanguage } from "../../context/LanguageContext"
 import { Header } from "../../components/Header"
 import Footer from "../../components/Footer"
 import { PatientEducationCards } from "../../components/PatientEducationCards"
-import { TryExerciseSection } from "../../components/try-exercise-section"
 import styles from "./Useful.module.css"
 // import { VideoPlayer } from "../../components/ui/VideoPlayer"
 
@@ -385,11 +384,6 @@ export const Useful = () => {
   
   const data = USEFUL_DATA[language]
 
-  const openVideoModal = (videoSrc: string, title: string) => {
-    setSelectedVideo({ src: videoSrc, title })
-    setModalOpen(true)
-  }
-
   const closeVideoModal = () => {
     setModalOpen(false)
     setSelectedVideo({ src: "", title: "" })
@@ -412,11 +406,6 @@ export const Useful = () => {
 
   // Featured article (top section)
   // Featured article removed
-
-
-  // Filter helpers
-
-  const tabMatches = (category: string) => category === activeTab
 
 
   const showFeatured = false

@@ -280,7 +280,7 @@ export const Symptoms = () => {
         <div className={styles.sectionContent}>
           {symptomsData[language].sections.map((section) => {
             const hasTitle = 'title' in section && section.title;
-            const sectionAny = section as any;
+            const sectionAny = section as unknown as Record<string, unknown>;
 
             const content = (
               <div className={styles.normalFunctionContent}>
@@ -394,7 +394,7 @@ export const Symptoms = () => {
                 {sectionAny.hasMultipleLinks && sectionAny.links && (
                   <p className={styles.enhancedParagraph} style={{ marginTop: '12px', marginBottom: '16px' }}>
                     Les mer om{' '}
-                    {sectionAny.links.map((link: any, linkIdx: number) => (
+                    {(sectionAny.links as Array<{ text: string; url: string }>).map((link: { text: string; url: string }, linkIdx: number) => (
                       <span key={linkIdx}>
                         <a
                           href={link.url}
@@ -427,7 +427,7 @@ export const Symptoms = () => {
                 {/* List items with optional links */}
                 {sectionAny.listItems && (
                   <ul className={styles.resourceList} style={{ marginTop: '12px', marginBottom: '16px' }}>
-                    {sectionAny.listItems.map((item: any, itemIndex: number) => (
+                    {(sectionAny.listItems as Array<string | { text: string; links?: Array<{ text: string; url: string }>; beforeLinks?: string; betweenLinks?: string }>).map((item: string | { text: string; links?: Array<{ text: string; url: string }>; beforeLinks?: string; betweenLinks?: string }, itemIndex: number) => (
                       <li key={itemIndex} className={styles.resourceListItem} style={{ marginBottom: '10px', lineHeight: '1.7' }}>
                         {typeof item === 'string' ? (
                           item
@@ -438,7 +438,7 @@ export const Symptoms = () => {
                               <>
                                 <br />
                                 {item.beforeLinks || ''}
-                                {item.links.map((link: any, linkIdx: number) => (
+                                {item.links.map((link: { text: string; url: string }, linkIdx: number) => (
                                   <span key={linkIdx}>
                                     <a
                                       href={link.url}
@@ -454,7 +454,7 @@ export const Symptoms = () => {
                                     >
                                       {link.text}
                                     </a>
-                                    {linkIdx < item.links.length - 1 && (item.betweenLinks || ', ')}
+                                    {linkIdx < (item.links?.length ?? 0) - 1 && (item.betweenLinks || ', ')}
                                   </span>
                                 ))}
                               </>

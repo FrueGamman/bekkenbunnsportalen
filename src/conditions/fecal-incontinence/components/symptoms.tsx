@@ -3,7 +3,6 @@ import { useLanguage } from "../../../context/LanguageContext"
 import { useTheme } from "../../../context/ThemeContext"
 import styles from "./section-content.module.css"
 import { SectionAccordion } from '../../../components/SectionAccordion'
-import BackgroundVideoGroup from '../../../components/BackgroundVideoGroup'
 
 // Bilingual data structure
 const SYMPTOMS_DATA = {
@@ -105,10 +104,10 @@ export const Symptoms = () => {
             <div className={styles.normalFunctionContent}>
               <p className={styles.enhancedParagraph}>{data.symptomsIntro}</p>
               <p className={styles.enhancedParagraph}>{data.symptomsImpact}</p>
-              {language === "no" && (SYMPTOMS_DATA.no as any).illustration && (
+              {language === "no" && SYMPTOMS_DATA.no.illustration && (
                 <div className={styles.illustrationContainer}>
-                  <img src={(SYMPTOMS_DATA.no as any).illustration} alt={(SYMPTOMS_DATA.no as any).illustrationCaption || ''} className={styles.illustrationImage} />
-                  <p className={styles.illustrationCaption}>{(SYMPTOMS_DATA.no as any).illustrationCaption}</p>
+                  <img src={SYMPTOMS_DATA.no.illustration} alt={SYMPTOMS_DATA.no.illustrationCaption || ''} className={styles.illustrationImage} />
+                  <p className={styles.illustrationCaption}>{SYMPTOMS_DATA.no.illustrationCaption}</p>
                 </div>
               )}
             </div>
@@ -143,7 +142,7 @@ export const Symptoms = () => {
                     <div className={styles.gpCardContent}>
                       {s.image && (
                         <div className={styles.storyImageWrap}>
-                          <img src={s.image} alt={(s as any).imageAlt || s.title} className={styles.storyImage} />
+                          <img src={s.image} alt={s.imageAlt || s.title} className={styles.storyImage} />
                           {s.imageCaption && <p className={styles.illustrationCaption}>{s.imageCaption}</p>}
                         </div>
                       )}

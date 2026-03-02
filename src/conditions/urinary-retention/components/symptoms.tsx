@@ -99,9 +99,14 @@ const SYMPTOMS_DATA = {
 } as const
 */
 
+interface SymptomItem {
+  id: string;
+  text: string;
+}
+
 const SYMPTOMS_DATA = {
-  no: { pageTitle: "Symptomene ", overviewTitle: "Symptomene varierer", symptoms: [] as any[] },
-  en: { pageTitle: "Symptoms ", overviewTitle: "What is it?", symptoms: [] as any[] }
+  no: { pageTitle: "Symptomene ", overviewTitle: "Symptomene varierer", symptoms: [] as SymptomItem[] },
+  en: { pageTitle: "Symptoms ", overviewTitle: "What is it?", symptoms: [] as SymptomItem[] }
 };
 
 

@@ -2,7 +2,6 @@
 import { useLanguage } from "../../../../context/LanguageContext"
 import { useTheme } from "../../../../context/ThemeContext"
 import { SectionAccordion } from "../../../../components/SectionAccordion"
-import { Scissors } from 'lucide-react'
 import styles from "../section-content.module.css"
 
 const birthTearsData = {
@@ -272,7 +271,7 @@ export const BirthTearsSection = () => {
           </div>
         </div>
 
-        {data.sections.map((section: any, index: number) => (
+        {data.sections.map((section: Record<string, unknown>, index: number) => (
           <SectionAccordion
             key={index}
             title={section.title}
@@ -303,7 +302,7 @@ export const BirthTearsSection = () => {
               {/* Grades section */}
               {section.grades && (
                 <div style={{ margin: '20px 0' }}>
-                  {section.grades.map((grade: any, gIndex: number) => (
+                  {(section.grades as Array<{ grade: string; description: string; subgrades?: readonly string[] }>).map((grade: { grade: string; description: string; subgrades?: readonly string[] }, gIndex: number) => (
                     <div key={gIndex} style={{ 
                       marginBottom: '16px',
                       padding: '12px',
@@ -336,7 +335,7 @@ export const BirthTearsSection = () => {
               )}
 
               {/* Detailed Grades subsections */}
-              {section.detailedGrades && section.detailedGrades.map((detailGrade: any, dgIndex: number) => (
+              {section.detailedGrades && (section.detailedGrades as Array<{ title: string; content: string; link?: { text: string; url: string } }>).map((detailGrade: { title: string; content: string; link?: { text: string; url: string } }, dgIndex: number) => (
                 <div key={`dg-${dgIndex}`} style={{ marginTop: '24px' }}>
                   <h5 className={styles.subsectionHeading} style={{ 
                     color: resolvedTheme === 'dark' ? '#6aaad6' : '#053870'
@@ -368,7 +367,7 @@ export const BirthTearsSection = () => {
               ))}
 
               {/* Subsections */}
-              {section.subsections && section.subsections.map((subsection: any, sIndex: number) => (
+              {section.subsections && (section.subsections as Array<{ subtitle: string; content: string | string[] }>).map((subsection: { subtitle: string; content: string | string[] }, sIndex: number) => (
                 <div key={sIndex} style={{ marginTop: '24px' }}>
                   <h5 className={styles.subsectionHeading} style={{ 
                     color: resolvedTheme === 'dark' ? '#6aaad6' : '#053870'

@@ -13,26 +13,26 @@ const EXERCISES_DATA = {
     pageTitle: "Øvelser",
     tryYourselfTitle: "",
     step1Text: "",
-    genderInstructions: [] as any[],
+    genderInstructions: [] as unknown[],
     tipsTitle: "",
     tipsText: "",
-    exerciseSteps: [] as any[],
+    exerciseSteps: [] as unknown[],
     videoSectionTitle: "",
     videoSectionDescription: "",
-    videos: [] as any[],
+    videos: [] as unknown[],
     smartphoneApps: { title: "", description: "", linkText: "", linkUrl: "" }
   },
   en: {
     pageTitle: "Exercises",
     tryYourselfTitle: "",
     step1Text: "",
-    genderInstructions: [] as any[],
+    genderInstructions: [] as unknown[],
     tipsTitle: "",
     tipsText: "",
-    exerciseSteps: [] as any[],
+    exerciseSteps: [] as unknown[],
     videoSectionTitle: "",
     videoSectionDescription: "",
-    videos: [] as any[],
+    videos: [] as unknown[],
     smartphoneApps: { title: "", description: "", linkText: "", linkUrl: "" }
   }
 }

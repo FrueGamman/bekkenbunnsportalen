@@ -646,6 +646,8 @@ export const Helsepersonell = () => {
   const data = HELSEPERSONELL_DATA[language]
 
   // Removed tabs as requested
+  const showSearch = false
+  const showElearningHero = false
 
   const contentCards: ContentCardProps[] = [
     /* COMMENTED OUT - First 3 cards
@@ -1140,7 +1142,7 @@ export const Helsepersonell = () => {
             </div>
           </div>
             {/* Search container temporarily hidden */}
-            {false && <div className={styles.searchContainer}>
+            {showSearch && <div className={styles.searchContainer}>
               <label htmlFor="search-input" className="sr-only">
                 {data.aria.searchLabel}
               </label>
@@ -1207,7 +1209,7 @@ export const Helsepersonell = () => {
           </div>
 
           {/* E-learning Section with aka.png image - Temporarily hidden until new link is available */}
-          {false && <div className={styles.elearningSection}>
+          {showElearningHero && <div className={styles.elearningSection}>
             <div className={styles.elearningContainer}>
               <div className={styles.elearningContent}>
                 <div className={styles.elearningImage}>
@@ -1533,15 +1535,15 @@ export const Helsepersonell = () => {
                   </p>
                   <div className={styles.courseFooter}>
                     <span className={styles.courseType}>{data.coursesDisplay.course4.type}</span>
-                    <a 
-                      href="#" 
-                      onClick={(e) => e.preventDefault()}
+                    <button
+                      type="button"
                       className={styles.courseButton}
-                      style={{ opacity: 0.5, cursor: 'not-allowed', pointerEvents: 'none' }}
+                      style={{ opacity: 0.5, cursor: 'not-allowed' }}
+                      disabled
                     >
                       {data.coursesDisplay.course4.buttonText}
                       <img src="/streamline-color_expand-window-2.png" alt="" className={styles.courseButtonIcon} />
-                    </a>
+                    </button>
                   </div>
                 </div>
               </div>

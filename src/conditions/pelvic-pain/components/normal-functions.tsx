@@ -194,11 +194,11 @@ export const NormalFunctions = () => {
 
             const content = (
               <>
-                {(section as any).hasImage && section.id !== 'intro' && (
+                {('hasImage' in section && (section as unknown as Record<string, unknown>).hasImage) && section.id !== 'intro' && (
                   <div className={styles.anatomyItem} style={{ marginBottom: '1.5rem' }}>
                     <img
-                      src={(section as any).image?.src || ''}
-                      alt={(section as any).image?.alt || ''}
+                      src={('image' in section && section.image ? (section.image as { src: string }).src : '')}
+                      alt={('image' in section && section.image ? (section.image as { alt: string }).alt : '')}
                       className={styles.anatomyImage}
                     />
                   </div>

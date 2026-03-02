@@ -42,7 +42,10 @@ export const ConferenceSection = ({ cmsData }: ConferenceSectionProps) => {
   const date = cmsData?.date ?? t["conference.dates"]
   const location = cmsData?.location ?? t["conference.location"]
   const buttonText = cmsData?.buttonText ?? t["conference.learnMore"]
-  const url = (cmsData?.url?.trim()) || "https://apfm.no"
+  const cmsUrl = cmsData?.url
+  const url = typeof cmsUrl === "string" && cmsUrl.trim().length > 0
+    ? cmsUrl.trim()
+    : "https://apfm.no"
   const imageUrl = cmsData?.image ? getImageUrl(cmsData.image) : ""
   const year = cmsData?.date?.match(/\d{4}/)?.[0] ?? t["conference.year"]
   const eventName = t["conference.arctic"]
