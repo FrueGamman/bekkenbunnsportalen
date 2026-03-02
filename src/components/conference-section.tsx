@@ -36,11 +36,18 @@ export const ConferenceSection = ({ cmsData }: ConferenceSectionProps) => {
   const { language } = useLanguage()
   const t = translations[language]
 
-  const title = cmsData?.title ?? t["conference.title"]
-  const subtitle = cmsData?.subtitle ?? t["conference.subtitle"]
-  const description = cmsData?.description ?? t["conference.description"]
-  const date = cmsData?.date ?? t["conference.dates"]
-  const location = cmsData?.location ?? t["conference.location"]
+  const withFallback = (value: string | undefined, fallback: string) => {
+    if (!value) return fallback
+    const trimmed = value.trim()
+    return trimmed.length > 0 ? trimmed : fallback
+  }
+
+  const title = withFallback(cmsData?.title, t["conference.title"])
+  const subtitle = withFallback(cmsData?.subtitle, t["conference.subtitle"])
+  const description = withFallback(cmsData?.description, t["conference.description"])
+  const date = withFallback(cmsData?.date, t["conference.dates"])
+  const location = withFallback(cmsData?.location, t["conference.location"])
+  const buttonText = withFallback(cmsData?.buttonText, t["conference.learnMore"])
   const url = (cmsData?.url?.trim()) || "https://apfm.no"
   const imageUrl = cmsData?.image ? getImageUrl(cmsData.image) : ""
   const year = cmsData?.date?.match(/\d{4}/)?.[0] ?? t["conference.year"]
@@ -90,7 +97,7 @@ export const ConferenceSection = ({ cmsData }: ConferenceSectionProps) => {
             rel="noopener noreferrer"
             className={styles.ctaButton}
           >
-            More info
+            {buttonText}
           </a>
         </div>
       </div>
