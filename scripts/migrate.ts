@@ -1,9 +1,36 @@
 import axios from 'axios';
 import { COMMON_PROBLEMS_DATA } from '../src/conditions/pregnancy/components/common-problems-data.ts';
-import * as fs from 'fs';
+import { readFileSync } from 'fs';
+import { fileURLToPath } from 'url';
+import { dirname, join } from 'path';
 
-const DIRECTUS_URL = 'https://directus-cms.sliplane.app';
-const TOKEN = 'CrroW4IZgGtsGuJWNayMuay0hnRGO6JO';
+const __dirname = dirname(fileURLToPath(import.meta.url));
+const root = join(__dirname, '..');
+
+function loadEnv() {
+    try {
+        const envPath = join(root, '.env');
+        const content = readFileSync(envPath, 'utf8');
+        const env: Record<string, string> = {};
+        for (const line of content.split('\n')) {
+            const m = line.match(/^\s*([^#=]+)=(.*)$/);
+            if (m) env[m[1].trim()] = m[2].trim().replace(/^["']|["']$/g, '');
+        }
+        return env;
+    } catch {
+        return {};
+    }
+}
+
+const env = loadEnv();
+const DIRECTUS_URL = (process.env.VITE_DIRECTUS_URL || env.VITE_DIRECTUS_URL || '').replace(/\/$/, '');
+const TOKEN = process.env.VITE_DIRECTUS_TOKEN || env.VITE_DIRECTUS_TOKEN || '';
+
+if (!DIRECTUS_URL || !TOKEN) {
+    console.error('Set VITE_DIRECTUS_URL and VITE_DIRECTUS_TOKEN in .env or environment.');
+    process.exit(1);
+}
+
 const HEADERS = {
     Authorization: `Bearer ${TOKEN}`,
     'Content-Type': 'application/json',
