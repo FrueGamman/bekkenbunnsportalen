@@ -78,51 +78,35 @@ export const HeroSection = ({ cmsData }: HeroSectionProps) => {
     "pregnancy": "/vector-2.svg"
   }
 
-  const healthConditions: HealthCondition[] = (cmsData?.conditions && cmsData.conditions.length > 0) ?
-    cmsData.conditions.map((c, i) => ({
+  const staticConditionList: HealthCondition[] = [
+    { id: 1, titleKey: staticData.conditions.urinaryIncontinence, icon: "/image-7.svg", route: "urinary-incontinence" },
+    { id: 2, titleKey: staticData.conditions.urinaryRetention, icon: "/vector.svg", route: "urinary-retention" },
+    { id: 3, titleKey: staticData.conditions.fecalIncontinence, icon: "/fecalincontinence.svg", route: "fecal-incontinence" },
+    { id: 4, titleKey: staticData.conditions.constipation, icon: "/constipation.svg", route: "constipation" },
+    { id: 5, titleKey: staticData.conditions.pelvicPain, icon: "/belly--1--1.svg", route: "pelvic-pain" },
+    { id: 6, titleKey: staticData.conditions.pregnancy, icon: "/vector-2.svg", route: "pregnancy" },
+  ]
+
+  let healthConditions: HealthCondition[]
+  if (cmsData?.conditions && cmsData.conditions.length > 0) {
+    healthConditions = cmsData.conditions.map((c, i) => ({
       id: `cms-${i}`,
       titleKey: c.title,
       icon: hardcodedIcons[c.slug] || getImageUrl(c.icon),
       route: c.slug,
       isCms: true
-    })) : [
-      {
-        id: 1,
-        titleKey: staticData.conditions.urinaryIncontinence,
-        icon: "/image-7.svg",
-        route: "urinary-incontinence",
-      },
-      {
-        id: 2,
-        titleKey: staticData.conditions.urinaryRetention,
-        icon: "/vector.svg",
-        route: "urinary-retention",
-      },
-      {
-        id: 3,
-        titleKey: staticData.conditions.fecalIncontinence,
-        icon: "/fecalincontinence.svg",
-        route: "fecal-incontinence",
-      },
-      {
-        id: 4,
-        titleKey: staticData.conditions.constipation,
-        icon: "/constipation.svg",
-        route: "constipation",
-      },
-      {
-        id: 5,
-        titleKey: staticData.conditions.pelvicPain,
-        icon: "/belly--1--1.svg",
-        route: "pelvic-pain",
-      },
-      {
-        id: 6,
-        titleKey: staticData.conditions.pregnancy,
-        icon: "/vector-2.svg",
-        route: "pregnancy",
-      },
-    ]
+    }))
+    // Ensure pregnancy is always shown on hero (e.g. if removed from Directus tilstander)
+    const hasPregnancy = healthConditions.some((c) => c.route === "pregnancy")
+    if (!hasPregnancy) {
+      healthConditions = [
+        ...healthConditions,
+        { id: "pregnancy-fallback", titleKey: staticData.conditions.pregnancy, icon: "/vector-2.svg", route: "pregnancy" }
+      ]
+    }
+  } else {
+    healthConditions = staticConditionList
+  }
 
   const handleConditionClick = (route: string) => {
     navigate(`/conditions/${route}`)
