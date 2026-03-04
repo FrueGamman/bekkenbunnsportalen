@@ -10,6 +10,7 @@
   "scripts": {
     "sync:textbook-data": "tsx scripts/sync-pregnancy-textbook-data-directus.ts",
     "add:textbook-fields": "node scripts/add-directus-pregnancy-chapter-data-fields.js",
+    "sync:urinary-retention": "node scripts/sync-urinary-retention-directus.js",
     "dev": "vite",
     "build": "tsc -p tsconfig.app.json --noEmit && vite build",
     "lint": "eslint .",

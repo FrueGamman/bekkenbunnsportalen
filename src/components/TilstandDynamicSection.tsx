@@ -14,6 +14,10 @@ interface TilstandDynamicSectionProps {
     activeSection: string;
 }
 
+/**
+ * Renders one section (funksjon, symptomer, årsaker, utredning, behandling, etc.) from Directus tilstand.
+ * Keeps original frontend: same layout (sectionContainer, sectionHeader, sectionContent), SectionAccordion, and section-content.module.css.
+ */
 export const TilstandDynamicSection = ({ tilstand, activeSection }: TilstandDynamicSectionProps) => {
     const { language } = useLanguage();
     const { resolvedTheme } = useTheme();
@@ -34,6 +38,24 @@ export const TilstandDynamicSection = ({ tilstand, activeSection }: TilstandDyna
 
     const prefix = sectionMap[activeSection];
     if (!prefix) return null;
+
+    // Section icons matching original condition pages; urinary-incontinence treatment uses /solae.png on original site
+    const sectionIconMap: Record<string, string> = {
+        "normal-functions": "/inNormal.svg",
+        "symptoms": "/inSymptoms.png",
+        "causes": "/couse.png",
+        "diagnosis": "/solae.png",
+        "treatment": "/treat.png",
+        "exercises": "/exercises.png",
+        "resources": "/resource.png",
+        "references": "/resource.png",
+        "textbook": "/inNormal.svg",
+    };
+    const conditionSlug = (tilstand as { slug?: string }).slug;
+    const sectionIcon =
+        conditionSlug === "urinary-incontinence" && activeSection === "treatment"
+            ? "/solae.png"
+            : (sectionIconMap[activeSection] ?? "/inNormal.svg");
 
     // Use type assertion to access fields dynamically
     const t = tilstand as unknown as Record<string, any>;
@@ -112,9 +134,12 @@ export const TilstandDynamicSection = ({ tilstand, activeSection }: TilstandDyna
         return (language === 'en' && item[enField]) ? String(item[enField]) : String(item[field]);
     };
 
-    // Helper to slugify title for deep linking
+    // Helper to slugify title for deep linking (match original site anchors e.g. #konservativ-behandling)
     const slugify = (text: string) => {
-        return text
+        const trimmed = (text || '').trim();
+        const withoutLeadingNumber = trimmed.replace(/^\s*\d+\.\s*/, '');
+        const base = withoutLeadingNumber || trimmed;
+        return base
             .toLowerCase()
             .replace(/[ææ]/g, 'ae')
             .replace(/[øø]/g, 'o')
@@ -377,10 +402,13 @@ export const TilstandDynamicSection = ({ tilstand, activeSection }: TilstandDyna
                         </React.Fragment>
                     ))}
 
-                    {/* Each sub-cause in its own card */}
-                    {cards.map((card, i) => (
+                    {/* Each subsection: use h3.subsectionTitle when original was h3 (match urinary-incontinence treatment layout) */}
+                    {cards.map((card, i) => {
+                        const HeadingTag = card.headingTag === "h3" ? "h3" : "h4";
+                        const headingClass = card.headingTag === "h3" ? styles.subsectionTitle : styles.normalFunctionTitle;
+                        return (
                         <div key={i} className={styles.normalFunctionSection}>
-                            <h4 className={styles.normalFunctionTitle}>{card.headingText}</h4>
+                            <HeadingTag className={headingClass}>{card.headingText}</HeadingTag>
 
                             {/* Side-by-side layout for causes with images */}
                             {card.images.length > 0 ? (
@@ -460,7 +488,8 @@ export const TilstandDynamicSection = ({ tilstand, activeSection }: TilstandDyna
                                 </>
                             )}
                         </div>
-                    ))}
+                        );
+                    })}
                 </>
             );
         } catch (e) {
@@ -523,7 +552,7 @@ export const TilstandDynamicSection = ({ tilstand, activeSection }: TilstandDyna
             <div className={styles.sectionHeader}>
                 <div className={styles.sectionIcon}>
                     <img
-                        src={activeSection === "resources" || activeSection === "references" ? "/resource.png" : "/inNormal.svg"}
+                        src={sectionIcon}
                         alt={title}
                         width="24"
                         height="24"
@@ -555,11 +584,35 @@ export const TilstandDynamicSection = ({ tilstand, activeSection }: TilstandDyna
                     const itemId = slugify(itemTitleNo);
                     const hasUnderseksjoner = item.underseksjoner && item.underseksjoner.length > 0;
 
+                    // Render image for underseksjon (sub.bilde_url)
+                    const renderUnderseksjonImage = (sub: TilstandUnderseksjon) => {
+                        const src = sub.bilde_url;
+                        if (!src) return null;
+                        const alt = sub.bilde_alt || sub.tittel;
+                        const caption = sub.bilde_caption;
+                        return (
+                            <div className={`${styles.anatomyItem} ${styles.anatomyItemStandalone}`}>
+                                <img
+                                    src={src}
+                                    alt={alt}
+                                    className={styles.anatomyImage}
+                                    onClick={() => setSelectedImage({ src, alt })}
+                                    onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setSelectedImage({ src, alt }); } }}
+                                    role="button" // eslint-disable-line jsx-a11y/no-noninteractive-element-to-interactive-role
+                                    tabIndex={0}
+                                    style={{ cursor: 'pointer' }}
+                                />
+                                {caption && <p className={styles.anatomyCaption}>{caption}</p>}
+                            </div>
+                        );
+                    };
+
                     const renderSubContent = (sub: TilstandUnderseksjon) => {
                         const subContent = (language === 'en' && sub.innhold_en) ? sub.innhold_en : sub.innhold;
                         return (
                             <>
                                 {renderContentWithImageCards(subContent)}
+                                {renderUnderseksjonImage(sub)}
                                 {sub.lenke_url && (
                                     <p className={styles.enhancedParagraph}>
                                         <a
@@ -631,13 +684,92 @@ export const TilstandDynamicSection = ({ tilstand, activeSection }: TilstandDyna
                                         )}
                                     </div>
                                 </div>
-                            ) : (
-                                <>
-                                    {renderContentWithImageCards(itemContent)}
-                                    {renderImage(item)}
-                                    {renderLinks(item)}
-                                </>
-                            )}
+                            ) : (() => {
+                                const isFirstTreatmentAccordion = activeSection === "treatment" && index === 0 && conditionSlug === "urinary-incontinence";
+                                const tryTitle = ((language === "en" && t.ovelse_try_yourself_title_en) || t.ovelse_try_yourself_title || "") as string;
+                                const hasExerciseData = !!(tryTitle || (t.ovelse_steps as unknown[] | null)?.length || (t.ovelse_videos as unknown[] | null)?.length);
+                                const injectExerciseSection = isFirstTreatmentAccordion && hasExerciseData;
+                                const exerciseMarker = "<!-- INJECT_EXERCISE_SECTION -->";
+                                const parts = injectExerciseSection && typeof itemContent === "string" && itemContent.includes(exerciseMarker)
+                                    ? itemContent.split(exerciseMarker)
+                                    : null;
+                                if (parts && parts.length >= 2) {
+                                    const videosRaw = (t.ovelse_videos as { src: string; title?: string; title_en?: string }[] | null) || [];
+                                    const stepsRaw = (t.ovelse_steps as { number: number; text?: string; text_en?: string }[] | null) || [];
+                                    const genderRaw = (t.ovelse_gender_instructions as { title?: string; title_en?: string; text?: string; text_en?: string; icon?: string; iconColor?: string }[] | null) || [];
+                                    const app = t.ovelse_smartphone_apps as Record<string, string | undefined> | null | undefined;
+                                    return (
+                                        <>
+                                            {renderContentWithImageCards(parts[0].trim())}
+                                            <CommonExerciseSection
+                                                pageTitle={language === "no" ? "Bekkenbunnstrening" : "Pelvic floor training"}
+                                                tryYourselfTitle={tryTitle || (language === "no" ? "Prøv selv" : "Try it yourself")}
+                                                step1Text={((language === "en" && t.ovelse_step1_text_en) || t.ovelse_step1_text || "") as string}
+                                                genderInstructions={(genderRaw || []).map((g) => ({
+                                                    title: (language === "en" && g.title_en) ? g.title_en : (g.title || ""),
+                                                    text: (language === "en" && g.text_en) ? g.text_en : (g.text || ""),
+                                                    icon: g.icon || "",
+                                                    iconColor: g.iconColor || "#053870"
+                                                }))}
+                                                tipsTitle={((language === "en" && t.ovelse_tips_title_en) || t.ovelse_tips_title || "") as string}
+                                                tipsText={((language === "en" && t.ovelse_tips_text_en) || t.ovelse_tips_text || "") as string}
+                                                exerciseSteps={(stepsRaw || []).sort((a, b) => a.number - b.number).map((s) => ({
+                                                    number: s.number,
+                                                    text: (language === "en" && s.text_en) ? s.text_en : (s.text || "")
+                                                }))}
+                                                videoSectionTitle={((language === "en" && t.ovelse_video_section_title_en) || t.ovelse_video_section_title || "") as string}
+                                                videoSectionDescription={((language === "en" && t.ovelse_video_section_description_en) || t.ovelse_video_section_description || "") as string}
+                                                videos={(videosRaw || []).map((v) => ({ src: v.src, title: (language === "en" && v.title_en) ? v.title_en : (v.title || "") }))}
+                                                smartphoneApps={app ? { title: (language === "en" && app.title_en) ? app.title_en : (app.title || ""), description: (language === "en" && app.description_en) ? app.description_en : (app.description || ""), linkText: (language === "en" && app.linkText_en) ? app.linkText_en : (app.linkText || ""), linkUrl: app.linkUrl || "" } : undefined}
+                                            />
+                                            {renderContentWithImageCards(parts[1].trim())}
+                                            {renderImage(item)}
+                                            {renderLinks(item)}
+                                        </>
+                                    );
+                                }
+                                if (injectExerciseSection && hasExerciseData) {
+                                    const videosRaw = (t.ovelse_videos as { src: string; title?: string; title_en?: string }[] | null) || [];
+                                    const stepsRaw = (t.ovelse_steps as { number: number; text?: string; text_en?: string }[] | null) || [];
+                                    const genderRaw = (t.ovelse_gender_instructions as { title?: string; title_en?: string; text?: string; text_en?: string; icon?: string; iconColor?: string }[] | null) || [];
+                                    const app = t.ovelse_smartphone_apps as Record<string, string | undefined> | null | undefined;
+                                    return (
+                                        <>
+                                            {renderContentWithImageCards(itemContent)}
+                                            <CommonExerciseSection
+                                                pageTitle={language === "no" ? "Bekkenbunnstrening" : "Pelvic floor training"}
+                                                tryYourselfTitle={tryTitle || (language === "no" ? "Prøv selv" : "Try it yourself")}
+                                                step1Text={((language === "en" && t.ovelse_step1_text_en) || t.ovelse_step1_text || "") as string}
+                                                genderInstructions={(genderRaw || []).map((g) => ({
+                                                    title: (language === "en" && g.title_en) ? g.title_en : (g.title || ""),
+                                                    text: (language === "en" && g.text_en) ? g.text_en : (g.text || ""),
+                                                    icon: g.icon || "",
+                                                    iconColor: g.iconColor || "#053870"
+                                                }))}
+                                                tipsTitle={((language === "en" && t.ovelse_tips_title_en) || t.ovelse_tips_title || "") as string}
+                                                tipsText={((language === "en" && t.ovelse_tips_text_en) || t.ovelse_tips_text || "") as string}
+                                                exerciseSteps={(stepsRaw || []).sort((a, b) => a.number - b.number).map((s) => ({
+                                                    number: s.number,
+                                                    text: (language === "en" && s.text_en) ? s.text_en : (s.text || "")
+                                                }))}
+                                                videoSectionTitle={((language === "en" && t.ovelse_video_section_title_en) || t.ovelse_video_section_title || "") as string}
+                                                videoSectionDescription={((language === "en" && t.ovelse_video_section_description_en) || t.ovelse_video_section_description || "") as string}
+                                                videos={(videosRaw || []).map((v) => ({ src: v.src, title: (language === "en" && v.title_en) ? v.title_en : (v.title || "") }))}
+                                                smartphoneApps={app ? { title: (language === "en" && app.title_en) ? app.title_en : (app.title || ""), description: (language === "en" && app.description_en) ? app.description_en : (app.description || ""), linkText: (language === "en" && app.linkText_en) ? app.linkText_en : (app.linkText || ""), linkUrl: app.linkUrl || "" } : undefined}
+                                            />
+                                            {renderImage(item)}
+                                            {renderLinks(item)}
+                                        </>
+                                    );
+                                }
+                                return (
+                                    <>
+                                        {renderContentWithImageCards(itemContent)}
+                                        {renderImage(item)}
+                                        {renderLinks(item)}
+                                    </>
+                                );
+                            })()}
                         </SectionAccordion>
                     );
                 })}

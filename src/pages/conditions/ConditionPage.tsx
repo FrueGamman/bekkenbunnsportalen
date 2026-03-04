@@ -7,6 +7,7 @@ import { Header } from "../../components/Header";
 import Footer from "../../components/Footer";
 import styles from "./ConditionPage.module.css";
 import { useConditionDetails } from "../../hooks/useConditionDetails";
+import { useConditionList } from "../../hooks/useConditionList";
 import { TilstandDynamicSection } from "../../components/TilstandDynamicSection";
 import { TilstandIntroduction } from "../../components/TilstandIntroduction";
 
@@ -350,6 +351,39 @@ const CONDITION_SECTIONS_MAP = {
   }
 };
 
+// Section config to build section list from Directus tilstand (prefix -> section id + icon)
+const SECTION_CONFIG_FROM_TILSTAND: { id: string; prefix: string; icon: string }[] = [
+  { id: "normal-functions", prefix: "funksjon", icon: "/normal.png" },
+  { id: "symptoms", prefix: "symptomer", icon: "/symptoms.png" },
+  { id: "causes", prefix: "arsaker", icon: "/couse.png" },
+  { id: "diagnosis", prefix: "utredning", icon: "/solae.png" },
+  { id: "treatment", prefix: "behandling", icon: "/treat.png" },
+  { id: "exercises", prefix: "ovelse", icon: "/exercises.png" },
+  { id: "resources", prefix: "ressurser", icon: "/resource.png" },
+  { id: "references", prefix: "referanser", icon: "/resource.png" },
+];
+
+function buildSectionsFromTilstand(
+  tilstand: Tilstand,
+  language: string
+): { id: string; title: string; icon: string }[] {
+  const t = tilstand as unknown as Record<string, unknown>;
+  const sections: { id: string; title: string; icon: string }[] = [];
+  for (const { id: sectionId, prefix, icon } of SECTION_CONFIG_FROM_TILSTAND) {
+    const title = (language === "en" && t[`${prefix}_tittel_en`]) ? String(t[`${prefix}_tittel_en`]) : (t[`${prefix}_tittel`] ? String(t[`${prefix}_tittel`]) : "");
+    const trekkspill = t[`${prefix}_trekkspill`] as unknown[] | null | undefined;
+    const hasContent = title || (Array.isArray(trekkspill) && trekkspill.length > 0);
+    if (hasContent) {
+      sections.push({
+        id: sectionId,
+        title: title || sectionId,
+        icon,
+      });
+    }
+  }
+  return sections;
+}
+
 export default function ConditionPage() {
   const { language } = useLanguage();
   const { resolvedTheme } = useTheme();
@@ -361,12 +395,30 @@ export default function ConditionPage() {
   );
   const [activeSection, setActiveSection] = useState("overview");
 
-  // Fetch CMS data for the active condition (all non-pregnancy conditions use Directus)
-  const { tilstand: cmsTilstand } = useConditionDetails(activeCondition, language);
+  const conditionListFromDirectus = useConditionList(language);
+  const { tilstand: cmsTilstand, loading: cmsLoading } = useConditionDetails(activeCondition, language);
   const { data: pregnancyData, loading: pregnancyLoading } = usePregnancyData(language);
 
-  const ALL_CONDITIONS = ALL_CONDITIONS_DATA[language];
-  const CONDITION_SECTIONS = CONDITION_SECTIONS_MAP[activeCondition as keyof typeof CONDITION_SECTIONS_MAP]?.[language] || [];
+  const ALL_CONDITIONS =
+    conditionListFromDirectus.length > 0
+      ? conditionListFromDirectus
+      : ALL_CONDITIONS_DATA[language];
+
+  const sectionsFromTilstand =
+    activeCondition !== "pregnancy" && cmsTilstand
+      ? buildSectionsFromTilstand(cmsTilstand, language)
+      : [];
+
+  const fallbackSections =
+    CONDITION_SECTIONS_MAP[activeCondition as keyof typeof CONDITION_SECTIONS_MAP]?.[language] ?? [];
+
+  const CONDITION_SECTIONS =
+    activeCondition === "pregnancy"
+      ? [{ id: "overview", title: language === "no" ? "Oversikt" : "Overview", icon: "/normal.png" }, ...PREGNANCY_SECTION_CARDS[language]]
+      : sectionsFromTilstand.length > 0
+        ? sectionsFromTilstand
+        : fallbackSections;
+
   const pregnancyCards =
     activeCondition === "pregnancy"
       ? PREGNANCY_SECTION_CARDS[language]
@@ -439,7 +491,10 @@ export default function ConditionPage() {
 
   const handleConditionClick = (conditionId: string) => {
     setActiveCondition(conditionId);
-    const newSections = CONDITION_SECTIONS_MAP[conditionId as keyof typeof CONDITION_SECTIONS_MAP]?.[language] || [];
+    const newSections =
+      conditionId === "pregnancy"
+        ? [{ id: "overview", title: "", icon: "" }, ...PREGNANCY_SECTION_CARDS[language]]
+        : CONDITION_SECTIONS_MAP[conditionId as keyof typeof CONDITION_SECTIONS_MAP]?.[language] ?? [];
     const firstSection = newSections[0]?.id || "normal-functions";
     setActiveSection(firstSection);
     navigate(`/conditions/${conditionId}?section=${firstSection}`);
@@ -509,7 +564,10 @@ export default function ConditionPage() {
       return null;
     }
 
-    // All content from Directus CMS
+    // All condition content from Directus (tilstander); original frontend preserved (TilstandDynamicSection + section-content styles)
+    if (cmsLoading) {
+      return <div className={styles.loadingState}>{language === "no" ? "Laster innhold..." : "Loading content..."}</div>;
+    }
     if (!cmsTilstand) return null;
 
     const firstSectionId = CONDITION_SECTIONS[0]?.id;
