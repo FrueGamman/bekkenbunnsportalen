@@ -680,7 +680,7 @@ export const BowelFunctionSection = () => {
         </SectionAccordion>
 
         {/* Main sections */}
-        {data.sections.map((section: Record<string, unknown>, sectionIndex: number) => (
+        {data.sections.map((section: Record<string, any>, sectionIndex: number) => (
           <SectionAccordion
             key={sectionIndex}
             id={section.id ? `bowel-function-${section.id}` : undefined}
@@ -739,7 +739,7 @@ export const BowelFunctionSection = () => {
               )}
 
               {/* Subsections */}
-              {(section.subsections as Array<Record<string, unknown>> | undefined)?.map((subsection: Record<string, unknown>, subIndex: number) => (
+              {(section.subsections as Array<Record<string, any>> | undefined)?.map((subsection: Record<string, any>, subIndex: number) => (
                 <div key={`subsection-${subIndex}-${subsection.subtitle || subIndex}`} style={{ marginTop: '24px' }}>
                   <h5 className={styles.subsectionHeading} style={{
                     color: resolvedTheme === 'dark' ? '#6aaad6' : '#053870'
@@ -795,7 +795,7 @@ export const BowelFunctionSection = () => {
                   )}
 
                   {/* Nested sections within subsection */}
-                  {subsection.sections && (subsection.sections as Array<Record<string, unknown>>).map((nestedSection: Record<string, unknown>, nsIndex: number) => (
+                  {subsection.sections && (subsection.sections as Array<Record<string, any>>).map((nestedSection: Record<string, any>, nsIndex: number) => (
                     <div key={nsIndex} style={{ marginTop: '20px', marginLeft: '12px' }}>
                       <h6 style={{
                         fontWeight: '600',

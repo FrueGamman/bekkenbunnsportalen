@@ -262,7 +262,7 @@ export const BladderFunctionSection = () => {
 
   return (
     <>
-      {data.sections.map((section: Record<string, unknown>, index: number) => (
+      {data.sections.map((section: Record<string, any>, index: number) => (
         <SectionAccordion
           key={index}
           id={`bladder-function-${section.id}`}

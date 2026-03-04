@@ -3,13 +3,13 @@ import { useLanguage } from '../../context/LanguageContext';
 import styles from './content-section.module.css';
 
 interface DynamicContent {
-    title?: string;
-    paragraphs?: { text?: string }[];
-    images?: { local_path?: string; src?: string; alt?: string }[];
-    headings?: { text?: string }[];
-    text_content?: string;
-    links?: { url: string; text: string }[];
-    pdf_files?: { local_path?: string; original_url?: string; text: string }[];
+  title?: string;
+  paragraphs?: { text?: string }[];
+  images?: { local_path?: string; src?: string; alt?: string }[];
+  headings?: { text?: string }[];
+  text_content?: string;
+  links?: { url: string; text: string }[];
+  pdf_files?: { local_path?: string; original_url?: string; text: string }[];
 }
 
 interface ContentSectionProps {
@@ -60,7 +60,7 @@ export const ContentSection: React.FC<ContentSectionProps> = ({ contentFile, sec
             {content.images && (
               <div className={styles.images}>
                 {content.images.map((image, index: number) => (
-                  <img 
+                  <img
                     key={index}
                     src={image.local_path || image.src}
                     alt={image.alt}
@@ -71,7 +71,7 @@ export const ContentSection: React.FC<ContentSectionProps> = ({ contentFile, sec
             )}
           </div>
         );
-      
+
       case 'symptoms':
         return (
           <div className={styles.symptomsSection}>
@@ -82,11 +82,11 @@ export const ContentSection: React.FC<ContentSectionProps> = ({ contentFile, sec
                   <h3>{heading.text}</h3>
                 </div>
               ))}
-              <div dangerouslySetInnerHTML={{ __html: content.text_content }} />
+              <div dangerouslySetInnerHTML={{ __html: content.text_content || '' }} />
             </div>
           </div>
         );
-      
+
       case 'treatment':
         return (
           <div className={styles.treatmentSection}>
@@ -97,12 +97,12 @@ export const ContentSection: React.FC<ContentSectionProps> = ({ contentFile, sec
                   <h3>{heading.text}</h3>
                 </div>
               ))}
-              <div dangerouslySetInnerHTML={{ __html: content.text_content }} />
+              <div dangerouslySetInnerHTML={{ __html: content.text_content || '' }} />
             </div>
             {content.images && (
               <div className={styles.treatmentImages}>
                 {content.images.map((image, index: number) => (
-                  <img 
+                  <img
                     key={index}
                     src={image.local_path || image.src}
                     alt={image.alt}
@@ -113,16 +113,16 @@ export const ContentSection: React.FC<ContentSectionProps> = ({ contentFile, sec
             )}
           </div>
         );
-      
+
       default:
         return (
           <div className={styles.genericSection}>
             <h2>{content.title}</h2>
-            <div dangerouslySetInnerHTML={{ __html: content.text_content }} />
+            <div dangerouslySetInnerHTML={{ __html: content.text_content || '' }} />
             {content.images && (
               <div className={styles.images}>
                 {content.images.map((image, index: number) => (
-                  <img 
+                  <img
                     key={index}
                     src={image.local_path || image.src}
                     alt={image.alt}
@@ -139,7 +139,7 @@ export const ContentSection: React.FC<ContentSectionProps> = ({ contentFile, sec
   return (
     <section className={styles.contentSection}>
       {renderContent()}
-      
+
       {content.links && content.links.length > 0 && (
         <div className={styles.relatedLinks}>
           <h3>{t('sections.related_links')}</h3>
@@ -154,7 +154,7 @@ export const ContentSection: React.FC<ContentSectionProps> = ({ contentFile, sec
           </ul>
         </div>
       )}
-      
+
       {content.pdf_files && content.pdf_files.length > 0 && (
         <div className={styles.resources}>
           <h3>{t('sections.resources')}</h3>

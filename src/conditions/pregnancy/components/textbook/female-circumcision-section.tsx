@@ -299,7 +299,7 @@ export const FemaleCircumcisionSection = () => {
         </div>
 
         {/* Main sections */}
-        {data.sections.map((section: Record<string, unknown>, sectionIndex: number) => (
+        {data.sections.map((section: Record<string, any>, sectionIndex: number) => (
           <SectionAccordion
             key={sectionIndex}
             title={section.title}

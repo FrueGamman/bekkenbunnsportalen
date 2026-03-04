@@ -231,7 +231,7 @@ const symptomsData = {
       }
     ]
   }
-} as const
+}
 
 export const Symptoms = () => {
   const { language } = useLanguage()
@@ -280,7 +280,7 @@ export const Symptoms = () => {
         <div className={styles.sectionContent}>
           {symptomsData[language].sections.map((section) => {
             const hasTitle = 'title' in section && section.title;
-            const sectionAny = section as unknown as Record<string, unknown>;
+            const sectionAny = section as unknown as Record<string, any>;
 
             const content = (
               <div className={styles.normalFunctionContent}>

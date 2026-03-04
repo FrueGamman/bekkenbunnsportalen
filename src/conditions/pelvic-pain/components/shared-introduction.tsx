@@ -64,7 +64,7 @@ export const PelvicPainIntroduction = ({ content }: PelvicPainIntroductionProps)
         item.link &&
         item.text === '' &&
         typeof arr[index + 1] === 'string' &&
-        arr[index + 1].trimStart().startsWith(',')
+        (arr[index + 1] as string).trimStart().startsWith(',')
       ) {
         acc.push({
           text: '',

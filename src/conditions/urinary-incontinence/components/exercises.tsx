@@ -2,6 +2,7 @@
 
 import { useLanguage } from "../../../context/LanguageContext";
 import { CommonExerciseSection } from '../../../components/CommonExerciseSection';
+import type { GenderInstruction, ExerciseStep, Video } from '../../../components/CommonExerciseSection';
 
 /*
 const EXERCISES_DATA = {
@@ -13,26 +14,26 @@ const EXERCISES_DATA = {
     pageTitle: "Øvelser",
     tryYourselfTitle: "",
     step1Text: "",
-    genderInstructions: [] as unknown[],
+    genderInstructions: [] as GenderInstruction[],
     tipsTitle: "",
     tipsText: "",
-    exerciseSteps: [] as unknown[],
+    exerciseSteps: [] as ExerciseStep[],
     videoSectionTitle: "",
     videoSectionDescription: "",
-    videos: [] as unknown[],
+    videos: [] as Video[],
     smartphoneApps: { title: "", description: "", linkText: "", linkUrl: "" }
   },
   en: {
     pageTitle: "Exercises",
     tryYourselfTitle: "",
     step1Text: "",
-    genderInstructions: [] as unknown[],
+    genderInstructions: [] as GenderInstruction[],
     tipsTitle: "",
     tipsText: "",
-    exerciseSteps: [] as unknown[],
+    exerciseSteps: [] as ExerciseStep[],
     videoSectionTitle: "",
     videoSectionDescription: "",
-    videos: [] as unknown[],
+    videos: [] as Video[],
     smartphoneApps: { title: "", description: "", linkText: "", linkUrl: "" }
   }
 }

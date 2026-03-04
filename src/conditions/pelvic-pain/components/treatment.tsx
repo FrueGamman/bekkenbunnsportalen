@@ -316,7 +316,7 @@ const treatmentData = {
       }
     ]
   }
-} as const
+}
 
 export const Treatment = () => {
   const { language } = useLanguage()
@@ -339,399 +339,399 @@ export const Treatment = () => {
   return (
     <>
       <div className={`${styles.sectionContainer} ${resolvedTheme === 'dark' ? styles.darkMode : ''}`}>
-      <div className={styles.sectionHeader}>
-        <div className={styles.sectionIcon}>
-          <img
-            src="/treat.png"
-            alt="Treatment"
-            width="24"
-            height="24"
-          />
-        </div>
-        <h2 className={styles.sectionTitle}>{treatmentData[language].pageTitle}</h2>
-      </div>
-      
-      <div className={styles.sectionContent}>
-        {/* Initial Quote */}
-        {'initialQuote' in treatmentData[language] && (
-          <div className={styles.normalFunctionSection}>
-            <div className={styles.highlightBox}>
-              <p className={styles.enhancedParagraph}>
-                "<em>{treatmentData[language].initialQuote.text}</em>"
-              </p>
-              <p className={styles.enhancedParagraph}>
-                <em>{treatmentData[language].initialQuote.author}</em>
-              </p>
-            </div>
+        <div className={styles.sectionHeader}>
+          <div className={styles.sectionIcon}>
+            <img
+              src="/treat.png"
+              alt="Treatment"
+              width="24"
+              height="24"
+            />
           </div>
-        )}
+          <h2 className={styles.sectionTitle}>{treatmentData[language].pageTitle}</h2>
+        </div>
 
-        {treatmentData[language].sections.map((section) => (
-          <SectionAccordion 
-            key={section.id}
-            title={section.title}
-            isDarkMode={resolvedTheme === 'dark'}
-            defaultOpen={false}
-          >
-            <div className={styles.normalFunctionContent}>
-              {'hasQuote' in section && section.hasQuote && (
-                <div className={styles.highlightBox}>
-                  <p className={styles.enhancedParagraph}>
-                    "<em>{section.quote?.text || ''}</em>"
-                  </p>
-                  <p className={styles.enhancedParagraph}>
-                    <em>{section.quote?.author || ''}</em>
-                  </p>
-                </div>
-              )}
+        <div className={styles.sectionContent}>
+          {/* Initial Quote */}
+          {'initialQuote' in treatmentData[language] && (
+            <div className={styles.normalFunctionSection}>
+              <div className={styles.highlightBox}>
+                <p className={styles.enhancedParagraph}>
+                  "<em>{treatmentData[language].initialQuote.text}</em>"
+                </p>
+                <p className={styles.enhancedParagraph}>
+                  <em>{treatmentData[language].initialQuote.author}</em>
+                </p>
+              </div>
+            </div>
+          )}
 
-              {'hasMultipleQuotes' in section && section.hasMultipleQuotes && 'quotes' in section && (
-                <>
-                  {('quotes' in section ? (section.quotes as Array<{ text: string; author: string }>) : []).map((quote: { text: string; author: string }, quoteIndex: number) => (
-                    <div key={quoteIndex} className={styles.highlightBox} style={{ marginBottom: '20px' }}>
-                      <p className={styles.enhancedParagraph}>
-                        "<em>{quote.text}</em>"
-                      </p>
-                      <p className={styles.enhancedParagraph}>
-                        <em>{quote.author}</em>
-                      </p>
-                    </div>
-                  ))}
-                </>
-              )}
+          {treatmentData[language].sections.map((section) => (
+            <SectionAccordion
+              key={section.id}
+              title={section.title}
+              isDarkMode={resolvedTheme === 'dark'}
+              defaultOpen={false}
+            >
+              <div className={styles.normalFunctionContent}>
+                {'hasQuote' in section && section.hasQuote && (
+                  <div className={styles.highlightBox}>
+                    <p className={styles.enhancedParagraph}>
+                      "<em>{section.quote?.text || ''}</em>"
+                    </p>
+                    <p className={styles.enhancedParagraph}>
+                      <em>{section.quote?.author || ''}</em>
+                    </p>
+                  </div>
+                )}
 
-              {(() => {
-                // Handle side-by-side layout for mestring section with text and image
-                if ('hasImage' in section && section.hasImage && 'additionalContent' in section && section.content) {
-                  const img = 'image' in section ? (section.image as { src: string; alt: string }) : null;
-                  if (img) {
-                    return (
-                      <div style={{ 
-                        display: 'flex', 
-                        flexDirection: 'row',
-                        gap: '30px',
-                        alignItems: 'flex-start',
-                        margin: '20px 0',
-                        flexWrap: 'wrap'
-                      }}>
-                        <div style={{ 
-                          flex: '1 1 300px',
-                          minWidth: '300px'
+                {'hasMultipleQuotes' in section && section.hasMultipleQuotes && 'quotes' in section && (
+                  <>
+                    {('quotes' in section ? (section.quotes as Array<{ text: string; author: string }>) : []).map((quote: { text: string; author: string }, quoteIndex: number) => (
+                      <div key={quoteIndex} className={styles.highlightBox} style={{ marginBottom: '20px' }}>
+                        <p className={styles.enhancedParagraph}>
+                          "<em>{quote.text}</em>"
+                        </p>
+                        <p className={styles.enhancedParagraph}>
+                          <em>{quote.author}</em>
+                        </p>
+                      </div>
+                    ))}
+                  </>
+                )}
+
+                {(() => {
+                  // Handle side-by-side layout for mestring section with text and image
+                  if ('hasImage' in section && section.hasImage && 'additionalContent' in section && section.content) {
+                    const img = 'image' in section ? (section.image as { src: string; alt: string }) : null;
+                    if (img) {
+                      return (
+                        <div style={{
+                          display: 'flex',
+                          flexDirection: 'row',
+                          gap: '30px',
+                          alignItems: 'flex-start',
+                          margin: '20px 0',
+                          flexWrap: 'wrap'
                         }}>
+                          <div style={{
+                            flex: '1 1 300px',
+                            minWidth: '300px'
+                          }}>
+                            {section.content.split('\n\n').map((paragraph: string, idx: number) => (
+                              <p key={idx} className={styles.enhancedParagraph}>
+                                {paragraph}
+                              </p>
+                            ))}
+                          </div>
+                          <div style={{
+                            flex: '0 0 350px',
+                            minWidth: '280px',
+                            maxWidth: '350px',
+                            display: 'flex',
+                            justifyContent: 'center',
+                            alignItems: 'flex-start'
+                          }}>
+                            <img
+                              src={img.src}
+                              alt={img.alt}
+                              style={{
+                                width: '100%',
+                                height: '280px',
+                                objectFit: 'cover',
+                                objectPosition: 'center',
+                                borderRadius: '8px',
+                                boxShadow: resolvedTheme === 'dark'
+                                  ? '0 4px 12px rgba(0, 0, 0, 0.3)'
+                                  : '0 4px 12px rgba(0, 0, 0, 0.1)'
+                              }}
+                            />
+                          </div>
+                        </div>
+                      );
+                    }
+                  }
+
+                  // Handle standalone images (no additionalContent) - center them
+                  if ('hasImage' in section && section.hasImage && !('additionalContent' in section) && section.content) {
+                    const img = 'image' in section ? (section.image as { src: string; alt: string }) : null;
+                    if (img) {
+                      return (
+                        <>
                           {section.content.split('\n\n').map((paragraph: string, idx: number) => (
                             <p key={idx} className={styles.enhancedParagraph}>
                               {paragraph}
                             </p>
                           ))}
-                        </div>
-                        <div style={{ 
-                          flex: '0 0 350px',
-                          minWidth: '280px',
-                          maxWidth: '350px',
-                          display: 'flex',
-                          justifyContent: 'center',
-                          alignItems: 'flex-start'
-                        }}>
-                          <img
-                            src={img.src}
-                            alt={img.alt}
-                            style={{ 
-                              width: '100%',
-                              height: '280px',
-                              objectFit: 'cover',
-                              objectPosition: 'center',
-                              borderRadius: '8px',
-                              boxShadow: resolvedTheme === 'dark' 
-                                ? '0 4px 12px rgba(0, 0, 0, 0.3)' 
-                                : '0 4px 12px rgba(0, 0, 0, 0.1)'
-                            }}
-                          />
-                        </div>
-                      </div>
-                    );
-                  }
-                }
-                
-                // Handle standalone images (no additionalContent) - center them
-                if ('hasImage' in section && section.hasImage && !('additionalContent' in section) && section.content) {
-                  const img = 'image' in section ? (section.image as { src: string; alt: string }) : null;
-                  if (img) {
-                    return (
-                      <>
-                        {section.content.split('\n\n').map((paragraph: string, idx: number) => (
-                          <p key={idx} className={styles.enhancedParagraph}>
-                            {paragraph}
-                          </p>
-                        ))}
-                        <div style={{ 
-                          display: 'flex',
-                          justifyContent: 'center',
-                          margin: '30px 0',
-                          width: '100%'
-                        }}>
-                          <img
-                            src={img.src}
-                            alt={img.alt}
-                            style={{ 
-                              maxWidth: '500px',
-                              width: '100%',
-                              height: 'auto',
-                              borderRadius: '8px',
-                              boxShadow: resolvedTheme === 'dark' 
-                                ? '0 4px 12px rgba(0, 0, 0, 0.3)' 
-                                : '0 4px 12px rgba(0, 0, 0, 0.1)'
-                            }}
-                          />
-                        </div>
-                      </>
-                    );
-                  }
-                }
-                return null;
-              })()}
-
-              {/* Display content normally for sections without images */}
-              {section.content && !('hasImage' in section && section.hasImage) && (
-                <>
-                  {section.content.split('\n\n').map((paragraph, idx) => (
-                    <p key={idx} className={styles.enhancedParagraph}>
-                      {paragraph}
-                    </p>
-                  ))}
-                </>
-              )}
-
-              {'additionalContent' in section && (
-                <p className={styles.enhancedParagraph}>
-                  {'additionalContent' in section ? (section.additionalContent as string) : ''}
-                </p>
-              )}
-
-              {'externalLink' in section && (section as unknown as Record<string, unknown>).externalLink && (
-                <p className={styles.enhancedParagraph} style={{ marginTop: '15px' }}>
-                  <a 
-                    href={((section as unknown as Record<string, unknown>).externalLink as { url: string; text: string }).url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    style={{
-                      color: resolvedTheme === 'dark' ? '#6aaad6' : '#0066cc',
-                      textDecoration: 'none',
-                      fontWeight: '500',
-                    }}
-                    onMouseEnter={(e) => e.currentTarget.style.textDecoration = 'underline'}
-                    onMouseLeave={(e) => e.currentTarget.style.textDecoration = 'none'}
-                  >
-                    {((section as unknown as Record<string, unknown>).externalLink as { url: string; text: string }).text} →
-                  </a>
-                </p>
-              )}
-
-              {(() => {
-                // Handle relaxation icons with audio
-                if ('hasRelaxationIcons' in section && 'relaxationIcons' in section) {
-                  const icons = (section as unknown as Record<string, unknown>).relaxationIcons as Array<{ src: string; alt: string; audioUrl?: string }> | undefined;
-                  if (icons && Array.isArray(icons)) {
-                    return (
-                      <div style={{ 
-                        margin: '30px 0',
-                        padding: '20px',
-                        background: resolvedTheme === 'dark' ? 'rgba(255, 255, 255, 0.03)' : 'rgba(0, 0, 0, 0.02)',
-                        borderRadius: '12px',
-                        border: `1px solid ${resolvedTheme === 'dark' ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.05)'}`,
-                      }}>
-                        <h4 className={styles.subsectionHeading} style={{
-                          textAlign: 'center',
-                          marginBottom: '25px',
-                          color: resolvedTheme === 'dark' ? '#fff' : '#333',
-                        }}>
-                          {language === 'no' ? 'Avspenningsteknikker med lydguide' : 'Relaxation Techniques with Audio Guide'}
-                        </h4>
-                        <div style={{ 
-                          display: 'grid', 
-                          gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', 
-                          gap: '25px',
-                          justifyItems: 'center',
-                          maxWidth: '1200px',
-                          margin: '0 auto'
-                        }}>
-                          {icons.map((icon: { src: string; alt: string; audioUrl?: string }, iconIndex: number) => (
-                            <div key={iconIndex} style={{ 
-                              display: 'flex', 
-                              flexDirection: 'column', 
-                              alignItems: 'center',
-                              width: '100%',
-                              maxWidth: '320px',
-                              padding: '20px',
-                              background: resolvedTheme === 'dark' ? 'rgba(255, 255, 255, 0.05)' : '#fff',
-                              borderRadius: '12px',
-                              boxShadow: resolvedTheme === 'dark' 
-                                ? '0 4px 12px rgba(0, 0, 0, 0.3)' 
-                                : '0 4px 12px rgba(0, 0, 0, 0.08)',
-                              transition: 'transform 0.3s ease, box-shadow 0.3s ease',
-                              border: `1px solid ${resolvedTheme === 'dark' ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.06)'}`,
-                            }}>
-                              <div style={{
+                          <div style={{
+                            display: 'flex',
+                            justifyContent: 'center',
+                            margin: '30px 0',
+                            width: '100%'
+                          }}>
+                            <img
+                              src={img.src}
+                              alt={img.alt}
+                              style={{
+                                maxWidth: '500px',
                                 width: '100%',
-                                display: 'flex',
-                                justifyContent: 'center',
-                                marginBottom: '20px',
-                                padding: '15px',
-                                background: resolvedTheme === 'dark' ? 'rgba(255, 255, 255, 0.03)' : 'rgba(0, 0, 0, 0.02)',
+                                height: 'auto',
                                 borderRadius: '8px',
+                                boxShadow: resolvedTheme === 'dark'
+                                  ? '0 4px 12px rgba(0, 0, 0, 0.3)'
+                                  : '0 4px 12px rgba(0, 0, 0, 0.1)'
+                              }}
+                            />
+                          </div>
+                        </>
+                      );
+                    }
+                  }
+                  return null;
+                })()}
+
+                {/* Display content normally for sections without images */}
+                {section.content && !('hasImage' in section && section.hasImage) && (
+                  <>
+                    {section.content.split('\n\n').map((paragraph, idx) => (
+                      <p key={idx} className={styles.enhancedParagraph}>
+                        {paragraph}
+                      </p>
+                    ))}
+                  </>
+                )}
+
+                {'additionalContent' in section && (
+                  <p className={styles.enhancedParagraph}>
+                    {(section as unknown as Record<string, any>).additionalContent as string}
+                  </p>
+                )}
+
+                {'externalLink' in section && (section as unknown as Record<string, any>).externalLink && (
+                  <p className={styles.enhancedParagraph} style={{ marginTop: '15px' }}>
+                    <a
+                      href={((section as unknown as Record<string, any>).externalLink as { url: string; text: string }).url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      style={{
+                        color: resolvedTheme === 'dark' ? '#6aaad6' : '#0066cc',
+                        textDecoration: 'none',
+                        fontWeight: '500',
+                      }}
+                      onMouseEnter={(e) => e.currentTarget.style.textDecoration = 'underline'}
+                      onMouseLeave={(e) => e.currentTarget.style.textDecoration = 'none'}
+                    >
+                      {((section as unknown as Record<string, any>).externalLink as { url: string; text: string }).text} →
+                    </a>
+                  </p>
+                )}
+
+                {(() => {
+                  // Handle relaxation icons with audio
+                  if ('hasRelaxationIcons' in section && 'relaxationIcons' in section) {
+                    const icons = (section as unknown as Record<string, unknown>).relaxationIcons as Array<{ src: string; alt: string; audioUrl?: string }> | undefined;
+                    if (icons && Array.isArray(icons)) {
+                      return (
+                        <div style={{
+                          margin: '30px 0',
+                          padding: '20px',
+                          background: resolvedTheme === 'dark' ? 'rgba(255, 255, 255, 0.03)' : 'rgba(0, 0, 0, 0.02)',
+                          borderRadius: '12px',
+                          border: `1px solid ${resolvedTheme === 'dark' ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.05)'}`,
+                        }}>
+                          <h4 className={styles.subsectionHeading} style={{
+                            textAlign: 'center',
+                            marginBottom: '25px',
+                            color: resolvedTheme === 'dark' ? '#fff' : '#333',
+                          }}>
+                            {language === 'no' ? 'Avspenningsteknikker med lydguide' : 'Relaxation Techniques with Audio Guide'}
+                          </h4>
+                          <div style={{
+                            display: 'grid',
+                            gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
+                            gap: '25px',
+                            justifyItems: 'center',
+                            maxWidth: '1200px',
+                            margin: '0 auto'
+                          }}>
+                            {icons.map((icon: { src: string; alt: string; audioUrl?: string }, iconIndex: number) => (
+                              <div key={iconIndex} style={{
+                                display: 'flex',
+                                flexDirection: 'column',
+                                alignItems: 'center',
+                                width: '100%',
+                                maxWidth: '320px',
+                                padding: '20px',
+                                background: resolvedTheme === 'dark' ? 'rgba(255, 255, 255, 0.05)' : '#fff',
+                                borderRadius: '12px',
+                                boxShadow: resolvedTheme === 'dark'
+                                  ? '0 4px 12px rgba(0, 0, 0, 0.3)'
+                                  : '0 4px 12px rgba(0, 0, 0, 0.08)',
+                                transition: 'transform 0.3s ease, box-shadow 0.3s ease',
+                                border: `1px solid ${resolvedTheme === 'dark' ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.06)'}`,
                               }}>
-                                <img
-                                  src={icon.src}
-                                  alt={icon.alt}
-                                  style={{ 
-                                    maxWidth: '120px', 
-                                    height: 'auto',
-                                    display: 'block',
-                                    filter: resolvedTheme === 'dark' ? 'brightness(0.9)' : 'none',
-                                  }}
-                                />
-                              </div>
-                              {icon.audioUrl && (
-                                <div style={{ 
+                                <div style={{
                                   width: '100%',
+                                  display: 'flex',
+                                  justifyContent: 'center',
+                                  marginBottom: '20px',
+                                  padding: '15px',
+                                  background: resolvedTheme === 'dark' ? 'rgba(255, 255, 255, 0.03)' : 'rgba(0, 0, 0, 0.02)',
                                   borderRadius: '8px',
-                                  overflow: 'hidden',
-                                  boxShadow: resolvedTheme === 'dark'
-                                    ? '0 2px 8px rgba(0, 0, 0, 0.4)'
-                                    : '0 2px 8px rgba(0, 0, 0, 0.1)',
                                 }}>
-                                  <iframe
-                                    src={icon.audioUrl}
-                                    width="100%"
-                                    height="166"
-                                    frameBorder="0"
-                                    scrolling="no"
-                                    allow="autoplay"
-                                    title={`Audio for ${icon.alt}`}
-                                    style={{ 
-                                      border: 'none',
+                                  <img
+                                    src={icon.src}
+                                    alt={icon.alt}
+                                    style={{
+                                      maxWidth: '120px',
+                                      height: 'auto',
                                       display: 'block',
+                                      filter: resolvedTheme === 'dark' ? 'brightness(0.9)' : 'none',
                                     }}
                                   />
                                 </div>
-                              )}
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    );
-                  }
-                }
-                return null;
-              })()}
-
-              {'hasSubsection' in section && section.hasSubsection && (
-                <>
-                  <h4 className={styles.normalFunctionTitle}>
-                    {section.subsectionTitle}
-                  </h4>
-                  {section.subsectionContent && (
-                    <p className={styles.enhancedParagraph}>{section.subsectionContent}</p>
-                  )}
-                </>
-              )}
-              
-              {'goals' in section && section.goals && (
-                <ul className={styles.resourceList}>
-                  {section.goals.map((goal: string, goalIndex: number) => (
-                    <li key={goalIndex} className={styles.resourceListItem}>{goal}</li>
-                  ))}
-                </ul>
-              )}
-              
-              {'methodsIntro' in section && section.methodsIntro && (
-                <p className={styles.enhancedParagraph}>{section.methodsIntro}</p>
-              )}
-              
-              {'methods' in section && section.methods && (
-                <ul className={styles.resourceList}>
-                  {section.methods.map((method: string, methodIndex: number) => (
-                    <li key={methodIndex} className={styles.resourceListItem}>{method}</li>
-                  ))}
-                </ul>
-              )}
-
-              {'hasSpecialistCenters' in section && section.hasSpecialistCenters && (
-                <>
-                  <h4 className={styles.normalFunctionTitle}>
-                    {section.specialistTitle}
-                  </h4>
-                  <ul className={styles.resourceList}>
-                    {section.centers && section.centers.map((center: string, centerIndex: number) => (
-                      <li key={centerIndex} className={styles.resourceListItem}>
-                        {center}
-                        {'pustLinks' in section && section.pustLinks && centerIndex === 2 && (
-                          <ul style={{ 
-                            marginTop: '10px', 
-                            marginLeft: '20px',
-                            listStyle: 'circle'
-                          }}>
-                            {('pustLinks' in section ? (section.pustLinks as Array<{ text: string; url: string }>) : []).map((link: { text: string; url: string }, linkIndex: number) => (
-                              <li key={linkIndex} style={{ marginBottom: '5px' }}>
-                                <a 
-                                  href={link.url}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                  style={{
-                                    color: resolvedTheme === 'dark' ? '#6aaad6' : '#0066cc',
-                                    textDecoration: 'none',
-                                  }}
-                                  onMouseEnter={(e) => e.currentTarget.style.textDecoration = 'underline'}
-                                  onMouseLeave={(e) => e.currentTarget.style.textDecoration = 'none'}
-                                >
-                                  {link.text}
-                                </a>
-                              </li>
+                                {icon.audioUrl && (
+                                  <div style={{
+                                    width: '100%',
+                                    borderRadius: '8px',
+                                    overflow: 'hidden',
+                                    boxShadow: resolvedTheme === 'dark'
+                                      ? '0 2px 8px rgba(0, 0, 0, 0.4)'
+                                      : '0 2px 8px rgba(0, 0, 0, 0.1)',
+                                  }}>
+                                    <iframe
+                                      src={icon.audioUrl}
+                                      width="100%"
+                                      height="166"
+                                      frameBorder="0"
+                                      scrolling="no"
+                                      allow="autoplay"
+                                      title={`Audio for ${icon.alt}`}
+                                      style={{
+                                        border: 'none',
+                                        display: 'block',
+                                      }}
+                                    />
+                                  </div>
+                                )}
+                              </div>
                             ))}
-                          </ul>
-                        )}
-                      </li>
+                          </div>
+                        </div>
+                      );
+                    }
+                  }
+                  return null;
+                })()}
+
+                {'hasSubsection' in section && section.hasSubsection && (
+                  <>
+                    <h4 className={styles.normalFunctionTitle}>
+                      {section.subsectionTitle}
+                    </h4>
+                    {section.subsectionContent && (
+                      <p className={styles.enhancedParagraph}>{section.subsectionContent}</p>
+                    )}
+                  </>
+                )}
+
+                {'goals' in section && section.goals && (
+                  <ul className={styles.resourceList}>
+                    {section.goals.map((goal: string, goalIndex: number) => (
+                      <li key={goalIndex} className={styles.resourceListItem}>{goal}</li>
                     ))}
                   </ul>
-                  {section.centerNote && (
-                    <p className={styles.enhancedParagraph}>{section.centerNote}</p>
-                  )}
-                </>
-              )}
+                )}
 
-              {'hasPatientStories' in section && section.hasPatientStories && 'patientStories' in section && (
-                <>
-                  <h4 className={styles.normalFunctionTitle} style={{ marginTop: '30px' }}>
-                    {'patientStoriesTitle' in section ? (section.patientStoriesTitle as string) : ''}
-                  </h4>
-                  {('patientStories' in section ? (section.patientStories as Array<{ text: string; author: string }>) : []).map((story: { text: string; author: string }, storyIndex: number) => (
-                    <div key={storyIndex} className={styles.highlightBox} style={{ 
-                      marginBottom: '20px',
-                      background: resolvedTheme === 'dark' ? 'rgba(255, 255, 255, 0.03)' : 'rgba(0, 0, 0, 0.02)',
-                      borderLeft: `4px solid ${resolvedTheme === 'dark' ? '#6aaad6' : '#0066cc'}`
-                    }}>
-                      <p className={styles.enhancedParagraph}>
-                        "<em>{story.text}</em>"
+                {'methodsIntro' in section && section.methodsIntro && (
+                  <p className={styles.enhancedParagraph}>{section.methodsIntro}</p>
+                )}
+
+                {'methods' in section && section.methods && (
+                  <ul className={styles.resourceList}>
+                    {section.methods.map((method: string, methodIndex: number) => (
+                      <li key={methodIndex} className={styles.resourceListItem}>{method}</li>
+                    ))}
+                  </ul>
+                )}
+
+                {'hasSpecialistCenters' in section && section.hasSpecialistCenters && (
+                  <>
+                    <h4 className={styles.normalFunctionTitle}>
+                      {section.specialistTitle}
+                    </h4>
+                    <ul className={styles.resourceList}>
+                      {section.centers && section.centers.map((center: string, centerIndex: number) => (
+                        <li key={centerIndex} className={styles.resourceListItem}>
+                          {center}
+                          {'pustLinks' in section && section.pustLinks && centerIndex === 2 && (
+                            <ul style={{
+                              marginTop: '10px',
+                              marginLeft: '20px',
+                              listStyle: 'circle'
+                            }}>
+                              {('pustLinks' in section ? (section.pustLinks as Array<{ text: string; url: string }>) : []).map((link: { text: string; url: string }, linkIndex: number) => (
+                                <li key={linkIndex} style={{ marginBottom: '5px' }}>
+                                  <a
+                                    href={link.url}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    style={{
+                                      color: resolvedTheme === 'dark' ? '#6aaad6' : '#0066cc',
+                                      textDecoration: 'none',
+                                    }}
+                                    onMouseEnter={(e) => e.currentTarget.style.textDecoration = 'underline'}
+                                    onMouseLeave={(e) => e.currentTarget.style.textDecoration = 'none'}
+                                  >
+                                    {link.text}
+                                  </a>
+                                </li>
+                              ))}
+                            </ul>
+                          )}
+                        </li>
+                      ))}
+                    </ul>
+                    {section.centerNote && (
+                      <p className={styles.enhancedParagraph}>{section.centerNote}</p>
+                    )}
+                  </>
+                )}
+
+                {'hasPatientStories' in section && section.hasPatientStories && 'patientStories' in section && (
+                  <>
+                    <h4 className={styles.normalFunctionTitle} style={{ marginTop: '30px' }}>
+                      {'patientStoriesTitle' in section ? (section.patientStoriesTitle as string) : ''}
+                    </h4>
+                    {('patientStories' in section ? (section.patientStories as Array<{ text: string; author: string }>) : []).map((story: { text: string; author: string }, storyIndex: number) => (
+                      <div key={storyIndex} className={styles.highlightBox} style={{
+                        marginBottom: '20px',
+                        background: resolvedTheme === 'dark' ? 'rgba(255, 255, 255, 0.03)' : 'rgba(0, 0, 0, 0.02)',
+                        borderLeft: `4px solid ${resolvedTheme === 'dark' ? '#6aaad6' : '#0066cc'}`
+                      }}>
+                        <p className={styles.enhancedParagraph}>
+                          "<em>{story.text}</em>"
+                        </p>
+                        <p className={styles.enhancedParagraph}>
+                          <em>{story.author}</em>
+                        </p>
+                      </div>
+                    ))}
+                    {'closingText' in section && (
+                      <p className={styles.enhancedParagraph} style={{
+                        marginTop: '20px',
+                        fontStyle: 'italic'
+                      }}>
+                        {'closingText' in section ? (section.closingText as string) : ''}
                       </p>
-                      <p className={styles.enhancedParagraph}>
-                        <em>{story.author}</em>
-                      </p>
-                    </div>
-                  ))}
-                  {'closingText' in section && (
-                    <p className={styles.enhancedParagraph} style={{ 
-                      marginTop: '20px',
-                      fontStyle: 'italic'
-                    }}>
-                      {'closingText' in section ? (section.closingText as string) : ''}
-                    </p>
-                  )}
-                </>
-              )}
-            </div>
-          </SectionAccordion>
-        ))}
+                    )}
+                  </>
+                )}
+              </div>
+            </SectionAccordion>
+          ))}
+        </div>
       </div>
-    </div>
     </>
   )
 }

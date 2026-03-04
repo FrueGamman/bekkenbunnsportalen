@@ -8,7 +8,7 @@ const pelvisPregnancyData = {
   no: {
     title: "Underlivet i graviditeten",
     intro: "Under graviditeten går kroppen igjennom en rekke endringer. Hormoner påvirker både ledd, sener, muskulatur, blodårer og slimhinner. Hormoner samt økt vekt/trykk fra det voksende barnet kan også påvirke bekkenbunnsfunksjonene og føre til symptomer fra skjede, blære og tarm. De fleste opplever ikke store plager fra disse endringene, mens noen opplever større plager. Det finnes en del tiltak man kan igangsette selv avhengig av symptom. Dersom disse ikke fører frem kan det være nyttig og snakke med jordmor/egen lege.",
-    
+
     sections: [
       {
         title: "Slimhinnene i graviditeten",
@@ -38,7 +38,7 @@ const pelvisPregnancyData = {
   en: {
     title: "The Pelvis During Pregnancy",
     intro: "During pregnancy, the body goes through a number of changes. Hormones affect joints, tendons, muscles, blood vessels and mucous membranes. Hormones as well as increased weight/pressure from the growing baby can also affect pelvic floor functions and lead to symptoms from the vagina, bladder and bowel. Most people do not experience major problems from these changes, while some experience greater problems. There are a number of measures you can initiate yourself depending on symptoms. If these do not work, it may be useful to talk to a midwife/your doctor.",
-    
+
     sections: [
       {
         title: "Mucous Membranes During Pregnancy",
@@ -75,52 +75,52 @@ export const PelvisPregnancySection = () => {
 
   return (
     <>
-        <div className={styles.normalFunctionSection}>
-          <div className={styles.normalFunctionContent}>
-            <p className={styles.enhancedParagraph}>{data.intro}</p>
-          </div>
+      <div className={styles.normalFunctionSection}>
+        <div className={styles.normalFunctionContent}>
+          <p className={styles.enhancedParagraph}>{data.intro}</p>
         </div>
+      </div>
 
-        {data.sections.map((section, index) => (
-          <SectionAccordion
-            key={index}
-            title={section.title}
-            isDarkMode={resolvedTheme === 'dark'}
-            defaultOpen={false}
-          >
-            <div className={styles.normalFunctionContent}>
-              {section.content.map((paragraph, pIndex) => {
-                // Check if this paragraph should have a link
-                const sectionAny = section as unknown as Record<string, unknown>;
-                const hasLink = sectionAny.link && pIndex === section.content.length - 1 && paragraph.includes(sectionAny.link.text)
-                
-                if (hasLink && sectionAny.link) {
-                  const parts = paragraph.split(sectionAny.link.text)
-                  return (
-                    <p key={pIndex} className={styles.enhancedParagraph}>
-                      {parts[0]}
-                      <a 
-                        href={sectionAny.link.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className={styles.inlineLink}
-                      >
-                        {sectionAny.link.text}
-                      </a>
-                      {parts[1]}
-                    </p>
-                  )
-                }
-                
+      {data.sections.map((section, index) => (
+        <SectionAccordion
+          key={index}
+          title={section.title}
+          isDarkMode={resolvedTheme === 'dark'}
+          defaultOpen={false}
+        >
+          <div className={styles.normalFunctionContent}>
+            {section.content.map((paragraph, pIndex) => {
+              // Check if this paragraph should have a link
+              const sectionAny = section as unknown as Record<string, any>;
+              const hasLink = sectionAny.link && pIndex === section.content.length - 1 && paragraph.includes(sectionAny.link.text)
+
+              if (hasLink && sectionAny.link) {
+                const parts = paragraph.split(sectionAny.link.text)
                 return (
                   <p key={pIndex} className={styles.enhancedParagraph}>
-                    {paragraph}
+                    {parts[0]}
+                    <a
+                      href={sectionAny.link.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className={styles.inlineLink}
+                    >
+                      {sectionAny.link.text}
+                    </a>
+                    {parts[1]}
                   </p>
                 )
-              })}
-            </div>
-          </SectionAccordion>
-        ))}
+              }
+
+              return (
+                <p key={pIndex} className={styles.enhancedParagraph}>
+                  {paragraph}
+                </p>
+              )
+            })}
+          </div>
+        </SectionAccordion>
+      ))}
     </>
   )
 }

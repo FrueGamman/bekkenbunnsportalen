@@ -503,7 +503,7 @@ const NORMAL_FUNCTIONS_DATA = {
 }
 
 // Helper component to render content based on type
-const ContentRenderer = ({ item, styles, isDarkMode }: { item: Record<string, unknown>; styles: Record<string, string>; isDarkMode: boolean }) => {
+const ContentRenderer = ({ item, styles, isDarkMode }: { item: Record<string, any>; styles: Record<string, string>; isDarkMode: boolean }) => {
   switch (item.type) {
     case "paragraph":
       return <p className={styles.enhancedParagraph}>{item.text}</p>
@@ -545,7 +545,7 @@ const ContentRenderer = ({ item, styles, isDarkMode }: { item: Record<string, un
       return (
         <div className={styles.subsection}>
           <h4 className={styles.subsectionTitle}>{item.title}</h4>
-          {(item.content as Array<Record<string, unknown>>).map((subItem: Record<string, unknown>, index: number) => (
+          {(item.content as Array<Record<string, any>>).map((subItem: Record<string, any>, index: number) => (
             <ContentRenderer key={index} item={subItem} styles={styles} isDarkMode={isDarkMode} />
           ))}
         </div>

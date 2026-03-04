@@ -359,7 +359,7 @@ export const ProlapseSection = () => {
 
   return (
     <>
-        {data.sections.map((section: Record<string, unknown>, index: number) => (
+        {data.sections.map((section: Record<string, any>, index: number) => (
           <SectionAccordion
             key={index}
             title={section.title}
@@ -454,7 +454,7 @@ export const ProlapseSection = () => {
               ))}
 
               {/* Subsections for treatment section */}
-              {section.subsections && (section.subsections as Array<Record<string, unknown>>).map((subsection: Record<string, unknown>, sIndex: number) => (
+              {section.subsections && (section.subsections as Array<Record<string, any>>).map((subsection: Record<string, any>, sIndex: number) => (
                 <div key={sIndex} style={{ marginTop: '24px' }}>
                   <h5 className={styles.subsectionHeading} style={{ 
                     color: resolvedTheme === 'dark' ? '#6aaad6' : '#053870'
@@ -476,7 +476,7 @@ export const ProlapseSection = () => {
 
                   {subsection.items && (
                     <ul className={styles.resourceList}>
-                      {(subsection.items as Array<string | Record<string, unknown>>).map((item: string | Record<string, unknown>, iIndex: number) => (
+                      {(subsection.items as Array<string | Record<string, any>>).map((item: string | Record<string, any>, iIndex: number) => (
                         <li key={iIndex} className={styles.resourceListItem}>
                           {typeof item === 'string' ? (
                             item

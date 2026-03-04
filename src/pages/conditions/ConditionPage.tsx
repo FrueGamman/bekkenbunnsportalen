@@ -162,7 +162,7 @@ const PREGNANCY_SECTION_CARDS = {
       icon: "/resource.png",
     },
   ],
-} as const;
+};
 
 // All conditions for the top navigation - bilingual
 const ALL_CONDITIONS_DATA = {
@@ -348,7 +348,7 @@ const CONDITION_SECTIONS_MAP = {
       { id: "references", title: "References", icon: "/resource.png" },
     ]
   }
-} as const;
+};
 
 export default function ConditionPage() {
   const { language } = useLanguage();
