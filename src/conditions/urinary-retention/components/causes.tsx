@@ -32,6 +32,7 @@ interface CauseItem {
   sideBySideImage?: { src: string; alt: string };
 }
 
+// Data comes from Directus only (ConditionPage uses TilstandDynamicSection). No fallback.
 const CAUSES_DATA = {
   no: { pageTitle: "Årsaker", patientQuote: "", patientAge: "", causes: [] as CauseItem[] },
   en: { pageTitle: "Causes", patientQuote: "", patientAge: "", causes: [] as CauseItem[] }

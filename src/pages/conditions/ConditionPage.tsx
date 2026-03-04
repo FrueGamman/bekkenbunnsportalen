@@ -41,7 +41,7 @@ function parsePelvicPainIntro(html: string) {
 
   return { title, subtitle: subtitleText, description: root.innerHTML.trim(), imageSrc };
 }
-import { TextbookAccordion } from "../../conditions/pregnancy/components/TextbookAccordion";
+import { Textbook } from "../../conditions/pregnancy/components/textbook";
 import { usePregnancyData } from "../../hooks/usePregnancyData";
 import type { PregnancyChapter, Tilstand } from "../../types/cms";
 
@@ -464,7 +464,7 @@ export default function ConditionPage() {
         return <UpgradedPregnancyContent data={pregnancyData} />;
       }
       if (activeSection === "textbook") {
-        return <TextbookAccordion chapters={pregnancyData.chapters as PregnancyChapter[] | undefined} language={language} />;
+        return <Textbook />;
       }
       if (["exercises", "resources", "references"].includes(activeSection)) {
         return <TilstandDynamicSection tilstand={pregnancyData as unknown as Tilstand} activeSection={activeSection} />;

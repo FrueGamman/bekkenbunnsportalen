@@ -106,6 +106,7 @@ const TREATMENT_DATA: Record<SupportedLanguage, TreatmentContent> = {
 };
 */
 
+// Data comes from Directus only (ConditionPage uses TilstandDynamicSection). No fallback.
 const TREATMENT_DATA: Record<SupportedLanguage, TreatmentContent> = {
   no: {
     pageTitle: "Behandling",

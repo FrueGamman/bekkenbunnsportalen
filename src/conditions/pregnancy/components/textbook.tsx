@@ -4,8 +4,10 @@ import { useLanguage } from "../../../context/LanguageContext"
 import { useTheme } from "../../../context/ThemeContext"
 import { SectionAccordion } from "../../../components/SectionAccordion"
 import styles from "./section-content.module.css"
+import { usePregnancyData } from "../../../hooks/usePregnancyData"
+import type { PregnancyChapter } from "../../../types/cms"
 
-// Import individual textbook section components
+// Import individual textbook section components (same design as original; accept optional data from Directus)
 import { TextbookIntro } from "./textbook/textbook-intro"
 import { PelvicFloorSection } from "./textbook/pelvic-floor-section"
 import { PelvisPregnancySection } from "./textbook/pelvis-pregnancy-section"
@@ -48,29 +50,45 @@ const SECTION_TITLES = {
   }
 } as const
 
+const CHAPTER_IDS = [
+  "pelvic-floor",
+  "pelvis-pregnancy",
+  "delivery-method",
+  "birth-tears",
+  "prolapse",
+  "bladder-function",
+  "bowel-function",
+  "intercourse",
+  "female-circumcision",
+  "seek-help",
+] as const
+
 export const Textbook = () => {
   const { language } = useLanguage()
   const { resolvedTheme } = useTheme()
+  const { language: lang } = useLanguage()
+  const { data: pregnancyData } = usePregnancyData(lang)
+  const chapters = (pregnancyData?.chapters ?? []) as PregnancyChapter[]
   const titles = SECTION_TITLES[language]
+
+  const getChapter = (index: number) => chapters[index]
+  const getTitle = (index: number, key: keyof typeof SECTION_TITLES.no) => {
+    const ch = getChapter(index)
+    if (ch?.title_no != null) return language === "en" && ch.title_en ? ch.title_en : ch.title_no
+    return titles[key]
+  }
+  const getData = (index: number): { dataNo?: unknown; dataEn?: unknown } => {
+    const ch = getChapter(index)
+    if (ch?.data_no != null && ch?.data_en != null) return { dataNo: ch.data_no, dataEn: ch.data_en }
+    return {}
+  }
 
   // Handle hash-based navigation to open specific accordion and scroll to it
   useEffect(() => {
     const handleHashNavigation = () => {
       const hash = window.location.hash.replace('#', '')
       if (hash) {
-        // IDs of all top-level accordions in the textbook
-        const topLevelIds = [
-          'pelvic-floor',
-          'pelvis-pregnancy',
-          'delivery-method',
-          'birth-tears',
-          'prolapse',
-          'bladder-function',
-          'bowel-function',
-          'intercourse',
-          'female-circumcision',
-          'seek-help'
-        ];
+        const topLevelIds = CHAPTER_IDS as readonly string[]
 
         const closeOtherAccordions = (keepId: string) => {
           topLevelIds.forEach((id) => {
@@ -150,95 +168,36 @@ export const Textbook = () => {
         </div>
 
         <div style={{ marginTop: '24px' }}>
-          {/* Main sections as accordions */}
-          <SectionAccordion
-            id="pelvic-floor"
-            title={titles.pelvicFloor}
-            isDarkMode={resolvedTheme === 'dark'}
-            defaultOpen={false}
-          >
-            <PelvicFloorSection />
+          {/* Same design as original; data from Directus (chapters[].data_no / data_en) when set, else fallback to hardcoded */}
+          <SectionAccordion id={CHAPTER_IDS[0]} title={getTitle(0, "pelvicFloor")} isDarkMode={resolvedTheme === 'dark'} defaultOpen={false}>
+            <PelvicFloorSection {...getData(0)} />
           </SectionAccordion>
-
-          <SectionAccordion
-            id="pelvis-pregnancy"
-            title={titles.pelvisPregnancy}
-            isDarkMode={resolvedTheme === 'dark'}
-            defaultOpen={false}
-          >
-            <PelvisPregnancySection />
+          <SectionAccordion id={CHAPTER_IDS[1]} title={getTitle(1, "pelvisPregnancy")} isDarkMode={resolvedTheme === 'dark'} defaultOpen={false}>
+            <PelvisPregnancySection {...getData(1)} />
           </SectionAccordion>
-
-          <SectionAccordion
-            id="delivery-method"
-            title={titles.deliveryMethod}
-            isDarkMode={resolvedTheme === 'dark'}
-            defaultOpen={false}
-          >
-            <DeliveryMethodSection />
+          <SectionAccordion id={CHAPTER_IDS[2]} title={getTitle(2, "deliveryMethod")} isDarkMode={resolvedTheme === 'dark'} defaultOpen={false}>
+            <DeliveryMethodSection {...getData(2)} />
           </SectionAccordion>
-
-          <SectionAccordion
-            id="birth-tears"
-            title={titles.birthTears}
-            isDarkMode={resolvedTheme === 'dark'}
-            defaultOpen={false}
-          >
-            <BirthTearsSection />
+          <SectionAccordion id={CHAPTER_IDS[3]} title={getTitle(3, "birthTears")} isDarkMode={resolvedTheme === 'dark'} defaultOpen={false}>
+            <BirthTearsSection {...getData(3)} />
           </SectionAccordion>
-
-          <SectionAccordion
-            id="prolapse"
-            title={titles.prolapse}
-            isDarkMode={resolvedTheme === 'dark'}
-            defaultOpen={false}
-          >
-            <ProlapseSection />
+          <SectionAccordion id={CHAPTER_IDS[4]} title={getTitle(4, "prolapse")} isDarkMode={resolvedTheme === 'dark'} defaultOpen={false}>
+            <ProlapseSection {...getData(4)} />
           </SectionAccordion>
-
-          <SectionAccordion
-            id="bladder-function"
-            title={titles.bladderFunction}
-            isDarkMode={resolvedTheme === 'dark'}
-            defaultOpen={false}
-          >
-            <BladderFunctionSection />
+          <SectionAccordion id={CHAPTER_IDS[5]} title={getTitle(5, "bladderFunction")} isDarkMode={resolvedTheme === 'dark'} defaultOpen={false}>
+            <BladderFunctionSection {...getData(5)} />
           </SectionAccordion>
-
-          <SectionAccordion
-            id="bowel-function"
-            title={titles.bowelFunction}
-            isDarkMode={resolvedTheme === 'dark'}
-            defaultOpen={false}
-          >
-            <BowelFunctionSection />
+          <SectionAccordion id={CHAPTER_IDS[6]} title={getTitle(6, "bowelFunction")} isDarkMode={resolvedTheme === 'dark'} defaultOpen={false}>
+            <BowelFunctionSection {...getData(6)} />
           </SectionAccordion>
-
-          <SectionAccordion
-            id="intercourse"
-            title={titles.intercourse}
-            isDarkMode={resolvedTheme === 'dark'}
-            defaultOpen={false}
-          >
-            <IntercourseSection />
+          <SectionAccordion id={CHAPTER_IDS[7]} title={getTitle(7, "intercourse")} isDarkMode={resolvedTheme === 'dark'} defaultOpen={false}>
+            <IntercourseSection {...getData(7)} />
           </SectionAccordion>
-
-          <SectionAccordion
-            id="female-circumcision"
-            title={titles.femaleCircumcision}
-            isDarkMode={resolvedTheme === 'dark'}
-            defaultOpen={false}
-          >
-            <FemaleCircumcisionSection />
+          <SectionAccordion id={CHAPTER_IDS[8]} title={getTitle(8, "femaleCircumcision")} isDarkMode={resolvedTheme === 'dark'} defaultOpen={false}>
+            <FemaleCircumcisionSection {...getData(8)} />
           </SectionAccordion>
-
-          <SectionAccordion
-            id="seek-help"
-            title={titles.seekHelp}
-            isDarkMode={resolvedTheme === 'dark'}
-            defaultOpen={false}
-          >
-            <SeekHelpSection />
+          <SectionAccordion id={CHAPTER_IDS[9]} title={getTitle(9, "seekHelp")} isDarkMode={resolvedTheme === 'dark'} defaultOpen={false}>
+            <SeekHelpSection {...getData(9)} />
           </SectionAccordion>
         </div>
       </div>

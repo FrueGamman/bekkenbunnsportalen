@@ -104,9 +104,10 @@ interface SymptomItem {
   text: string;
 }
 
+// Data comes from Directus only (ConditionPage uses TilstandDynamicSection). No fallback.
 const SYMPTOMS_DATA = {
-  no: { pageTitle: "Symptomene ", overviewTitle: "Symptomene varierer", symptoms: [] as SymptomItem[] },
-  en: { pageTitle: "Symptoms ", overviewTitle: "What is it?", symptoms: [] as SymptomItem[] }
+  no: { pageTitle: "Symptomene", overviewTitle: "Symptomene varierer", symptoms: [] as SymptomItem[] },
+  en: { pageTitle: "Symptoms", overviewTitle: "Symptoms vary", symptoms: [] as SymptomItem[] }
 };
 
 
@@ -156,7 +157,7 @@ export const Symptoms = () => {
               fontWeight: '500',
               textAlign: 'center'
             }}>
-              Symptomene Varierer
+              {overviewTitle}
             </p>
           </div>
 

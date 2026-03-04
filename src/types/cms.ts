@@ -257,6 +257,20 @@ export interface TilstandAccordionLink {
   url: string;
 }
 
+export interface TilstandUnderseksjon {
+  tittel: string;
+  tittel_en?: string | null;
+  innhold: string;
+  innhold_en?: string | null;
+  bilde_url?: string;
+  bilde_alt?: string;
+  bilde_caption?: string;
+  lenke_url?: string;
+  lenke_tekst?: string;
+  lenke_tekst_en?: string | null;
+  lenke_ekstern?: boolean;
+}
+
 export interface TilstandAccordionItem {
   tittel: string;
   tittel_en?: string | null;
@@ -270,6 +284,7 @@ export interface TilstandAccordionItem {
   bilde_caption_en?: string | null;
   bilde_posisjon?: 'none' | 'under' | 'side';
   lenker?: TilstandAccordionLink[];
+  underseksjoner?: TilstandUnderseksjon[];
 }
 
 export interface Tilstand {
@@ -527,6 +542,9 @@ export interface PregnancyChapter {
   title_en?: string;
   condition_id?: number | ConditionPregnancy;
   sections?: number[] | PregnancySection[];
+  /** Full section data for identical design (same shape as hardcoded section components). When set, Textbook uses this instead of sections[].content. */
+  data_no?: unknown;
+  data_en?: unknown;
 }
 
 export interface ConditionPregnancy {

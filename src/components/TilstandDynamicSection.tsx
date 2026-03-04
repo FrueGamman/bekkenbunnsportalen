@@ -5,7 +5,7 @@ import { SectionAccordion } from "./SectionAccordion";
 import { CommonExerciseSection } from "./CommonExerciseSection";
 import type { ExerciseStep, GenderInstruction, Video, SmartphoneApps } from "./CommonExerciseSection";
 import { ImageModal } from "./ui/ImageModal";
-import type { Tilstand, TilstandAccordionItem } from "../types/cms";
+import type { Tilstand, TilstandAccordionItem, TilstandUnderseksjon } from "../types/cms";
 import { getImageUrl } from "../lib/directus";
 import styles from "../conditions/urinary-incontinence/components/section-content.module.css";
 
@@ -553,6 +553,28 @@ export const TilstandDynamicSection = ({ tilstand, activeSection }: TilstandDyna
                     const imgSrc = item.bilde_id ? getImageUrl(item.bilde_id) : item.bilde_url;
                     const isSideBySide = item.bilde_posisjon === 'side' && imgSrc;
                     const itemId = slugify(itemTitleNo);
+                    const hasUnderseksjoner = item.underseksjoner && item.underseksjoner.length > 0;
+
+                    const renderSubContent = (sub: TilstandUnderseksjon) => {
+                        const subContent = (language === 'en' && sub.innhold_en) ? sub.innhold_en : sub.innhold;
+                        return (
+                            <>
+                                {renderContentWithImageCards(subContent)}
+                                {sub.lenke_url && (
+                                    <p className={styles.enhancedParagraph}>
+                                        <a
+                                            href={sub.lenke_url}
+                                            target={sub.lenke_ekstern ? '_blank' : undefined}
+                                            rel={sub.lenke_ekstern ? 'noopener noreferrer' : undefined}
+                                            className={styles.resourceLink}
+                                        >
+                                            {(language === 'en' && sub.lenke_tekst_en) ? sub.lenke_tekst_en : (sub.lenke_tekst || sub.lenke_url)}
+                                        </a>
+                                    </p>
+                                )}
+                            </>
+                        );
+                    };
 
                     return (
                         <SectionAccordion
@@ -562,7 +584,32 @@ export const TilstandDynamicSection = ({ tilstand, activeSection }: TilstandDyna
                             isDarkMode={resolvedTheme === 'dark'}
                             defaultOpen={false}
                         >
-                            {isSideBySide ? (
+                            {hasUnderseksjoner ? (
+                                <>
+                                    {itemContent && (
+                                        <>
+                                            {renderContentWithImageCards(itemContent)}
+                                            {renderImage(item)}
+                                            {renderLinks(item)}
+                                        </>
+                                    )}
+                                    {item.underseksjoner!.map((sub, subIndex) => {
+                                        const subTitle = (language === 'en' && sub.tittel_en) ? sub.tittel_en : sub.tittel;
+                                        const subId = slugify(sub.tittel);
+                                        return (
+                                            <SectionAccordion
+                                                key={subIndex}
+                                                title={subTitle}
+                                                id={`${itemId}-${subId}`}
+                                                isDarkMode={resolvedTheme === 'dark'}
+                                                defaultOpen={false}
+                                            >
+                                                {renderSubContent(sub)}
+                                            </SectionAccordion>
+                                        );
+                                    })}
+                                </>
+                            ) : isSideBySide ? (
                                 <div className={styles.sideBySideContainer}>
                                     <div className={styles.sideBySideText}>
                                         {renderContentWithImageCards(itemContent)}
