@@ -61,7 +61,14 @@ export const TilstandDynamicSection = ({ tilstand, activeSection }: TilstandDyna
     const t = tilstand as unknown as Record<string, any>;
     const title = ((language === 'en' && t[`${prefix}_tittel_en`]) || t[`${prefix}_tittel`]) as string | undefined;
     const intro = ((language === 'en' && t[`${prefix}_intro_en`]) || t[`${prefix}_intro`]) as string | undefined;
-    const trekkspill = t[`${prefix}_trekkspill`] as TilstandAccordionItem[] | undefined;
+    let trekkspill = t[`${prefix}_trekkspill`] as TilstandAccordionItem[] | string | undefined;
+    if (typeof trekkspill === "string" && trekkspill.trim()) {
+      try {
+        trekkspill = JSON.parse(trekkspill) as TilstandAccordionItem[];
+      } catch {
+        trekkspill = undefined;
+      }
+    }
 
     // Specific fields for symptoms/causes
     const sitat = ((language === 'en' && t[`${prefix}_sitat_en`]) || t[`${prefix}_sitat`]) as string | undefined;
@@ -126,7 +133,8 @@ export const TilstandDynamicSection = ({ tilstand, activeSection }: TilstandDyna
         }
     }
 
-    if (!title && !intro && !trekkspill) return null;
+    const hasTrekkspill = Array.isArray(trekkspill) && trekkspill.length > 0;
+    if (!title && !intro && !hasTrekkspill && !sitat) return null;
 
     // Helper: get language-aware field from accordion item
     const getField = (item: TilstandAccordionItem, field: 'tittel' | 'innhold') => {

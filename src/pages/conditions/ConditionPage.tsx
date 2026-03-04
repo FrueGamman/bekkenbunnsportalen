@@ -368,16 +368,38 @@ function buildSectionsFromTilstand(
   language: string
 ): { id: string; title: string; icon: string }[] {
   const t = tilstand as unknown as Record<string, unknown>;
+  const slug = (tilstand as { slug?: string }).slug;
   const sections: { id: string; title: string; icon: string }[] = [];
   for (const { id: sectionId, prefix, icon } of SECTION_CONFIG_FROM_TILSTAND) {
     const title = (language === "en" && t[`${prefix}_tittel_en`]) ? String(t[`${prefix}_tittel_en`]) : (t[`${prefix}_tittel`] ? String(t[`${prefix}_tittel`]) : "");
-    const trekkspill = t[`${prefix}_trekkspill`] as unknown[] | null | undefined;
-    const hasContent = title || (Array.isArray(trekkspill) && trekkspill.length > 0);
+    let trekkspill = t[`${prefix}_trekkspill`] as unknown[] | string | null | undefined;
+    if (typeof trekkspill === "string" && trekkspill.trim()) {
+      try {
+        trekkspill = JSON.parse(trekkspill) as unknown[];
+      } catch {
+        trekkspill = [];
+      }
+    }
+    const hasTrekkspill = Array.isArray(trekkspill) && trekkspill.length > 0;
+    const hasSitat = prefix === "arsaker" && (t[`${prefix}_sitat`] || t[`${prefix}_sitat_en`]);
+    const hasContent = title || hasTrekkspill || hasSitat;
     if (hasContent) {
       sections.push({
         id: sectionId,
-        title: title || sectionId,
+        title: title || (sectionId === "causes" ? (language === "no" ? "Årsaker" : "Causes") : sectionId),
         icon,
+      });
+    }
+  }
+  // Urinary retention: ensure Årsaker (causes) always appears even if Directus missed it
+  if (slug === "urinary-retention") {
+    const hasCauses = sections.some((s) => s.id === "causes");
+    if (!hasCauses) {
+      const insertIndex = Math.min(2, sections.length);
+      sections.splice(insertIndex, 0, {
+        id: "causes",
+        title: language === "no" ? "Årsaker" : "Causes",
+        icon: "/couse.png",
       });
     }
   }
