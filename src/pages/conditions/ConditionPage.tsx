@@ -436,7 +436,7 @@ export default function ConditionPage() {
 
   const CONDITION_SECTIONS =
     activeCondition === "pregnancy"
-      ? [{ id: "overview", title: language === "no" ? "Oversikt" : "Overview", icon: "/normal.png" }, ...PREGNANCY_SECTION_CARDS[language]]
+      ? (CONDITION_SECTIONS_MAP["pregnancy"][language] ?? fallbackSections)
       : sectionsFromTilstand.length > 0
         ? sectionsFromTilstand
         : fallbackSections;
