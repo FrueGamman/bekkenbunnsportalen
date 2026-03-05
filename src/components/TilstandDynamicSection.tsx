@@ -214,131 +214,150 @@ export const TilstandDynamicSection = ({ tilstand, activeSection }: TilstandDyna
         const root = doc.body.firstChild as HTMLElement;
         if (!root) return null;
 
-        // Split content at h4/h3 boundaries into separate sections
-        type CardSection = {
-            headingText: string;
-            headingTag: string;
+        // Top-level headings (h1, h2) start a new container; h3–h6 and their content stay inside it
+        type ContentBlock = {
+            headingTag?: 'h3' | 'h4' | 'h5' | 'h6';
+            headingText?: string;
             paragraphs: string[];
             links: { text: string; url: string }[];
             images: { src: string; alt: string; caption: string }[];
         };
+        type Section = {
+            mainHeadingTag: 'h1' | 'h2';
+            mainHeadingText: string;
+            blocks: ContentBlock[];
+        };
 
         const introElements: string[] = [];
-        const cards: CardSection[] = [];
-        let currentCard: CardSection | null = null;
+        const sections: Section[] = [];
+        let currentSection: Section | null = null;
+        let currentBlock: ContentBlock | null = null;
+
+        const isHeadingTag = (tag: string) => /^H[1-6]$/.test(tag);
+        const isSectionStarter = (tag: string) => tag === 'H1' || tag === 'H2';
+
+        const pushContentToBlock = (block: ContentBlock, el: HTMLElement) => {
+            const isPureImg = el.nodeType === 1 && (
+                el.tagName === 'IMG' ||
+                (el.tagName === 'FIGURE' && !el.querySelector('p'))
+            );
+            const isMixedContainer = el.nodeType === 1 && !isPureImg && el.querySelector?.('img');
+
+            if (isPureImg) {
+                const img = el.tagName === 'IMG' ? el : (el.querySelector('img') as HTMLImageElement);
+                if (img) {
+                    const src = img.getAttribute('src') || '';
+                    const alt = img.getAttribute('alt') || '';
+                    let caption = '';
+                    const figure = el.tagName === 'FIGURE' ? el : img.closest('figure');
+                    if (figure) {
+                        const fc = figure.querySelector('figcaption');
+                        caption = fc?.textContent?.trim() || '';
+                    }
+                    block.images.push({ src, alt: alt || caption, caption: caption || alt });
+                }
+            } else if (isMixedContainer) {
+                el.querySelectorAll('img').forEach((img: HTMLImageElement) => {
+                    const src = img.getAttribute('src') || '';
+                    const alt = img.getAttribute('alt') || '';
+                    let caption = '';
+                    const figure = img.closest('figure');
+                    if (figure) {
+                        const fc = figure.querySelector('figcaption');
+                        caption = fc?.textContent?.trim() || '';
+                    }
+                    block.images.push({ src, alt, caption: caption || alt });
+                });
+                const clone = el.cloneNode(true) as HTMLElement;
+                Array.from(clone.querySelectorAll('figure, img')).forEach(imgEl => {
+                    const parent = imgEl.parentElement;
+                    imgEl.remove();
+                    if (parent && parent !== clone && !parent.textContent?.trim()) parent.remove();
+                });
+                const remainingText = clone.textContent?.trim();
+                if (remainingText) {
+                    clone.querySelectorAll('a').forEach((a) => {
+                        block.links.push({
+                            text: a.textContent?.trim() || '',
+                            url: a.getAttribute('href') || '#'
+                        });
+                    });
+                    block.paragraphs.push(clone.innerHTML.trim());
+                }
+            } else if (el.nodeType === 1 && el.tagName === 'BLOCKQUOTE') {
+                block.paragraphs.push(el.outerHTML);
+            } else if (el.nodeType === 1) {
+                const anchors = el.querySelectorAll('a');
+                if (anchors.length > 0) {
+                    const textWithoutLinks = el.textContent?.trim() || '';
+                    anchors.forEach((a) => {
+                        block.links.push({
+                            text: a.textContent?.trim() || '',
+                            url: a.getAttribute('href') || '#'
+                        });
+                    });
+                    if (textWithoutLinks !== anchors[0].textContent?.trim()) {
+                        block.paragraphs.push(el.innerHTML);
+                    }
+                } else {
+                    const text = el.textContent?.trim();
+                    if (text) block.paragraphs.push(el.innerHTML || text);
+                }
+            }
+        };
+
+        const ensureBlock = () => {
+            if (!currentBlock) {
+                currentBlock = { paragraphs: [], links: [], images: [] };
+                if (currentSection) currentSection.blocks.push(currentBlock);
+            }
+            return currentBlock;
+        };
 
         Array.from(root.childNodes).forEach((node) => {
             const el = node as HTMLElement;
-            const isHeading = el.nodeType === 1 && (el.tagName === 'H4' || el.tagName === 'H3');
+            const isHeading = el.nodeType === 1 && isHeadingTag(el.tagName);
 
             if (isHeading) {
-                if (currentCard) cards.push(currentCard);
-                currentCard = {
-                    headingText: el.textContent?.trim() || '',
-                    headingTag: el.tagName.toLowerCase(),
-                    paragraphs: [],
-                    links: [],
-                    images: []
-                };
-            } else if (currentCard) {
-                // Check if this node is purely an image element
-                const isPureImg = el.nodeType === 1 && (
-                    el.tagName === 'IMG' ||
-                    (el.tagName === 'FIGURE' && !el.querySelector('p'))
-                );
-                // Check if this node is a container that has an image mixed with text
-                const isMixedContainer = el.nodeType === 1 && !isPureImg &&
-                    el.querySelector && el.querySelector('img');
+                const tag = el.tagName.toUpperCase();
+                const text = el.textContent?.trim() || '';
 
-                if (isPureImg) {
-                    const img = el.tagName === 'IMG' ? el : (el.querySelector('img') as HTMLImageElement);
-                    if (img) {
-                        const src = img.getAttribute('src') || '';
-                        const alt = img.getAttribute('alt') || '';
-                        let caption = '';
-                        const figure = el.tagName === 'FIGURE' ? el : img.closest('figure');
-                        if (figure) {
-                            const fc = figure.querySelector('figcaption');
-                            caption = fc?.textContent?.trim() || '';
-                        }
-                        if (!caption) caption = alt;
-                        currentCard.images.push({ src, alt, caption });
-                    }
-                } else if (isMixedContainer) {
-                    // Container has both text and images — extract both
-                    // Extract images
-                    el.querySelectorAll('img').forEach((img: HTMLImageElement) => {
-                        const src = img.getAttribute('src') || '';
-                        const alt = img.getAttribute('alt') || '';
-                        let caption = '';
-                        const figure = img.closest('figure');
-                        if (figure) {
-                            const fc = figure.querySelector('figcaption');
-                            caption = fc?.textContent?.trim() || '';
-                        }
-                        if (!caption) caption = alt;
-                        currentCard!.images.push({ src, alt, caption });
-                    });
-                    // Extract text content (remove image elements first)
-                    const clone = el.cloneNode(true) as HTMLElement;
-                    const imgEls = Array.from(clone.querySelectorAll('figure, img'));
-                    imgEls.forEach(imgEl => {
-                        const parent = imgEl.parentElement;
-                        imgEl.remove();
-                        if (parent && parent !== clone && !parent.textContent?.trim()) {
-                            parent.remove();
-                        }
-                    });
-                    // Extract remaining text paragraphs
-                    const remainingText = clone.textContent?.trim();
-                    if (remainingText) {
-                        // Check for links
-                        const anchors = clone.querySelectorAll('a');
-                        if (anchors.length > 0) {
-                            anchors.forEach((a) => {
-                                currentCard!.links.push({
-                                    text: a.textContent?.trim() || '',
-                                    url: a.getAttribute('href') || '#'
-                                });
-                            });
-                        }
-                        currentCard.paragraphs.push(clone.innerHTML.trim());
-                    }
-                } else if (el.nodeType === 1 && el.tagName === 'BLOCKQUOTE') {
-                    currentCard.paragraphs.push(el.outerHTML);
-                } else if (el.nodeType === 1) {
-                    const anchors = el.querySelectorAll('a');
-                    if (anchors.length > 0) {
-                        const textWithoutLinks = el.textContent?.trim() || '';
-                        anchors.forEach((a) => {
-                            currentCard!.links.push({
-                                text: a.textContent?.trim() || '',
-                                url: a.getAttribute('href') || '#'
-                            });
-                        });
-                        if (anchors.length > 0 && textWithoutLinks !== anchors[0].textContent?.trim()) {
-                            currentCard.paragraphs.push(el.innerHTML);
-                        }
+                if (isSectionStarter(tag)) {
+                    if (currentBlock) currentBlock = null;
+                    if (currentSection) sections.push(currentSection);
+                    currentSection = { mainHeadingText: text, blocks: [] };
+                } else {
+                    // h2–h6: new block under current section, or use as section title if no h1 yet (don't duplicate)
+                    if (!currentSection) {
+                        currentSection = { mainHeadingText: text, blocks: [] };
+                        currentBlock = null;
                     } else {
-                        const text = el.textContent?.trim();
-                        if (text) {
-                            currentCard.paragraphs.push(el.innerHTML || text);
-                        }
+                        currentBlock = {
+                            headingTag: tag.toLowerCase() as ContentBlock['headingTag'],
+                            headingText: text,
+                            paragraphs: [],
+                            links: [],
+                            images: []
+                        };
+                        currentSection.blocks.push(currentBlock);
                     }
                 }
+            } else if (currentSection) {
+                if (el.nodeType === 1 && el.textContent?.trim()) {
+                    pushContentToBlock(ensureBlock(), el);
+                }
             } else {
-                // Before any h4 — intro text
-                if (el.nodeType === 1) {
-                    const text = el.textContent?.trim();
-                    if (text) introElements.push(el.outerHTML);
+                // Before first h1/h2 — intro
+                if (el.nodeType === 1 && el.textContent?.trim()) {
+                    introElements.push(el.outerHTML);
                 }
             }
         });
 
-        if (currentCard) cards.push(currentCard);
+        if (currentSection) sections.push(currentSection);
 
-        // If there are no h4 cards, render as a simple block
-        if (cards.length === 0) {
+        // No headings at all — render as simple block
+        if (sections.length === 0) {
             const { textHtml, images } = parseContentAndImages(html);
             return (
                 <>
@@ -365,97 +384,78 @@ export const TilstandDynamicSection = ({ tilstand, activeSection }: TilstandDyna
             );
         }
 
-        // Render using original CSS module classes
+        // One container per section (h1/h2); all sub-headings (h3–h6) and content inside it
+        const renderBlock = (block: ContentBlock, blockIdx: number) => {
+            const hasImages = block.images.length > 0;
+            const hasContent = block.paragraphs.length > 0 || block.images.length > 0 || block.links.length > 0;
+            const headingOnly = !hasContent && block.headingTag != null && !!block.headingText;
+            const content = (
+                <>
+                    {block.paragraphs.map((p, j) => (
+                        <React.Fragment key={j}>{renderRichText(p)}</React.Fragment>
+                    ))}
+                    {block.links.length === 1 && !block.paragraphs.some((p) => p.includes('<a ')) && (
+                        <p className={styles.enhancedParagraph}>
+                            <a href={block.links[0].url} target="_blank" rel="noopener noreferrer" className={styles.resourceLink}>
+                                {block.links[0].text}
+                            </a>
+                        </p>
+                    )}
+                    {block.links.length > 1 && !block.paragraphs.some((p) => p.includes('<a ')) && (
+                        <p className={styles.enhancedParagraph}>
+                            {block.links.map((link, j) => (
+                                <span key={j}>
+                                    <a href={link.url} target="_blank" rel="noopener noreferrer" className={styles.resourceLink}>
+                                        {link.text}
+                                    </a>
+                                    {j < block.links.length - 1 && ' og '}
+                                </span>
+                            ))}
+                        </p>
+                    )}
+                </>
+            );
+            // Same-level headings as direct siblings of the section (no wrapper div per block)
+            const headingEl = block.headingTag && block.headingText
+                ? React.createElement(block.headingTag, {
+                    className: styles.enhancedSubheading,
+                    style: {
+                        ...(blockIdx > 0 ? { marginTop: '1.5rem' } : {}),
+                        ...(headingOnly ? { textAlign: 'center' as const } : {})
+                    }
+                  }, block.headingText)
+                : null;
+            return (
+                <React.Fragment key={blockIdx}>
+                    {headingEl}
+                    {hasImages ? (
+                        <div className={styles.sideBySideContainer}>
+                            <div className={styles.sideBySideText}>{content}</div>
+                            <div className={styles.sideBySideImage}>
+                                {block.images.map((img, j) => (
+                                    <div key={j}>
+                                        <img src={img.src} alt={img.alt} />
+                                        {img.caption && <p className={styles.sideBySideImageCaption}>{img.caption}</p>}
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    ) : (
+                        content
+                    )}
+                </React.Fragment>
+            );
+        };
+
         return (
             <>
                 {introElements.map((elHtml, i) => (
-                    <React.Fragment key={`intro-${i}`}>
-                        {renderRichText(elHtml)}
-                    </React.Fragment>
+                    <React.Fragment key={`intro-${i}`}>{renderRichText(elHtml)}</React.Fragment>
                 ))}
-
-                {/* Each sub-cause in its own card */}
-                {cards.map((card, i) => (
-                    <div key={i} className={styles.normalFunctionSection}>
-                        <h4 className={styles.normalFunctionTitle}>{card.headingText}</h4>
-
-                        {/* Side-by-side layout for causes with images */}
-                        {card.images.length > 0 ? (
-                            <div className={styles.sideBySideContainer}>
-                                <div className={styles.sideBySideText}>
-                                    {card.paragraphs.map((p, j) => (
-                                        <React.Fragment key={j}>
-                                            {renderRichText(p)}
-                                        </React.Fragment>
-                                    ))}
-                                    {card.links.length > 0 && card.links.length <= 1 && (
-                                        <p className={styles.enhancedParagraph}>
-                                            {card.links.map((link, j) => (
-                                                <a key={j}
-                                                    href={link.url}
-                                                    target="_blank"
-                                                    rel="noopener noreferrer"
-                                                    className={styles.resourceLink}
-                                                >
-                                                    {link.text}
-                                                </a>
-                                            ))}
-                                        </p>
-                                    )}
-                                </div>
-                                <div className={styles.sideBySideImage}>
-                                    {card.images.map((img, j) => (
-                                        <div key={j}>
-                                            <img src={img.src} alt={img.alt} />
-                                            {img.caption && (
-                                                <p className={styles.sideBySideImageCaption}>{img.caption}</p>
-                                            )}
-                                        </div>
-                                    ))}
-                                </div>
-                            </div>
-                        ) : (
-                            <>
-                                {card.paragraphs.map((p, j) => (
-                                    <React.Fragment key={j}>
-                                        {renderRichText(p)}
-                                    </React.Fragment>
-                                ))}
-
-                                {/* Single link */}
-                                {card.links.length === 1 && !card.paragraphs.some(p => p.includes('<a ')) && (
-                                    <p className={styles.enhancedParagraph}>
-                                        <a
-                                            href={card.links[0].url}
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                            className={styles.resourceLink}
-                                        >
-                                            {card.links[0].text}
-                                        </a>
-                                    </p>
-                                )}
-
-                                {/* Multiple links (e.g., Obstipasjon) */}
-                                {card.links.length > 1 && !card.paragraphs.some(p => p.includes('<a ')) && (
-                                    <p className={styles.enhancedParagraph}>
-                                        {card.links.map((link, j) => (
-                                            <span key={j}>
-                                                <a
-                                                    href={link.url}
-                                                    target="_blank"
-                                                    rel="noopener noreferrer"
-                                                    className={styles.resourceLink}
-                                                >
-                                                    {link.text}
-                                                </a>
-                                                {j < card.links.length - 1 && ' og '}
-                                            </span>
-                                        ))}
-                                    </p>
-                                )}
-                            </>
-                        )}
+                {sections.map((section, i) => (
+                    <div key={i} className={section.blocks.length === 0 ? `${styles.normalFunctionSection} ${styles.sectionTitleOnly}` : styles.normalFunctionSection}>
+                        {section.mainHeadingText ? <h1 className={styles.normalFunctionTitle}>{section.mainHeadingText}</h1> : null}
+                        {section.blocks.map((block, j) => renderBlock(block, j))}
                     </div>
                 ))}
             </>

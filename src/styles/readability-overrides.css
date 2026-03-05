@@ -73,8 +73,10 @@ h1 { margin-top: 0 !important; }
 h2 { margin-top: 4rem !important; }
 h3 { margin-top: 3.5rem !important; }
 h4 { margin-top: 3rem !important; }
+h5 { margin-top: 2.5rem !important; }
+h6 { margin-top: 2rem !important; }
 
-/* Mobile improvements */
+/* Mobile improvements - all headings scale down, size reduces as level increases */
 @media (max-width: 768px) {
   p, .enhancedParagraph, .sectionContent {
     font-size: 1rem !important;
@@ -84,6 +86,9 @@ h4 { margin-top: 3rem !important; }
   h1 { font-size: 1.75rem !important; }
   h2 { font-size: 1.5rem !important; }
   h3 { font-size: 1.25rem !important; }
+  h4 { font-size: 1.125rem !important; }
+  h5 { font-size: 1.0625rem !important; }
+  h6 { font-size: 1rem !important; }
 }
 
 /* High contrast for better readability */

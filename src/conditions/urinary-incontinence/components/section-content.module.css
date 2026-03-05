@@ -812,10 +812,6 @@
     padding: 1rem;
   }
 
-  .normalFunctionTitle {
-    font-size: 1.125rem;
-  }
-
   .enhancedSubheading {
     font-size: 1rem;
   }
@@ -1112,8 +1108,8 @@
   transform: translateY(-4px);
 }
 
+/* Font size follows global h1–h6 scale (semantic heading level) */
 .normalFunctionTitle {
-  font-size: 1.5rem;
   font-weight: 700;
   color: rgba(5, 56, 112, 1);
   margin: 0 0 1.5rem 0;
@@ -1147,6 +1143,29 @@
 
 .normalFunctionContent p:last-child {
   margin-bottom: 0;
+}
+
+/* Headings (h2–h6) are direct children of the section — same type = same level, no nesting */
+.normalFunctionSection > h2.enhancedSubheading,
+.normalFunctionSection > h3.enhancedSubheading,
+.normalFunctionSection > h4.enhancedSubheading,
+.normalFunctionSection > h5.enhancedSubheading,
+.normalFunctionSection > h6.enhancedSubheading {
+  margin-left: 0;
+  padding-left: 1rem;
+}
+
+.normalFunctionSection > h2.enhancedSubheading::before,
+.normalFunctionSection > h3.enhancedSubheading::before,
+.normalFunctionSection > h4.enhancedSubheading::before,
+.normalFunctionSection > h5.enhancedSubheading::before,
+.normalFunctionSection > h6.enhancedSubheading::before {
+  left: 0;
+}
+
+/* Section with only a title (no blocks) — center the main heading */
+.sectionTitleOnly .normalFunctionTitle {
+  text-align: center;
 }
 
 /* Enhanced Anatomy Section */
@@ -1398,10 +1417,6 @@
     padding: 1.5rem;
   }
 
-  .normalFunctionTitle {
-    font-size: 1.25rem;
-  }
-
   .causesMainSectionTitle {
     font-size: 1.5rem;
     margin: 2rem 0 1rem 0;
@@ -1467,10 +1482,6 @@
 
   .anatomySection {
     padding: 1rem;
-  }
-
-  .normalFunctionTitle {
-    font-size: 1.125rem;
   }
 
   .enhancedSubheading {
@@ -3634,10 +3645,6 @@ html.dark .quoteAuthor {
     padding: 3.5rem;
   }
 
-  .normalFunctionTitle {
-    font-size: 1.75rem;
-  }
-
   /* Introduction Container */
   .introductionContainer {
     max-width: 100%;
@@ -3737,10 +3744,6 @@ html.dark .quoteAuthor {
     max-width: 100%;
     margin: 3.5rem auto;
     padding: 4rem;
-  }
-
-  .normalFunctionTitle {
-    font-size: 2rem;
   }
 
   /* Introduction Container */
