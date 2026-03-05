@@ -63,11 +63,11 @@ export const TilstandDynamicSection = ({ tilstand, activeSection }: TilstandDyna
     const intro = ((language === 'en' && t[`${prefix}_intro_en`]) || t[`${prefix}_intro`]) as string | undefined;
     let trekkspill = t[`${prefix}_trekkspill`] as TilstandAccordionItem[] | string | undefined;
     if (typeof trekkspill === "string" && trekkspill.trim()) {
-      try {
-        trekkspill = JSON.parse(trekkspill) as TilstandAccordionItem[];
-      } catch {
-        trekkspill = undefined;
-      }
+        try {
+            trekkspill = JSON.parse(trekkspill) as TilstandAccordionItem[];
+        } catch {
+            trekkspill = undefined;
+        }
     }
 
     // Specific fields for symptoms/causes
@@ -415,87 +415,87 @@ export const TilstandDynamicSection = ({ tilstand, activeSection }: TilstandDyna
                         const HeadingTag = card.headingTag === "h3" ? "h3" : "h4";
                         const headingClass = card.headingTag === "h3" ? styles.subsectionTitle : styles.normalFunctionTitle;
                         return (
-                        <div key={i} className={styles.normalFunctionSection}>
-                            <HeadingTag className={headingClass}>{card.headingText}</HeadingTag>
+                            <div key={i} className={styles.normalFunctionSection}>
+                                <HeadingTag className={headingClass}>{card.headingText}</HeadingTag>
 
-                            {/* Side-by-side layout for causes with images */}
-                            {card.images.length > 0 ? (
-                                <div className={styles.sideBySideContainer}>
-                                    <div className={styles.sideBySideText}>
+                                {/* Side-by-side layout for causes with images */}
+                                {card.images.length > 0 ? (
+                                    <div className={styles.sideBySideContainer}>
+                                        <div className={styles.sideBySideText}>
+                                            {card.paragraphs.map((p, j) => (
+                                                <React.Fragment key={j}>
+                                                    {renderRichText(p)}
+                                                </React.Fragment>
+                                            ))}
+                                            {card.links.length > 0 && card.links.length <= 1 && (
+                                                <p className={styles.enhancedParagraph}>
+                                                    {card.links.map((link, j) => (
+                                                        <a key={j}
+                                                            href={link.url}
+                                                            target="_blank"
+                                                            rel="noopener noreferrer"
+                                                            className={styles.resourceLink}
+                                                        >
+                                                            {link.text}
+                                                        </a>
+                                                    ))}
+                                                </p>
+                                            )}
+                                        </div>
+                                        <div className={styles.sideBySideImage}>
+                                            {card.images.map((img, j) => (
+                                                <div key={j}>
+                                                    <img src={img.src} alt={img.alt} />
+                                                    {img.caption && (
+                                                        <p className={styles.sideBySideImageCaption}>{img.caption}</p>
+                                                    )}
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                ) : (
+                                    <>
                                         {card.paragraphs.map((p, j) => (
                                             <React.Fragment key={j}>
                                                 {renderRichText(p)}
                                             </React.Fragment>
                                         ))}
-                                        {card.links.length > 0 && card.links.length <= 1 && (
+
+                                        {/* Single link */}
+                                        {card.links.length === 1 && !card.paragraphs.some(p => p.includes('<a ')) && (
+                                            <p className={styles.enhancedParagraph}>
+                                                <a
+                                                    href={card.links[0].url}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    className={styles.resourceLink}
+                                                >
+                                                    {card.links[0].text}
+                                                </a>
+                                            </p>
+                                        )}
+
+                                        {/* Multiple links (e.g., Obstipasjon) */}
+                                        {card.links.length > 1 && !card.paragraphs.some(p => p.includes('<a ')) && (
                                             <p className={styles.enhancedParagraph}>
                                                 {card.links.map((link, j) => (
-                                                    <a key={j}
-                                                        href={link.url}
-                                                        target="_blank"
-                                                        rel="noopener noreferrer"
-                                                        className={styles.resourceLink}
-                                                    >
-                                                        {link.text}
-                                                    </a>
+                                                    <span key={j}>
+                                                        <a
+                                                            href={link.url}
+                                                            target="_blank"
+                                                            rel="noopener noreferrer"
+                                                            className={styles.resourceLink}
+                                                        >
+                                                            {link.text}
+                                                        </a>
+                                                        {j < card.links.length - 1 && ' og '}
+                                                    </span>
                                                 ))}
                                             </p>
                                         )}
-                                    </div>
-                                    <div className={styles.sideBySideImage}>
-                                        {card.images.map((img, j) => (
-                                            <div key={j}>
-                                                <img src={img.src} alt={img.alt} />
-                                                {img.caption && (
-                                                    <p className={styles.sideBySideImageCaption}>{img.caption}</p>
-                                                )}
-                                            </div>
-                                        ))}
-                                    </div>
-                                </div>
-                            ) : (
-                                <>
-                                    {card.paragraphs.map((p, j) => (
-                                        <React.Fragment key={j}>
-                                            {renderRichText(p)}
-                                        </React.Fragment>
-                                    ))}
-
-                                    {/* Single link */}
-                                    {card.links.length === 1 && !card.paragraphs.some(p => p.includes('<a ')) && (
-                                        <p className={styles.enhancedParagraph}>
-                                            <a
-                                                href={card.links[0].url}
-                                                target="_blank"
-                                                rel="noopener noreferrer"
-                                                className={styles.resourceLink}
-                                            >
-                                                {card.links[0].text}
-                                            </a>
-                                        </p>
-                                    )}
-
-                                    {/* Multiple links (e.g., Obstipasjon) */}
-                                    {card.links.length > 1 && !card.paragraphs.some(p => p.includes('<a ')) && (
-                                        <p className={styles.enhancedParagraph}>
-                                            {card.links.map((link, j) => (
-                                                <span key={j}>
-                                                    <a
-                                                        href={link.url}
-                                                        target="_blank"
-                                                        rel="noopener noreferrer"
-                                                        className={styles.resourceLink}
-                                                    >
-                                                        {link.text}
-                                                    </a>
-                                                    {j < card.links.length - 1 && ' og '}
-                                                </span>
-                                            ))}
-                                        </p>
-                                    )}
-                                </>
-                            )}
-                        </div>
+                                    </>
+                                )}
+                            </div>
                         );
                     })}
                 </>
@@ -583,7 +583,7 @@ export const TilstandDynamicSection = ({ tilstand, activeSection }: TilstandDyna
             <div className={styles.sectionContent}>
                 {intro && renderContentWithImageCards(intro)}
 
-                {trekkspill?.map((item: TilstandAccordionItem, index: number) => {
+                {Array.isArray(trekkspill) && trekkspill.map((item: TilstandAccordionItem, index: number) => {
                     const itemTitle = getField(item, 'tittel');
                     const itemTitleNo = item.tittel;
                     const itemContent = getField(item, 'innhold');
