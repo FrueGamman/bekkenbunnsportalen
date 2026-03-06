@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { directusFetch } from "../lib/directus";
+import { directusFetch, getImageUrl } from "../lib/directus";
 
 export interface ConditionNavItem {
   id: string;
@@ -29,8 +29,8 @@ export function useConditionList(language: string): ConditionNavItem[] {
           id: c.slug,
           title:
             (language === "en" && c.side_tittel_en) ? c.side_tittel_en
-            : (c.side_tittel || c.navn || c.slug) ?? "",
-          icon: c.ikon || "/vector.svg",
+              : (c.side_tittel || c.navn || c.slug) ?? "",
+          icon: c.ikon ? getImageUrl(c.ikon) : "/vector.svg",
         }));
         // Ensure pregnancy is always in the list (same as hero)
         const hasPregnancy = items.some((i) => i.id === "pregnancy");
