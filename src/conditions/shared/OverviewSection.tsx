@@ -122,7 +122,7 @@ export const OverviewSection = ({ onSectionClick }: OverviewSectionProps) => {
       </div>
       
       <div className={styles.sectionsGrid}>
-        {data.sections.map((section: any) => (
+        {data.sections.map((section) => (
           <div 
             key={section.id}
             className={styles.sectionCard}

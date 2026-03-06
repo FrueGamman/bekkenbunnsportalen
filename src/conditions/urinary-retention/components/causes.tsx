@@ -25,9 +25,17 @@ const CAUSES_DATA = {
 } as const
 */
 
+interface CauseItem {
+  title: string;
+  content: string;
+  hasSideBySide?: boolean;
+  sideBySideImage?: { src: string; alt: string };
+}
+
+// Data comes from Directus only (ConditionPage uses TilstandDynamicSection). No fallback.
 const CAUSES_DATA = {
-  no: { pageTitle: "Årsaker", patientQuote: "", patientAge: "", causes: [] as any[] },
-  en: { pageTitle: "Causes", patientQuote: "", patientAge: "", causes: [] as any[] }
+  no: { pageTitle: "Årsaker", patientQuote: "", patientAge: "", causes: [] as CauseItem[] },
+  en: { pageTitle: "Causes", patientQuote: "", patientAge: "", causes: [] as CauseItem[] }
 };
 
 
@@ -66,7 +74,7 @@ export const Causes = () => {
               isDarkMode={resolvedTheme === 'dark'}
               defaultOpen={false}
             >
-              {('hasSideBySide' in cause) && (cause as any).hasSideBySide ? (
+              {cause.hasSideBySide ? (
                 <div className={styles.sideBySideContainer}>
                   <div className={styles.sideBySideText}>
                     <div className={styles.enhancedParagraph}>
@@ -79,8 +87,8 @@ export const Causes = () => {
                   </div>
                   <div className={styles.sideBySideImage}>
                     <img
-                      src={(cause as any).sideBySideImage.src}
-                      alt={(cause as any).sideBySideImage.alt}
+                      src={cause.sideBySideImage?.src}
+                      alt={cause.sideBySideImage?.alt}
                       className={styles.sideBySideImageElement}
                     />
                   </div>

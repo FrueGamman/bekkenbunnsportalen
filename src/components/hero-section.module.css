@@ -90,6 +90,25 @@
     gap: 1.5rem; /* Reduced gap to prevent overlap */
     min-height: auto;
   }
+
+  /* Stack logo + title on small screens */
+  .heroTitleGroup {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 0.25rem;
+  }
+
+  .heroTitleLine1 {
+    white-space: normal;
+    overflow: visible;
+    text-overflow: clip;
+  }
+
+  .heroTitleLine2 {
+    text-align: center;
+  }
   
   /* Fix card grid on mobile to prevent overlap */
   .heroCardsGrid {
@@ -838,7 +857,7 @@
   flex-shrink: 0;
   position: relative;
   border-radius: 16px;
-  background: #E5E7EB; /* gray-200 */
+  background: #eff1f5;
   overflow: hidden;
   transform: translateZ(0);
 }
@@ -892,6 +911,7 @@
   width: 72px !important;
   height: 72px !important;
   object-fit: contain;
+  color: var(--brand-navy);
   /* In light mode, show native blue; in dark, invert via global vars */
   filter: var(--health-icon-filter);
   transition: all 0.3s ease;

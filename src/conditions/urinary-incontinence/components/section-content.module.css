@@ -1210,6 +1210,17 @@
   width: 100%;
 }
 
+/* Force a predictable 2-column grid (1 column on small screens) */
+.anatomyGridTwoCol {
+  grid-template-columns: 1fr 1fr;
+}
+
+@media (max-width: 768px) {
+  .anatomyGridTwoCol {
+    grid-template-columns: 1fr;
+  }
+}
+
 .anatomyItem {
   background: white;
   border-radius: 1rem;

@@ -69,6 +69,24 @@ export const HeroSection = ({ cmsData }: HeroSectionProps) => {
   const description = cmsData?.description || staticData.description
   const subtitle = cmsData?.subtitle || staticData.subtitle
 
+  // Keep "Velkommen til"/"Welcome to the" as the first line (same row as logo on larger screens)
+  // even when CMS provides a full title string.
+  const defaultLine1 = language === "no" ? "Velkommen til" : "Welcome to the"
+  const defaultLine2 = language === "no" ? "Bekkenbunnsportalen.no" : "Pelvic Floor Portal"
+
+  const normalizedTitle = (title || "").replace(/\s+/g, " ").trim()
+  const lower = normalizedTitle.toLowerCase()
+  const lowerPrefix = defaultLine1.toLowerCase()
+  const prefixIdx = lower.indexOf(lowerPrefix)
+
+  const heroTitleLine1 = defaultLine1
+  const heroTitleLine2 =
+    normalizedTitle.length === 0
+      ? defaultLine2
+      : prefixIdx >= 0
+        ? (normalizedTitle.slice(prefixIdx + defaultLine1.length).trim() || defaultLine2)
+        : normalizedTitle
+
   const hardcodedIcons: Record<string, string> = {
     "urinary-incontinence": "/image-7.svg",
     "urinary-retention": "/vector.svg",
@@ -78,51 +96,35 @@ export const HeroSection = ({ cmsData }: HeroSectionProps) => {
     "pregnancy": "/vector-2.svg"
   }
 
-  const healthConditions: HealthCondition[] = (cmsData?.conditions && cmsData.conditions.length > 0) ?
-    cmsData.conditions.map((c, i) => ({
+  const staticConditionList: HealthCondition[] = [
+    { id: 1, titleKey: staticData.conditions.urinaryIncontinence, icon: "/image-7.svg", route: "urinary-incontinence" },
+    { id: 2, titleKey: staticData.conditions.urinaryRetention, icon: "/vector.svg", route: "urinary-retention" },
+    { id: 3, titleKey: staticData.conditions.fecalIncontinence, icon: "/fecalincontinence.svg", route: "fecal-incontinence" },
+    { id: 4, titleKey: staticData.conditions.constipation, icon: "/constipation.svg", route: "constipation" },
+    { id: 5, titleKey: staticData.conditions.pelvicPain, icon: "/belly--1--1.svg", route: "pelvic-pain" },
+    { id: 6, titleKey: staticData.conditions.pregnancy, icon: "/vector-2.svg", route: "pregnancy" },
+  ]
+
+  let healthConditions: HealthCondition[]
+  if (cmsData?.conditions && cmsData.conditions.length > 0) {
+    healthConditions = cmsData.conditions.map((c, i) => ({
       id: `cms-${i}`,
       titleKey: c.title,
       icon: hardcodedIcons[c.slug] || getImageUrl(c.icon),
       route: c.slug,
       isCms: true
-    })) : [
-      {
-        id: 1,
-        titleKey: staticData.conditions.urinaryIncontinence,
-        icon: "/image-7.svg",
-        route: "urinary-incontinence",
-      },
-      {
-        id: 2,
-        titleKey: staticData.conditions.urinaryRetention,
-        icon: "/vector.svg",
-        route: "urinary-retention",
-      },
-      {
-        id: 3,
-        titleKey: staticData.conditions.fecalIncontinence,
-        icon: "/fecalincontinence.svg",
-        route: "fecal-incontinence",
-      },
-      {
-        id: 4,
-        titleKey: staticData.conditions.constipation,
-        icon: "/constipation.svg",
-        route: "constipation",
-      },
-      {
-        id: 5,
-        titleKey: staticData.conditions.pelvicPain,
-        icon: "/belly--1--1.svg",
-        route: "pelvic-pain",
-      },
-      {
-        id: 6,
-        titleKey: staticData.conditions.pregnancy,
-        icon: "/vector-2.svg",
-        route: "pregnancy",
-      },
-    ]
+    }))
+    // Ensure pregnancy is always shown on hero (e.g. if removed from Directus tilstander)
+    const hasPregnancy = healthConditions.some((c) => c.route === "pregnancy")
+    if (!hasPregnancy) {
+      healthConditions = [
+        ...healthConditions,
+        { id: "pregnancy-fallback", titleKey: staticData.conditions.pregnancy, icon: "/vector-2.svg", route: "pregnancy" }
+      ]
+    }
+  } else {
+    healthConditions = staticConditionList
+  }
 
   const handleConditionClick = (route: string) => {
     navigate(`/conditions/${route}`)
@@ -242,18 +244,8 @@ export const HeroSection = ({ cmsData }: HeroSectionProps) => {
             />
             <div className={styles.heroTitleRow}>
               <h1 className={styles.heroTitle}>
-                {title && title !== staticData.title ? (
-                  <span className={styles.heroTitleLine2}>{title}</span>
-                ) : (
-                  <>
-                    <span className={styles.heroTitleLine1}>
-                      {language === 'no' ? 'Velkommen til' : 'Welcome to the'}
-                    </span>
-                    <span className={styles.heroTitleLine2}>
-                      {language === 'no' ? 'Bekkenbunnsportalen.no' : 'Pelvic Floor Portal'}
-                    </span>
-                  </>
-                )}
+                <span className={styles.heroTitleLine1}>{heroTitleLine1}</span>
+                <span className={styles.heroTitleLine2}>{heroTitleLine2}</span>
               </h1>
             </div>
           </div>

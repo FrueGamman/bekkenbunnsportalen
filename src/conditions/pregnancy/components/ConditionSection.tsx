@@ -138,6 +138,23 @@ export const ConditionSection = ({
     navigate(`/conditions/${conditionId}?section=textbook${hash}`)
   }
 
+  const isInternalAppLink = (url: string) => {
+    return url.startsWith("/") || url.startsWith(window.location.origin)
+  }
+
+  const normalizeInternalUrl = (url: string) => {
+    if (url.startsWith(window.location.origin)) {
+      return url.replace(window.location.origin, "")
+    }
+    return url
+  }
+
+  const handleDirectusLinkClick = (event: React.MouseEvent<HTMLAnchorElement>, url: string) => {
+    if (!isInternalAppLink(url)) return
+    event.preventDefault()
+    navigate(normalizeInternalUrl(url))
+  }
+
   const activeContent = tabs.find(tab => tab.key === activeTab)?.content
 
   return (
@@ -255,11 +272,12 @@ export const ConditionSection = ({
         {link && (
           <a
             href={link.url}
-            target="_blank"
-            rel="noopener noreferrer"
             className={styles.textbookButton}
+            target={isInternalAppLink(link.url) ? undefined : "_blank"}
+            rel={isInternalAppLink(link.url) ? undefined : "noopener noreferrer"}
+            onClick={(event) => handleDirectusLinkClick(event, link.url)}
           >
-            {link.text} ↗
+            {link.text} {isInternalAppLink(link.url) ? "→" : "↗"}
           </a>
         )}
         {pdf && (
@@ -272,13 +290,15 @@ export const ConditionSection = ({
             {pdf.buttonText} 📄
           </a>
         )}
-        <button
-          onClick={handleTextbookClick}
-          className={styles.textbookButton}
-          aria-label="Navigate to textbook section"
-        >
-          {TEXTBOOK_LINK[language]} →
-        </button>
+        {!link && (
+          <button
+            onClick={handleTextbookClick}
+            className={styles.textbookButton}
+            aria-label="Navigate to textbook section"
+          >
+            {TEXTBOOK_LINK[language]} →
+          </button>
+        )}
       </div>
     </section>
   )

@@ -1,7 +1,7 @@
 "use client";
 
 import type React from "react";
-import { useState, useMemo, type ReactNode } from "react";
+import { useState, useMemo, useCallback, type ReactNode } from "react";
 import { getInitialLanguage } from "./languageTypes";
 import type { Language } from "./languageTypes";
 import { LanguageContext } from "./LanguageContext";
@@ -25,25 +25,16 @@ export const LanguageProvider: React.FC<LanguageProviderProps> = ({
     }
   };
 
-  /**
-   * Translation function with comprehensive fallback logic
-   * Pulls from centralized translations file for consistency across all pages
-   * @param key - Translation key to lookup
-   * @returns Translated string or the key itself if not found
-   */
-  const t = (key: string): string => {
+  const t = useCallback((key: string): string => {
     const table = translations[languageState as keyof typeof translations] as Record<string, string> | undefined;
     
-    // Fallback: return key if language table doesn't exist
     if (!table) {
       console.warn(`Language table not found for: ${languageState}`);
       return key;
     }
     
-    // Return translation or key if translation doesn't exist
     const translation = table[key];
     if (!translation) {
-      // Only warn in development, not production
       if (process.env.NODE_ENV === 'development') {
         console.warn(`Translation missing for key: "${key}" in language: ${languageState}`);
       }
@@ -51,12 +42,12 @@ export const LanguageProvider: React.FC<LanguageProviderProps> = ({
     }
     
     return translation;
-  };
+  }, [languageState]);
 
   // Memoize the context value to prevent unnecessary re-renders
   const contextValue = useMemo(
     () => ({ language: languageState, setLanguage, t }),
-    [languageState] // Only recreate when language changes
+    [languageState, t]
   );
 
   return (

@@ -119,7 +119,7 @@ const Elearning: React.FC = () => {
 
       <div className={styles.coursesList}>
         {data.courses.map((course) => (
-          <div key={course.id} className={`${styles.courseItem} ${(course as any).featured ? styles.featured : ""}`}>
+          <div key={course.id} className={`${styles.courseItem} ${'featured' in course && course.featured ? styles.featured : ""}`}>
             <div className={styles.courseHeader}>
               <div className={styles.courseIcon}>
                 <img src="/mdi_play-circle-outline.png" alt="" />

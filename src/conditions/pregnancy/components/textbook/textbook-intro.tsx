@@ -1,6 +1,5 @@
 "use client"
 import { useLanguage } from "../../../../context/LanguageContext"
-import { useTheme } from "../../../../context/ThemeContext"
 import styles from "../section-content.module.css"
 
 const introData = {

@@ -1,7 +1,5 @@
 "use client"
 
-import { useState, useEffect } from "react"
-import { createPortal } from "react-dom"
 import { useLanguage } from "../../../context/LanguageContext"
 import { useTheme } from "../../../context/ThemeContext"
 import styles from "./section-content.module.css"

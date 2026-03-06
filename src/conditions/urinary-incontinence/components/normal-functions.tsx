@@ -174,6 +174,14 @@ export const NormalFunctions = () => {
                     alt={image.alt}
                     className={styles.anatomyImage}
                     onClick={() => setSelectedImage({ src: image.src, alt: image.alt })}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault()
+                        setSelectedImage({ src: image.src, alt: image.alt })
+                      }
+                    }}
+                    role="button" // eslint-disable-line jsx-a11y/no-noninteractive-element-to-interactive-role
+                    tabIndex={0}
                     style={{ cursor: 'pointer' }}
                   />
                   <p className={styles.anatomyCaption}>{image.caption}</p>

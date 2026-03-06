@@ -8,6 +8,9 @@
     "npm": ">=10.0.0"
   },
   "scripts": {
+    "sync:textbook-data": "tsx scripts/sync-pregnancy-textbook-data-directus.ts",
+    "add:textbook-fields": "node scripts/add-directus-pregnancy-chapter-data-fields.js",
+    "sync:urinary-retention": "node scripts/sync-urinary-retention-directus.js",
     "dev": "vite",
     "build": "tsc -p tsconfig.app.json --noEmit && vite build",
     "lint": "eslint .",
@@ -73,6 +76,7 @@
     "jest-runtime": "^30.2.0",
     "jest-snapshot": "^30.2.0",
     "ts-jest": "^29.4.6",
+    "tsx": "^4.19.2",
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.55.0",
     "vite": "^7.3.1"

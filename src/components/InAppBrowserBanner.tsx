@@ -19,7 +19,7 @@ export function InAppBrowserBanner() {
   if (!visible) return null
 
   const onDismiss = () => {
-    try { sessionStorage.setItem("iab_banner_dismissed", "1") } catch {}
+    try { sessionStorage.setItem("iab_banner_dismissed", "1") } catch { /* noop */ }
     setVisible(false)
   }
 
@@ -36,17 +36,17 @@ export function InAppBrowserBanner() {
         window.location.href = intent
         // Fallbacks if intent is blocked
         setTimeout(() => {
-          try { window.open(url, "_blank", "noopener,noreferrer") } catch {}
+          try { window.open(url, "_blank", "noopener,noreferrer") } catch { /* noop */ }
         }, 200)
         // Last-resort: prompt Chrome install/open on Play Store
         setTimeout(() => {
-          try { window.location.href = "market://details?id=com.android.chrome" } catch {}
-          setTimeout(() => { try { window.location.href = "https://play.google.com/store/apps/details?id=com.android.chrome" } catch {} }, 400)
+          try { window.location.href = "market://details?id=com.android.chrome" } catch { /* noop */ }
+          setTimeout(() => { try { window.location.href = "https://play.google.com/store/apps/details?id=com.android.chrome" } catch { /* noop */ } }, 400)
         }, 600)
         return
       }
       window.open(url, "_blank", "noopener,noreferrer")
-    } catch {}
+    } catch { /* noop */ }
   }
 
   const onCopy = async () => {

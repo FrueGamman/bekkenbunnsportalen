@@ -26,7 +26,7 @@ export const usePageData = (collection: string, slug?: string) => {
                     url += `&filter[slug][_eq]=${slug}`;
                 }
 
-                const response = await directusFetch<any>(url);
+                const response = await directusFetch<PageWithSections | PageWithSections[]>(url);
 
                 if (Array.isArray(response)) {
                     setData(response[0] || null);

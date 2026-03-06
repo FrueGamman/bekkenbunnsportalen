@@ -1,6 +1,89 @@
 import { useState, useEffect } from "react";
-import type { ConditionPregnancy } from "../types/cms";
+import type { ConditionPregnancy, PregnancyChapter, PregnancyProblem, PregnancySection } from "../types/cms";
 import { directusFetch } from "../lib/directus";
+
+const normalizeProblemSlug = (slug: string) => {
+    if (!slug) return slug;
+    // Keep backwards compatibility with older slug variants imported from legacy content.
+    if (slug === "tyngdefolelse-og-prolaps") {
+        return "tyngdefolelse-prolaps";
+    }
+    return slug;
+};
+
+const PROBLEM_TO_TEXTBOOK_HASH: Record<string, string> = {
+    urinlekkasje: "bladder-function",
+    avforingslekkasje: "bowel-function",
+    forstoppelse: "bowel-function",
+    hemoroider: "bowel-function",
+    "smertefull-avforing": "bowel-function",
+    fodselsrift: "birth-tears",
+    "tyngdefolelse-prolaps": "prolapse",
+    samleie: "intercourse",
+    hastverkstrang: "bowel-function",
+    urinveisinfeksjon: "bladder-function",
+};
+
+const normalizePregnancyTextbookLink = (linkUrl: string, fallbackSlug?: string) => {
+    const trimmed = linkUrl.trim();
+    if (!trimmed) return trimmed;
+
+    const normalizedSlug = fallbackSlug ? normalizeProblemSlug(fallbackSlug) : "";
+    const textbookHash = normalizedSlug ? PROBLEM_TO_TEXTBOOK_HASH[normalizedSlug] : "";
+
+    if (trimmed.includes("/conditions/pregnancy") && trimmed.includes("section=textbook")) {
+        if (trimmed.includes("#") || !textbookHash) {
+            return trimmed;
+        }
+        return `${trimmed}#${textbookHash}`;
+    }
+
+    return trimmed;
+};
+
+const normalizePregnancyProblemLink = (linkUrl?: string, fallbackSlug?: string) => {
+    if (!linkUrl) return linkUrl;
+
+    const trimmed = linkUrl.trim();
+    if (!trimmed) return trimmed;
+
+    const fallback = fallbackSlug ? normalizeProblemSlug(fallbackSlug) : "";
+
+    // Legacy links from imported WP content, e.g.
+    // /conditions/pregnancy?section=overviewvanlige-plager/samleie/
+    // should become /conditions/pregnancy?section=overview#samleie
+    const legacyMatch = trimmed.match(/overviewvanlige-plager\/([^/?#]+)\/?/i)
+        || trimmed.match(/vanlige-plager\/([^/?#]+)\/?/i);
+
+    if (legacyMatch?.[1]) {
+        const slug = normalizeProblemSlug(legacyMatch[1].toLowerCase());
+        return `/conditions/pregnancy?section=overview#${slug}`;
+    }
+
+    // If this is a pregnancy overview link without hash, attach the problem hash.
+    if (trimmed.includes("/conditions/pregnancy") && trimmed.includes("section=overview")) {
+        if (trimmed.includes("#")) {
+            return trimmed;
+        }
+        if (fallback) {
+            return `${trimmed}#${fallback}`;
+        }
+    }
+
+    return normalizePregnancyTextbookLink(trimmed, fallback);
+};
+
+const isPregnancyProblem = (value: number | PregnancyProblem): value is PregnancyProblem => {
+    return typeof value === "object" && value !== null;
+};
+
+const isPregnancyChapter = (value: number | PregnancyChapter): value is PregnancyChapter => {
+    return typeof value === "object" && value !== null;
+};
+
+const isPregnancySection = (value: number | PregnancySection): value is PregnancySection => {
+    return typeof value === "object" && value !== null;
+};
 
 export const usePregnancyData = (language: string) => {
     const [data, setData] = useState<ConditionPregnancy | null>(null);
@@ -29,16 +112,39 @@ export const usePregnancyData = (language: string) => {
                 if (response) {
                     // Sort problems and chapters by the 'sort' field
                     if (response.problems && Array.isArray(response.problems)) {
-                        response.problems.sort((a: any, b: any) => (a.sort || 0) - (b.sort || 0));
+                        const normalizedProblems = response.problems
+                            .filter(isPregnancyProblem)
+                            .sort((a, b) => (a.sort || 0) - (b.sort || 0))
+                            .map((problem) => {
+                                const normalizedSlug = normalizeProblemSlug(problem.slug || "");
+
+                                return {
+                                    ...problem,
+                                    slug: normalizedSlug || problem.slug,
+                                    link_url: normalizePregnancyProblemLink(problem.link_url, normalizedSlug || problem.slug),
+                                };
+                            });
+
+                        response.problems = normalizedProblems;
                     }
                     if (response.chapters && Array.isArray(response.chapters)) {
-                        response.chapters.sort((a: any, b: any) => (a.sort || 0) - (b.sort || 0));
-                        // Sort sections within each chapter
-                        response.chapters.forEach((chapter: any) => {
-                            if (chapter.sections && Array.isArray(chapter.sections)) {
-                                chapter.sections.sort((a: any, b: any) => (a.sort || 0) - (b.sort || 0));
-                            }
-                        });
+                        const normalizedChapters = response.chapters
+                            .filter(isPregnancyChapter)
+                            .sort((a, b) => (a.sort || 0) - (b.sort || 0))
+                            .map((chapter) => {
+                                const normalizedSections = Array.isArray(chapter.sections)
+                                    ? chapter.sections
+                                        .filter(isPregnancySection)
+                                        .sort((a, b) => (a.sort || 0) - (b.sort || 0))
+                                    : chapter.sections;
+
+                                return {
+                                    ...chapter,
+                                    sections: normalizedSections,
+                                };
+                            });
+
+                        response.chapters = normalizedChapters;
                     }
                     setData(response);
                 } else {

@@ -1,9 +1,36 @@
 import axios from 'axios';
 import { COMMON_PROBLEMS_DATA } from '../src/conditions/pregnancy/components/common-problems-data.ts';
-import * as fs from 'fs';
+import { readFileSync } from 'fs';
+import { fileURLToPath } from 'url';
+import { dirname, join } from 'path';
 
-const DIRECTUS_URL = 'https://directus-cms.sliplane.app';
-const TOKEN = 'CrroW4IZgGtsGuJWNayMuay0hnRGO6JO';
+const __dirname = dirname(fileURLToPath(import.meta.url));
+const root = join(__dirname, '..');
+
+function loadEnv() {
+    try {
+        const envPath = join(root, '.env');
+        const content = readFileSync(envPath, 'utf8');
+        const env: Record<string, string> = {};
+        for (const line of content.split('\n')) {
+            const m = line.match(/^\s*([^#=]+)=(.*)$/);
+            if (m) env[m[1].trim()] = m[2].trim().replace(/^["']|["']$/g, '');
+        }
+        return env;
+    } catch {
+        return {};
+    }
+}
+
+const env = loadEnv();
+const DIRECTUS_URL = (process.env.VITE_DIRECTUS_URL || env.VITE_DIRECTUS_URL || '').replace(/\/$/, '');
+const TOKEN = process.env.VITE_DIRECTUS_TOKEN || env.VITE_DIRECTUS_TOKEN || '';
+
+if (!DIRECTUS_URL || !TOKEN) {
+    console.error('Set VITE_DIRECTUS_URL and VITE_DIRECTUS_TOKEN in .env or environment.');
+    process.exit(1);
+}
+
 const HEADERS = {
     Authorization: `Bearer ${TOKEN}`,
     'Content-Type': 'application/json',
@@ -219,6 +246,22 @@ const TEXTBOOK_SECTIONS = {
     ]
 };
 
+interface MigrationSubsection {
+    id: string;
+    title?: string;
+    description?: string;
+    items?: string[];
+}
+
+interface MigrationSection {
+    id?: string;
+    title: string;
+    intro?: string;
+    types?: string[];
+    keyPoints?: string[];
+    initialAdvice?: string[];
+    subsections?: MigrationSubsection[];
+}
 
 async function migrate() {
     console.log("Starting Migration...");
@@ -267,8 +310,9 @@ async function migrate() {
             await axios.patch(`${DIRECTUS_URL}/items/Pregnancy_Chapters/${chapterId}`, { sections: sectionsArray }, { headers: HEADERS });
             console.log(`Updated sections for chapter ${ch.no.title}`);
 
-        } catch (e: any) {
-            console.error(`Failed on chapter ${ch.no.title}:`, e.response?.data || e.message);
+        } catch (e: unknown) {
+            const err = e as { response?: { data?: unknown }; message?: string };
+            console.error(`Failed on chapter ${ch.no.title}:`, err.response?.data || err.message);
         }
     }
 
@@ -279,41 +323,41 @@ async function migrate() {
     // COMMON_PROBLEMS_DATA
 
     // Helper to format problems subsets
-    function formatProblemContent(section: any, tabType: 'about' | 'symptoms' | 'selfHelp' | 'seekHelp') {
+    function formatProblemContent(section: MigrationSection, tabType: 'about' | 'symptoms' | 'selfHelp' | 'seekHelp') {
         let html = "";
 
         if (tabType === 'about') {
             if (section.intro) html += `<p>${section.intro}</p>`;
-            if (section.types) html += `<ul>${section.types.map((t: any) => `<li>${t}</li>`).join('')}</ul>`;
-            if (section.keyPoints) html += `<ul>${section.keyPoints.map((t: any) => `<li>${t}</li>`).join('')}</ul>`;
-            if (section.initialAdvice) html += `<ul>${section.initialAdvice.map((t: any) => `<li>${t}</li>`).join('')}</ul>`;
+            if (section.types) html += `<ul>${section.types.map((t) => `<li>${t}</li>`).join('')}</ul>`;
+            if (section.keyPoints) html += `<ul>${section.keyPoints.map((t) => `<li>${t}</li>`).join('')}</ul>`;
+            if (section.initialAdvice) html += `<ul>${section.initialAdvice.map((t) => `<li>${t}</li>`).join('')}</ul>`;
         }
         else if (tabType === 'symptoms') {
-            const subs = section.subsections?.filter((sub: any) => sub.id.includes('symptoms') || sub.id === 'symptoms');
+            const subs = section.subsections?.filter((sub) => sub.id.includes('symptoms') || sub.id === 'symptoms');
             if (subs) {
-                subs.forEach((sub: any) => {
+                subs.forEach((sub) => {
                     if (subs.length > 1) html += `<h4>${sub.title}</h4>`;
-                    if (sub.items) html += `<ul>${sub.items.map((i: any) => `<li>${i}</li>`).join('')}</ul>`;
+                    if (sub.items) html += `<ul>${sub.items.map((i) => `<li>${i}</li>`).join('')}</ul>`;
                 });
             }
         }
         else if (tabType === 'selfHelp') {
-            const subs = section.subsections?.filter((sub: any) => sub.id === 'selfhelp' || sub.id.includes('selfhelp') || (sub.id.includes('advice') && !sub.id.includes('help')));
+            const subs = section.subsections?.filter((sub) => sub.id === 'selfhelp' || sub.id.includes('selfhelp') || (sub.id.includes('advice') && !sub.id.includes('help')));
             if (subs) {
-                subs.forEach((sub: any) => {
+                subs.forEach((sub) => {
                     if (subs.length > 1) html += `<h4>${sub.title}</h4>`;
                     if (sub.description) html += `<p>${sub.description}</p>`;
-                    if (sub.items) html += `<ul>${sub.items.map((i: any) => `<li>${i}</li>`).join('')}</ul>`;
+                    if (sub.items) html += `<ul>${sub.items.map((i) => `<li>${i}</li>`).join('')}</ul>`;
                 });
             }
         }
         else if (tabType === 'seekHelp') {
-            const subs = section.subsections?.filter((sub: any) => (sub.id === 'seek-help' || sub.id.includes('help')) && !sub.id.includes('selfhelp') && !sub.id.includes('advice'));
+            const subs = section.subsections?.filter((sub) => (sub.id === 'seek-help' || sub.id.includes('help')) && !sub.id.includes('selfhelp') && !sub.id.includes('advice'));
             if (subs) {
-                subs.forEach((sub: any) => {
+                subs.forEach((sub) => {
                     if (subs.length > 1) html += `<h4>${sub.title}</h4>`;
                     if (sub.description) html += `<p>${sub.description}</p>`;
-                    if (sub.items) html += `<ul>${sub.items.map((i: any) => `<li>${i}</li>`).join('')}</ul>`;
+                    if (sub.items) html += `<ul>${sub.items.map((i) => `<li>${i}</li>`).join('')}</ul>`;
                 });
             }
         }
@@ -325,17 +369,24 @@ async function migrate() {
     const sectionsEn = COMMON_PROBLEMS_DATA.en.sections;
 
     // Fetch existing problems to update them
-    const probs = await axios.get(`${DIRECTUS_URL}/items/Pregnancy_Problems`, { headers: HEADERS });
-    const existingProbs = probs.data.data;
+    let existingProbs: Record<string, unknown>[] = [];
+    try {
+        const probs = await axios.get(`${DIRECTUS_URL}/items/Pregnancy_Problems`, { headers: HEADERS });
+        existingProbs = probs.data.data;
+    } catch (e: unknown) {
+        const err = e as { response?: { data?: unknown }; message?: string };
+        console.error('Failed to fetch existing pregnancy problems:', err.response?.data || err.message);
+        return;
+    }
 
     for (let i = 0; i < sectionsNo.length; i++) {
-        const secNo = sectionsNo[i] as any;
-        const secEn = sectionsEn.find((s: any) => s.id === secNo.id) as any;
+        const secNo = sectionsNo[i] as MigrationSection;
+        const secEn = sectionsEn.find((s) => (s as MigrationSection).id === secNo.id) as MigrationSection | undefined;
 
         // Find match in CMS by name or roughly by name
-        let dbProb = existingProbs.find((p: any) => p.name_no && (
-            p.name_no.toLowerCase().includes(secNo.title.toLowerCase()) ||
-            secNo.title.toLowerCase().includes(p.name_no.toLowerCase())
+        let dbProb = existingProbs.find((p) => p.name_no && (
+            (p.name_no as string).toLowerCase().includes(secNo.title.toLowerCase()) ||
+            secNo.title.toLowerCase().includes((p.name_no as string).toLowerCase())
         ));
 
         if (!dbProb) {
@@ -366,8 +417,9 @@ async function migrate() {
             try {
                 await axios.patch(`${DIRECTUS_URL}/items/Pregnancy_Problems/${dbProb.id}`, payload, { headers: HEADERS });
                 console.log(`Updated problem content for ${secNo.title}`);
-            } catch (e: any) {
-                console.error(`Failed to update problem ${secNo.title}:`, e.response?.data || e.message);
+            } catch (e: unknown) {
+                const err = e as { response?: { data?: unknown }; message?: string };
+                console.error(`Failed to update problem ${secNo.title}:`, err.response?.data || err.message);
             }
         }
     }
@@ -375,4 +427,8 @@ async function migrate() {
     console.log("Migration Complete.");
 }
 
-migrate();
+migrate().catch((e: unknown) => {
+    const err = e as { response?: { data?: unknown }; message?: string };
+    console.error('Migration failed:', err.response?.data || err.message || e);
+    process.exit(1);
+});

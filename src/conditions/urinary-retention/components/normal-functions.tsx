@@ -71,22 +71,27 @@ const NORMAL_FUNCTIONS_DATA = {
 } as const
 */
 
+// Data comes from Directus only (ConditionPage uses TilstandDynamicSection). No fallback.
 const INTRODUCTION_DATA = {
-  no: {
-    description: "",
-    keyPoints: [] as string[],
-    image: { src: "", alt: "", caption: "" }
-  },
-  en: {
-    description: "",
-    keyPoints: [] as string[],
-    image: { src: "", alt: "", caption: "" }
-  }
+  no: { description: "", keyPoints: [] as string[], image: { src: "", alt: "", caption: "" } },
+  en: { description: "", keyPoints: [] as string[], image: { src: "", alt: "", caption: "" } }
 };
 
+interface NormalFunctionSection {
+  id: string;
+  title: string;
+  content: string;
+  hasImage?: boolean;
+  image?: { src: string; alt: string; caption: string };
+  hasAnatomyImages?: boolean;
+  anatomyImages?: Array<{ src: string; alt: string; caption: string }>;
+  hasHighlight?: boolean;
+  highlight?: string;
+}
+
 const NORMAL_FUNCTIONS_DATA = {
-  no: { pageTitle: "Funksjon", sections: [] as any[] },
-  en: { pageTitle: "Normal function", sections: [] as any[] }
+  no: { pageTitle: "Funksjon", sections: [] as NormalFunctionSection[] },
+  en: { pageTitle: "Normal function", sections: [] as NormalFunctionSection[] }
 };
 
 

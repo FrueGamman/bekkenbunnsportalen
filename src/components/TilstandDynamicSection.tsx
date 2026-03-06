@@ -5,7 +5,7 @@ import { SectionAccordion } from "./SectionAccordion";
 import { CommonExerciseSection } from "./CommonExerciseSection";
 import type { ExerciseStep, GenderInstruction, Video, SmartphoneApps } from "./CommonExerciseSection";
 import { ImageModal } from "./ui/ImageModal";
-import type { Tilstand, TilstandAccordionItem } from "../types/cms";
+import type { Tilstand, TilstandAccordionItem, TilstandUnderseksjon } from "../types/cms";
 import { getImageUrl } from "../lib/directus";
 import styles from "../conditions/urinary-incontinence/components/section-content.module.css";
 
@@ -14,6 +14,10 @@ interface TilstandDynamicSectionProps {
     activeSection: string;
 }
 
+/**
+ * Renders one section (funksjon, symptomer, årsaker, utredning, behandling, etc.) from Directus tilstand.
+ * Keeps original frontend: same layout (sectionContainer, sectionHeader, sectionContent), SectionAccordion, and section-content.module.css.
+ */
 export const TilstandDynamicSection = ({ tilstand, activeSection }: TilstandDynamicSectionProps) => {
     const { language } = useLanguage();
     const { resolvedTheme } = useTheme();
@@ -35,24 +39,49 @@ export const TilstandDynamicSection = ({ tilstand, activeSection }: TilstandDyna
     const prefix = sectionMap[activeSection];
     if (!prefix) return null;
 
+    // Section icons matching original condition pages; urinary-incontinence treatment uses /solae.png on original site
+    const sectionIconMap: Record<string, string> = {
+        "normal-functions": "/inNormal.svg",
+        "symptoms": "/inSymptoms.png",
+        "causes": "/couse.png",
+        "diagnosis": "/solae.png",
+        "treatment": "/treat.png",
+        "exercises": "/exercises.png",
+        "resources": "/resource.png",
+        "references": "/resource.png",
+        "textbook": "/inNormal.svg",
+    };
+    const conditionSlug = (tilstand as { slug?: string }).slug;
+    const sectionIcon =
+        conditionSlug === "urinary-incontinence" && activeSection === "treatment"
+            ? "/solae.png"
+            : (sectionIconMap[activeSection] ?? "/inNormal.svg");
+
     // Use type assertion to access fields dynamically
-    const t = tilstand as any;
-    const title = (language === 'en' && t[`${prefix}_tittel_en`]) || t[`${prefix}_tittel`];
-    const intro = (language === 'en' && t[`${prefix}_intro_en`]) || t[`${prefix}_intro`];
-    const trekkspill = t[`${prefix}_trekkspill`];
+    const t = tilstand as unknown as Record<string, any>;
+    const title = ((language === 'en' && t[`${prefix}_tittel_en`]) || t[`${prefix}_tittel`]) as string | undefined;
+    const intro = ((language === 'en' && t[`${prefix}_intro_en`]) || t[`${prefix}_intro`]) as string | undefined;
+    let trekkspill = t[`${prefix}_trekkspill`] as TilstandAccordionItem[] | string | undefined;
+    if (typeof trekkspill === "string" && trekkspill.trim()) {
+        try {
+            trekkspill = JSON.parse(trekkspill) as TilstandAccordionItem[];
+        } catch {
+            trekkspill = undefined;
+        }
+    }
 
     // Specific fields for symptoms/causes
-    const sitat = (language === 'en' && t[`${prefix}_sitat_en`]) || t[`${prefix}_sitat`];
-    const sitatKilde = (language === 'en' && t[`${prefix}_sitat_kilde_en`]) || t[`${prefix}_sitat_kilde`];
+    const sitat = ((language === 'en' && t[`${prefix}_sitat_en`]) || t[`${prefix}_sitat`]) as string | undefined;
+    const sitatKilde = ((language === 'en' && t[`${prefix}_sitat_kilde_en`]) || t[`${prefix}_sitat_kilde`]) as string | undefined;
 
     // Exercises: render original design (CommonExerciseSection) when structured data from Directus exists
     if (activeSection === "exercises") {
-        const tryTitle = (language === "en" && t.ovelse_try_yourself_title_en) || t.ovelse_try_yourself_title || "";
-        const step1 = (language === "en" && t.ovelse_step1_text_en) || t.ovelse_step1_text || "";
-        const tipsTitle = (language === "en" && t.ovelse_tips_title_en) || t.ovelse_tips_title || "";
-        const tipsText = (language === "en" && t.ovelse_tips_text_en) || t.ovelse_tips_text || "";
-        const videoSectionTitle = (language === "en" && t.ovelse_video_section_title_en) || t.ovelse_video_section_title || "";
-        const videoSectionDesc = (language === "en" && t.ovelse_video_section_description_en) || t.ovelse_video_section_description || "";
+        const tryTitle = ((language === "en" && t.ovelse_try_yourself_title_en) || t.ovelse_try_yourself_title || "") as string;
+        const step1 = ((language === "en" && t.ovelse_step1_text_en) || t.ovelse_step1_text || "") as string;
+        const tipsTitle = ((language === "en" && t.ovelse_tips_title_en) || t.ovelse_tips_title || "") as string;
+        const tipsText = ((language === "en" && t.ovelse_tips_text_en) || t.ovelse_tips_text || "") as string;
+        const videoSectionTitle = ((language === "en" && t.ovelse_video_section_title_en) || t.ovelse_video_section_title || "") as string;
+        const videoSectionDesc = ((language === "en" && t.ovelse_video_section_description_en) || t.ovelse_video_section_description || "") as string;
         const videosRaw = (t.ovelse_videos as { src: string; title?: string; title_en?: string }[] | null) || [];
         const stepsRaw = (t.ovelse_steps as { number: number; text?: string; text_en?: string }[] | null) || [];
         const genderRaw = (t.ovelse_gender_instructions as { title?: string; title_en?: string; text?: string; text_en?: string; icon?: string; iconColor?: string }[] | null) || [];
@@ -104,7 +133,8 @@ export const TilstandDynamicSection = ({ tilstand, activeSection }: TilstandDyna
         }
     }
 
-    if (!title && !intro && !trekkspill) return null;
+    const hasTrekkspill = Array.isArray(trekkspill) && trekkspill.length > 0;
+    if (!title && !intro && !hasTrekkspill && !sitat) return null;
 
     // Helper: get language-aware field from accordion item
     const getField = (item: TilstandAccordionItem, field: 'tittel' | 'innhold') => {
@@ -112,9 +142,12 @@ export const TilstandDynamicSection = ({ tilstand, activeSection }: TilstandDyna
         return (language === 'en' && item[enField]) ? String(item[enField]) : String(item[field]);
     };
 
-    // Helper to slugify title for deep linking
+    // Helper to slugify title for deep linking (match original site anchors e.g. #konservativ-behandling)
     const slugify = (text: string) => {
-        return text
+        const trimmed = (text || '').trim();
+        const withoutLeadingNumber = trimmed.replace(/^\s*\d+\.\s*/, '');
+        const base = withoutLeadingNumber || trimmed;
+        return base
             .toLowerCase()
             .replace(/[ææ]/g, 'ae')
             .replace(/[øø]/g, 'o')
@@ -192,6 +225,19 @@ export const TilstandDynamicSection = ({ tilstand, activeSection }: TilstandDyna
                 {nodes.map((node, i) => {
                     const el = node as HTMLElement;
                     if (el.nodeType === 1 && el.tagName === 'BLOCKQUOTE') {
+                        const hasHeadingInside = !!el.querySelector?.('h1,h2,h3,h4,h5,h6');
+                        // In Directus content, blockquote is sometimes used for indentation/layout (not quotes).
+                        // If it contains headings, unwrap it to avoid nested "highlight boxes".
+                        if (hasHeadingInside) {
+                            return (
+                                <div
+                                    key={i}
+                                    className={styles.enhancedParagraph}
+                                    style={style}
+                                    dangerouslySetInnerHTML={{ __html: el.innerHTML }}
+                                />
+                            );
+                        }
                         return (
                             <div key={i} className={styles.highlightBox}>
                                 <div dangerouslySetInnerHTML={{ __html: el.innerHTML }} />
@@ -210,9 +256,9 @@ export const TilstandDynamicSection = ({ tilstand, activeSection }: TilstandDyna
     const renderContentWithImageCards = (html: string) => {
         if (!html) return null;
         try {
-        const doc = new DOMParser().parseFromString(`<div>${html}</div>`, 'text/html');
-        const root = doc.body.firstChild as HTMLElement;
-        if (!root) return null;
+            const doc = new DOMParser().parseFromString(`<div>${html}</div>`, 'text/html');
+            const root = doc.body.firstChild as HTMLElement;
+            if (!root) return null;
 
         // Top-level headings (h1, h2) start a new container; h3–h6 and their content stay inside it
         type ContentBlock = {
@@ -314,9 +360,35 @@ export const TilstandDynamicSection = ({ tilstand, activeSection }: TilstandDyna
             return currentBlock;
         };
 
-        Array.from(root.childNodes).forEach((node) => {
+        // Flatten relevant elements (headings, paragraphs/text, lists, figures, blockquotes) in document order,
+        // regardless of how deeply they are nested, while skipping purely structural wrappers.
+        const flatNodes: HTMLElement[] = [];
+        const collectRelevant = (node: ChildNode) => {
+            if (node.nodeType === 3) {
+                // Text node — wrap into a synthetic paragraph so we don't lose standalone text like
+                // "I noen tilfeller er det nødvendig ..." that isn't inside <p>.
+                const text = node.textContent?.trim();
+                if (text) {
+                    const docForNode = node.ownerDocument || doc;
+                    const p = docForNode.createElement('p');
+                    p.textContent = text;
+                    flatNodes.push(p);
+                }
+                return;
+            }
+            if (node.nodeType !== 1) return;
             const el = node as HTMLElement;
-            const isHeading = el.nodeType === 1 && isHeadingTag(el.tagName);
+            const tag = el.tagName.toUpperCase();
+            if (isHeadingTag(tag) || tag === 'P' || tag === 'UL' || tag === 'OL' || tag === 'FIGURE' || tag === 'BLOCKQUOTE') {
+                flatNodes.push(el);
+                return;
+            }
+            Array.from(el.childNodes).forEach(collectRelevant);
+        };
+        collectRelevant(root);
+
+        flatNodes.forEach((el) => {
+            const isHeading = isHeadingTag(el.tagName);
 
             if (isHeading) {
                 const tag = el.tagName.toUpperCase();
@@ -325,11 +397,11 @@ export const TilstandDynamicSection = ({ tilstand, activeSection }: TilstandDyna
                 if (isSectionStarter(tag)) {
                     if (currentBlock) currentBlock = null;
                     if (currentSection) sections.push(currentSection);
-                    currentSection = { mainHeadingText: text, blocks: [] };
+                    currentSection = { mainHeadingTag: tag === 'H1' ? 'h1' : 'h2', mainHeadingText: text, blocks: [] };
                 } else {
-                    // h2–h6: new block under current section, or use as section title if no h1 yet (don't duplicate)
+                    // h3–h6: new block under current section, or use as section title if no h1/h2 yet (don't duplicate)
                     if (!currentSection) {
-                        currentSection = { mainHeadingText: text, blocks: [] };
+                        currentSection = { mainHeadingTag: 'h2', mainHeadingText: text, blocks: [] };
                         currentBlock = null;
                     } else {
                         currentBlock = {
@@ -343,14 +415,10 @@ export const TilstandDynamicSection = ({ tilstand, activeSection }: TilstandDyna
                     }
                 }
             } else if (currentSection) {
-                if (el.nodeType === 1 && el.textContent?.trim()) {
-                    pushContentToBlock(ensureBlock(), el);
-                }
+                pushContentToBlock(ensureBlock(), el);
             } else {
                 // Before first h1/h2 — intro
-                if (el.nodeType === 1 && el.textContent?.trim()) {
-                    introElements.push(el.outerHTML);
-                }
+                introElements.push(el.outerHTML);
             }
         });
 
@@ -363,7 +431,10 @@ export const TilstandDynamicSection = ({ tilstand, activeSection }: TilstandDyna
                 <>
                     {textHtml && renderRichText(textHtml, { width: '100%' })}
                     {images && images.length > 0 && (
-                        <div className={styles.anatomyGrid} style={{ width: '100%' }}>
+                        <div
+                            className={images.length > 1 ? `${styles.anatomyGrid} ${styles.anatomyGridTwoCol}` : styles.anatomyGrid}
+                            style={{ width: '100%' }}
+                        >
                                 {images.map((img, i) => (
                                     <div key={i} className={styles.anatomyItem}>
                                         <img
@@ -371,6 +442,9 @@ export const TilstandDynamicSection = ({ tilstand, activeSection }: TilstandDyna
                                             alt={img.alt}
                                             className={styles.anatomyImage}
                                             onClick={() => setSelectedImage({ src: img.src, alt: img.alt })}
+                                            onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setSelectedImage({ src: img.src, alt: img.alt }); } }}
+                                            role="button" // eslint-disable-line jsx-a11y/no-noninteractive-element-to-interactive-role
+                                            tabIndex={0}
                                             style={{ cursor: 'pointer' }}
                                         />
                                         {img.caption && (
@@ -378,15 +452,16 @@ export const TilstandDynamicSection = ({ tilstand, activeSection }: TilstandDyna
                                         )}
                                     </div>
                                 ))}
-                        </div>
-                    )}
-                </>
-            );
-        }
+                            </div>
+                        )}
+                    </>
+                );
+            }
 
         // One container per section (h1/h2); all sub-headings (h3–h6) and content inside it
         const renderBlock = (block: ContentBlock, blockIdx: number) => {
-            const hasImages = block.images.length > 0;
+            const imageCount = block.images.length;
+            const hasImages = imageCount > 0;
             const hasContent = block.paragraphs.length > 0 || block.images.length > 0 || block.links.length > 0;
             const headingOnly = !hasContent && block.headingTag != null && !!block.headingText;
             const content = (
@@ -428,18 +503,48 @@ export const TilstandDynamicSection = ({ tilstand, activeSection }: TilstandDyna
             return (
                 <React.Fragment key={blockIdx}>
                     {headingEl}
-                    {hasImages ? (
+                    {imageCount === 1 ? (
                         <div className={styles.sideBySideContainer}>
                             <div className={styles.sideBySideText}>{content}</div>
                             <div className={styles.sideBySideImage}>
                                 {block.images.map((img, j) => (
                                     <div key={j}>
-                                        <img src={img.src} alt={img.alt} />
+                                        <img
+                                            src={img.src}
+                                            alt={img.alt}
+                                            className={styles.anatomyImage}
+                                            onClick={() => setSelectedImage({ src: img.src, alt: img.alt })}
+                                            onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setSelectedImage({ src: img.src, alt: img.alt }); } }}
+                                            role="button" // eslint-disable-line jsx-a11y/no-noninteractive-element-to-interactive-role
+                                            tabIndex={0}
+                                            style={{ cursor: 'pointer' }}
+                                        />
                                         {img.caption && <p className={styles.sideBySideImageCaption}>{img.caption}</p>}
                                     </div>
                                 ))}
                             </div>
                         </div>
+                    ) : imageCount > 1 ? (
+                        <>
+                            {content}
+                            <div className={`${styles.anatomyGrid} ${styles.anatomyGridTwoCol}`}>
+                                {block.images.map((img, j) => (
+                                    <div key={j} className={styles.anatomyItem}>
+                                        <img
+                                            src={img.src}
+                                            alt={img.alt}
+                                            className={styles.anatomyImage}
+                                            onClick={() => setSelectedImage({ src: img.src, alt: img.alt })}
+                                            onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setSelectedImage({ src: img.src, alt: img.alt }); } }}
+                                            role="button" // eslint-disable-line jsx-a11y/no-noninteractive-element-to-interactive-role
+                                            tabIndex={0}
+                                            style={{ cursor: 'pointer' }}
+                                        />
+                                        {img.caption && <p className={styles.anatomyCaption}>{img.caption}</p>}
+                                    </div>
+                                ))}
+                            </div>
+                        </>
                     ) : (
                         content
                     )}
@@ -481,6 +586,9 @@ export const TilstandDynamicSection = ({ tilstand, activeSection }: TilstandDyna
                     alt={altText}
                     className={styles.anatomyImage}
                     onClick={() => setSelectedImage({ src: imgSrc, alt: altText })}
+                    onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setSelectedImage({ src: imgSrc, alt: altText }); } }}
+                    role="button" // eslint-disable-line jsx-a11y/no-noninteractive-element-to-interactive-role
+                    tabIndex={0}
                     style={{ cursor: 'pointer' }}
                 />
                 {captionText && (
@@ -517,7 +625,7 @@ export const TilstandDynamicSection = ({ tilstand, activeSection }: TilstandDyna
             <div className={styles.sectionHeader}>
                 <div className={styles.sectionIcon}>
                     <img
-                        src={activeSection === "resources" || activeSection === "references" ? "/resource.png" : "/inNormal.svg"}
+                        src={sectionIcon}
                         alt={title}
                         width="24"
                         height="24"
@@ -540,13 +648,99 @@ export const TilstandDynamicSection = ({ tilstand, activeSection }: TilstandDyna
             <div className={styles.sectionContent}>
                 {intro && renderContentWithImageCards(intro)}
 
-                {trekkspill?.map((item: TilstandAccordionItem, index: number) => {
+                {Array.isArray(trekkspill) && trekkspill.map((item: TilstandAccordionItem, index: number) => {
                     const itemTitle = getField(item, 'tittel');
                     const itemTitleNo = item.tittel;
                     const itemContent = getField(item, 'innhold');
                     const imgSrc = item.bilde_id ? getImageUrl(item.bilde_id) : item.bilde_url;
-                    const isSideBySide = item.bilde_posisjon === 'side' && imgSrc;
+                    const bildePosisjon = item.bilde_posisjon ?? (imgSrc ? 'side' : 'none');
+                    const isSideBySide = bildePosisjon === 'side' && imgSrc;
                     const itemId = slugify(itemTitleNo);
+                    const hasUnderseksjoner = item.underseksjoner && item.underseksjoner.length > 0;
+
+                    // Render image for underseksjon (sub.bilde_url)
+                    const renderUnderseksjonImage = (sub: TilstandUnderseksjon) => {
+                        const src = sub.bilde_url;
+                        if (!src) return null;
+                        const alt = sub.bilde_alt || sub.tittel;
+                        const caption = sub.bilde_caption;
+                        return (
+                            <div className={`${styles.anatomyItem} ${styles.anatomyItemStandalone}`}>
+                                <img
+                                    src={src}
+                                    alt={alt}
+                                    className={styles.anatomyImage}
+                                    onClick={() => setSelectedImage({ src, alt })}
+                                    onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setSelectedImage({ src, alt }); } }}
+                                    role="button" // eslint-disable-line jsx-a11y/no-noninteractive-element-to-interactive-role
+                                    tabIndex={0}
+                                    style={{ cursor: 'pointer' }}
+                                />
+                                {caption && <p className={styles.anatomyCaption}>{caption}</p>}
+                            </div>
+                        );
+                    };
+
+                    const renderSubContent = (sub: TilstandUnderseksjon) => {
+                        const subContent = (language === 'en' && sub.innhold_en) ? sub.innhold_en : sub.innhold;
+                        const subImgSrc = sub.bilde_url;
+                        const subAlt = sub.bilde_alt || sub.tittel;
+                        const subCaption = sub.bilde_caption;
+
+                        if (subImgSrc) {
+                            return (
+                                <div className={styles.sideBySideContainer}>
+                                    <div className={styles.sideBySideText}>
+                                        {renderContentWithImageCards(subContent)}
+                                        {sub.lenke_url && (
+                                            <p className={styles.enhancedParagraph}>
+                                                <a
+                                                    href={sub.lenke_url}
+                                                    target={sub.lenke_ekstern ? '_blank' : undefined}
+                                                    rel={sub.lenke_ekstern ? 'noopener noreferrer' : undefined}
+                                                    className={styles.resourceLink}
+                                                >
+                                                    {(language === 'en' && sub.lenke_tekst_en) ? sub.lenke_tekst_en : (sub.lenke_tekst || sub.lenke_url)}
+                                                </a>
+                                            </p>
+                                        )}
+                                    </div>
+                                    <div className={`${styles.sideBySideImage} ${styles.anatomyItem}`}>
+                                        <img
+                                            src={subImgSrc}
+                                            alt={subAlt}
+                                            className={styles.anatomyImage}
+                                            onClick={() => setSelectedImage({ src: subImgSrc, alt: subAlt })}
+                                            onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setSelectedImage({ src: subImgSrc, alt: subAlt }); } }}
+                                            role="button" // eslint-disable-line jsx-a11y/no-noninteractive-element-to-interactive-role
+                                            tabIndex={0}
+                                            style={{ cursor: 'pointer' }}
+                                        />
+                                        {subCaption && <p className={styles.anatomyCaption}>{subCaption}</p>}
+                                    </div>
+                                </div>
+                            );
+                        }
+
+                        return (
+                            <>
+                                {renderContentWithImageCards(subContent)}
+                                {renderUnderseksjonImage(sub)}
+                                {sub.lenke_url && (
+                                    <p className={styles.enhancedParagraph}>
+                                        <a
+                                            href={sub.lenke_url}
+                                            target={sub.lenke_ekstern ? '_blank' : undefined}
+                                            rel={sub.lenke_ekstern ? 'noopener noreferrer' : undefined}
+                                            className={styles.resourceLink}
+                                        >
+                                            {(language === 'en' && sub.lenke_tekst_en) ? sub.lenke_tekst_en : (sub.lenke_tekst || sub.lenke_url)}
+                                        </a>
+                                    </p>
+                                )}
+                            </>
+                        );
+                    };
 
                     return (
                         <SectionAccordion
@@ -556,7 +750,58 @@ export const TilstandDynamicSection = ({ tilstand, activeSection }: TilstandDyna
                             isDarkMode={resolvedTheme === 'dark'}
                             defaultOpen={false}
                         >
-                            {isSideBySide ? (
+                            {hasUnderseksjoner ? (
+                                <>
+                                    {itemContent && (
+                                        <>
+                                            {isSideBySide ? (
+                                                <div className={styles.sideBySideContainer}>
+                                                    <div className={styles.sideBySideText}>
+                                                        {renderContentWithImageCards(itemContent)}
+                                                        {renderLinks(item)}
+                                                    </div>
+                                                    <div className={`${styles.sideBySideImage} ${styles.anatomyItem}`}>
+                                                        <img
+                                                            src={imgSrc}
+                                                            alt={(language === 'en' && item.bilde_alt_en) ? item.bilde_alt_en : (item.bilde_alt || itemTitle)}
+                                                            className={styles.anatomyImage}
+                                                            onClick={() => setSelectedImage({ src: imgSrc!, alt: (language === 'en' && item.bilde_alt_en) ? item.bilde_alt_en! : (item.bilde_alt || itemTitle) })}
+                                                            onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setSelectedImage({ src: imgSrc!, alt: (language === 'en' && item.bilde_alt_en) ? item.bilde_alt_en! : (item.bilde_alt || itemTitle) }); } }}
+                                                            role="button" // eslint-disable-line jsx-a11y/no-noninteractive-element-to-interactive-role
+                                                            tabIndex={0}
+                                                            style={{ cursor: 'pointer' }}
+                                                        />
+                                                        {((language === 'en' && item.bilde_caption_en) || item.bilde_caption) && (
+                                                            <p className={styles.anatomyCaption}>{(language === 'en' && item.bilde_caption_en) ? item.bilde_caption_en : item.bilde_caption}</p>
+                                                        )}
+                                                    </div>
+                                                </div>
+                                            ) : (
+                                                <>
+                                                    {renderContentWithImageCards(itemContent)}
+                                                    {renderImage(item)}
+                                                    {renderLinks(item)}
+                                                </>
+                                            )}
+                                        </>
+                                    )}
+                                    {item.underseksjoner!.map((sub, subIndex) => {
+                                        const subTitle = (language === 'en' && sub.tittel_en) ? sub.tittel_en : sub.tittel;
+                                        const subId = slugify(sub.tittel);
+                                        return (
+                                            <SectionAccordion
+                                                key={subIndex}
+                                                title={subTitle}
+                                                id={`${itemId}-${subId}`}
+                                                isDarkMode={resolvedTheme === 'dark'}
+                                                defaultOpen={false}
+                                            >
+                                                {renderSubContent(sub)}
+                                            </SectionAccordion>
+                                        );
+                                    })}
+                                </>
+                            ) : isSideBySide ? (
                                 <div className={styles.sideBySideContainer}>
                                     <div className={styles.sideBySideText}>
                                         {renderContentWithImageCards(itemContent)}
@@ -568,6 +813,9 @@ export const TilstandDynamicSection = ({ tilstand, activeSection }: TilstandDyna
                                             alt={(language === 'en' && item.bilde_alt_en) ? item.bilde_alt_en : (item.bilde_alt || itemTitle)}
                                             className={styles.anatomyImage}
                                             onClick={() => setSelectedImage({ src: imgSrc!, alt: (language === 'en' && item.bilde_alt_en) ? item.bilde_alt_en! : (item.bilde_alt || itemTitle) })}
+                                            onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setSelectedImage({ src: imgSrc!, alt: (language === 'en' && item.bilde_alt_en) ? item.bilde_alt_en! : (item.bilde_alt || itemTitle) }); } }}
+                                            role="button" // eslint-disable-line jsx-a11y/no-noninteractive-element-to-interactive-role
+                                            tabIndex={0}
                                             style={{ cursor: 'pointer' }}
                                         />
                                         {((language === 'en' && item.bilde_caption_en) || item.bilde_caption) && (
@@ -575,13 +823,92 @@ export const TilstandDynamicSection = ({ tilstand, activeSection }: TilstandDyna
                                         )}
                                     </div>
                                 </div>
-                            ) : (
-                                <>
-                                    {renderContentWithImageCards(itemContent)}
-                                    {renderImage(item)}
-                                    {renderLinks(item)}
-                                </>
-                            )}
+                            ) : (() => {
+                                const isFirstTreatmentAccordion = activeSection === "treatment" && index === 0 && conditionSlug === "urinary-incontinence";
+                                const tryTitle = ((language === "en" && t.ovelse_try_yourself_title_en) || t.ovelse_try_yourself_title || "") as string;
+                                const hasExerciseData = !!(tryTitle || (t.ovelse_steps as unknown[] | null)?.length || (t.ovelse_videos as unknown[] | null)?.length);
+                                const injectExerciseSection = isFirstTreatmentAccordion && hasExerciseData;
+                                const exerciseMarker = "<!-- INJECT_EXERCISE_SECTION -->";
+                                const parts = injectExerciseSection && typeof itemContent === "string" && itemContent.includes(exerciseMarker)
+                                    ? itemContent.split(exerciseMarker)
+                                    : null;
+                                if (parts && parts.length >= 2) {
+                                    const videosRaw = (t.ovelse_videos as { src: string; title?: string; title_en?: string }[] | null) || [];
+                                    const stepsRaw = (t.ovelse_steps as { number: number; text?: string; text_en?: string }[] | null) || [];
+                                    const genderRaw = (t.ovelse_gender_instructions as { title?: string; title_en?: string; text?: string; text_en?: string; icon?: string; iconColor?: string }[] | null) || [];
+                                    const app = t.ovelse_smartphone_apps as Record<string, string | undefined> | null | undefined;
+                                    return (
+                                        <>
+                                            {renderContentWithImageCards(parts[0].trim())}
+                                            <CommonExerciseSection
+                                                pageTitle={language === "no" ? "Bekkenbunnstrening" : "Pelvic floor training"}
+                                                tryYourselfTitle={tryTitle || (language === "no" ? "Prøv selv" : "Try it yourself")}
+                                                step1Text={((language === "en" && t.ovelse_step1_text_en) || t.ovelse_step1_text || "") as string}
+                                                genderInstructions={(genderRaw || []).map((g) => ({
+                                                    title: (language === "en" && g.title_en) ? g.title_en : (g.title || ""),
+                                                    text: (language === "en" && g.text_en) ? g.text_en : (g.text || ""),
+                                                    icon: g.icon || "",
+                                                    iconColor: g.iconColor || "#053870"
+                                                }))}
+                                                tipsTitle={((language === "en" && t.ovelse_tips_title_en) || t.ovelse_tips_title || "") as string}
+                                                tipsText={((language === "en" && t.ovelse_tips_text_en) || t.ovelse_tips_text || "") as string}
+                                                exerciseSteps={(stepsRaw || []).sort((a, b) => a.number - b.number).map((s) => ({
+                                                    number: s.number,
+                                                    text: (language === "en" && s.text_en) ? s.text_en : (s.text || "")
+                                                }))}
+                                                videoSectionTitle={((language === "en" && t.ovelse_video_section_title_en) || t.ovelse_video_section_title || "") as string}
+                                                videoSectionDescription={((language === "en" && t.ovelse_video_section_description_en) || t.ovelse_video_section_description || "") as string}
+                                                videos={(videosRaw || []).map((v) => ({ src: v.src, title: (language === "en" && v.title_en) ? v.title_en : (v.title || "") }))}
+                                                smartphoneApps={app ? { title: (language === "en" && app.title_en) ? app.title_en : (app.title || ""), description: (language === "en" && app.description_en) ? app.description_en : (app.description || ""), linkText: (language === "en" && app.linkText_en) ? app.linkText_en : (app.linkText || ""), linkUrl: app.linkUrl || "" } : undefined}
+                                            />
+                                            {renderContentWithImageCards(parts[1].trim())}
+                                            {renderImage(item)}
+                                            {renderLinks(item)}
+                                        </>
+                                    );
+                                }
+                                if (injectExerciseSection && hasExerciseData) {
+                                    const videosRaw = (t.ovelse_videos as { src: string; title?: string; title_en?: string }[] | null) || [];
+                                    const stepsRaw = (t.ovelse_steps as { number: number; text?: string; text_en?: string }[] | null) || [];
+                                    const genderRaw = (t.ovelse_gender_instructions as { title?: string; title_en?: string; text?: string; text_en?: string; icon?: string; iconColor?: string }[] | null) || [];
+                                    const app = t.ovelse_smartphone_apps as Record<string, string | undefined> | null | undefined;
+                                    return (
+                                        <>
+                                            {renderContentWithImageCards(itemContent)}
+                                            <CommonExerciseSection
+                                                pageTitle={language === "no" ? "Bekkenbunnstrening" : "Pelvic floor training"}
+                                                tryYourselfTitle={tryTitle || (language === "no" ? "Prøv selv" : "Try it yourself")}
+                                                step1Text={((language === "en" && t.ovelse_step1_text_en) || t.ovelse_step1_text || "") as string}
+                                                genderInstructions={(genderRaw || []).map((g) => ({
+                                                    title: (language === "en" && g.title_en) ? g.title_en : (g.title || ""),
+                                                    text: (language === "en" && g.text_en) ? g.text_en : (g.text || ""),
+                                                    icon: g.icon || "",
+                                                    iconColor: g.iconColor || "#053870"
+                                                }))}
+                                                tipsTitle={((language === "en" && t.ovelse_tips_title_en) || t.ovelse_tips_title || "") as string}
+                                                tipsText={((language === "en" && t.ovelse_tips_text_en) || t.ovelse_tips_text || "") as string}
+                                                exerciseSteps={(stepsRaw || []).sort((a, b) => a.number - b.number).map((s) => ({
+                                                    number: s.number,
+                                                    text: (language === "en" && s.text_en) ? s.text_en : (s.text || "")
+                                                }))}
+                                                videoSectionTitle={((language === "en" && t.ovelse_video_section_title_en) || t.ovelse_video_section_title || "") as string}
+                                                videoSectionDescription={((language === "en" && t.ovelse_video_section_description_en) || t.ovelse_video_section_description || "") as string}
+                                                videos={(videosRaw || []).map((v) => ({ src: v.src, title: (language === "en" && v.title_en) ? v.title_en : (v.title || "") }))}
+                                                smartphoneApps={app ? { title: (language === "en" && app.title_en) ? app.title_en : (app.title || ""), description: (language === "en" && app.description_en) ? app.description_en : (app.description || ""), linkText: (language === "en" && app.linkText_en) ? app.linkText_en : (app.linkText || ""), linkUrl: app.linkUrl || "" } : undefined}
+                                            />
+                                            {renderImage(item)}
+                                            {renderLinks(item)}
+                                        </>
+                                    );
+                                }
+                                return (
+                                    <>
+                                        {renderContentWithImageCards(itemContent)}
+                                        {renderImage(item)}
+                                        {renderLinks(item)}
+                                    </>
+                                );
+                            })()}
                         </SectionAccordion>
                     );
                 })}

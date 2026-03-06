@@ -181,7 +181,7 @@
 .conditionTitle {
   font-size: 0.75rem;
   font-weight: 500;
-  color: var(--color-text-secondary);
+  color: var(--brand-navy);
   line-height: 1.2;
   word-wrap: break-word;
   -webkit-hyphens: auto;
@@ -585,7 +585,7 @@
 }
 
 .darkMode .conditionTitle {
-  color: var(--color-text-primary);
+  color: var(--brand-navy);
 }
 
 .darkMode .sectionNavigation {
@@ -615,7 +615,7 @@
 }
 
 .lightMode .conditionTitle {
-  color: var(--color-text-secondary);
+  color: var(--brand-navy);
 }
 
 .lightMode .sectionNavigation {
@@ -807,19 +807,19 @@
 
 /* Icon Theme Styles */
 .darkMode .conditionIconImage {
-  filter: brightness(0) invert(1);
+  filter: var(--health-icon-filter);
 }
 
 .darkMode .sectionIconImage {
-  filter: brightness(0) invert(1);
+  filter: var(--health-icon-filter);
 }
 
 .lightMode .conditionIconImage {
-  filter: none;
+  filter: var(--health-icon-filter);
 }
 
 .lightMode .sectionIconImage {
-  filter: none;
+  filter: var(--health-icon-filter);
 }
 
 /* Content Container Theme Styles */

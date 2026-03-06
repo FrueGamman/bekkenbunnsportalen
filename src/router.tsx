@@ -4,14 +4,14 @@ import { BrowserRouter, HashRouter } from "react-router-dom";
 // UA helpers for broad in-app/webview detection
 function getUA(): string {
   // Prefer standard UA as UA-CH is not universally available across IABs
-  return navigator.userAgent || (navigator as any).vendor || "";
+  return navigator.userAgent || (navigator as unknown as { vendor?: string }).vendor || "";
 }
 
 function isStandalonePWA(): boolean {
   try {
     return (
       (window.matchMedia && window.matchMedia("(display-mode: standalone)").matches) ||
-      (navigator as any).standalone === true
+      (navigator as unknown as { standalone?: boolean }).standalone === true
     );
   } catch {
     return false;
@@ -83,7 +83,7 @@ export function isInAppBrowser(): boolean {
 }
 
 export function shouldUseHashRouter(): boolean {
-  if ((import.meta as any).env?.VITE_FORCE_HASH === "1") return true;
+  if ((import.meta as unknown as { env?: Record<string, string> }).env?.VITE_FORCE_HASH === "1") return true;
   const ua = getUA();
   const forceByStandaloneSamsung = isStandalonePWA() && /Samsung|Android/i.test(ua);
   // HashRouter on IABs and webviews; Samsung Internet due to History API quirks

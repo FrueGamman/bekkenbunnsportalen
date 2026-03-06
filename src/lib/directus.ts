@@ -1,5 +1,5 @@
 const DIRECTUS_URL = import.meta.env.DEV ? "" : (import.meta.env.VITE_DIRECTUS_URL || "");
-const DIRECTUS_TOKEN = import.meta.env.VITE_DIRECTUS_TOKEN || "CrroW4IZgGtsGuJWNayMuay0hnRGO6JO";
+const DIRECTUS_TOKEN = import.meta.env.VITE_DIRECTUS_TOKEN || "";
 
 export async function directusFetch<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
   const url = `${DIRECTUS_URL}${endpoint}`;
@@ -7,7 +7,7 @@ export async function directusFetch<T>(endpoint: string, options: RequestInit = 
     ...options,
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${DIRECTUS_TOKEN}`,
+      ...(DIRECTUS_TOKEN ? { Authorization: `Bearer ${DIRECTUS_TOKEN}` } : {}),
       ...options.headers,
     },
   });

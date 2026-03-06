@@ -142,7 +142,7 @@ const causesData = {
       }
     ]
   }
-} as const
+}
 
 export const Causes = () => {
   const { language } = useLanguage()
@@ -166,7 +166,7 @@ export const Causes = () => {
         <div className={styles.sectionContent}>
           {causesData[language].sections.map((section) => {
             const hasTitle = 'title' in section && section.title;
-            const sectionAny = section as any;
+            const sectionAny = section as unknown as Record<string, any>;
 
             const content = (
               <div className={styles.normalFunctionContent}>
@@ -385,7 +385,7 @@ export const Causes = () => {
                         gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
                         gap: '1.5rem'
                       }}>
-                        {sectionAny.subsectionImages.map((img: any, idx: number) => (
+                        {(sectionAny.subsectionImages as Array<{ src: string; alt: string }>).map((img: { src: string; alt: string }, idx: number) => (
                           <div key={idx} style={{ textAlign: 'center' }}>
                             <img
                               src={img.src}

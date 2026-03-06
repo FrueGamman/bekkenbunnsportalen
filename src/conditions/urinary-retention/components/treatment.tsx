@@ -4,6 +4,7 @@ import { useTheme } from "../../../context/ThemeContext";
 import styles from "./section-content.module.css";
 import { SectionAccordion } from "../../../components/SectionAccordion";
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const INTRODUCTION_DATA = {
   no: {
     description: "På disse sidene finner du informasjon om tømmingsproblemer for urin, urinretensjon. Her er informasjon om normal funksjon av vannlatingen, symptomer på tømmingsproblemer, utredning og behandling av slike plager. Kanskje har du slike problemer selv, eller du kjenner noen som er rammet.",
@@ -105,6 +106,7 @@ const TREATMENT_DATA: Record<SupportedLanguage, TreatmentContent> = {
 };
 */
 
+// Data comes from Directus only (ConditionPage uses TilstandDynamicSection). No fallback.
 const TREATMENT_DATA: Record<SupportedLanguage, TreatmentContent> = {
   no: {
     pageTitle: "Behandling",
@@ -117,9 +119,9 @@ const TREATMENT_DATA: Record<SupportedLanguage, TreatmentContent> = {
     surgicalIntro: "",
     copingQuote: "",
     copingQuoteAuthor: "",
-    sections: [] as any[],
-    surgicalSections: [] as any[],
-    copingSections: [] as any[],
+    sections: [] as TreatmentSection[],
+    surgicalSections: [] as SurgicalSection[],
+    copingSections: [] as CopingSection[],
   },
   en: {
     pageTitle: "Treatment",
@@ -132,9 +134,9 @@ const TREATMENT_DATA: Record<SupportedLanguage, TreatmentContent> = {
     surgicalIntro: "",
     copingQuote: "",
     copingQuoteAuthor: "",
-    sections: [] as any[],
-    surgicalSections: [] as any[],
-    copingSections: [] as any[],
+    sections: [] as TreatmentSection[],
+    surgicalSections: [] as SurgicalSection[],
+    copingSections: [] as CopingSection[],
   }
 };
 
@@ -142,8 +144,6 @@ const TREATMENT_DATA: Record<SupportedLanguage, TreatmentContent> = {
 export const Treatment = () => {
   const { language } = useLanguage();
   const { resolvedTheme } = useTheme();
-  const introduction = INTRODUCTION_DATA[language];
-
   const data = TREATMENT_DATA[language];
 
   return (
