@@ -225,6 +225,19 @@ export const TilstandDynamicSection = ({ tilstand, activeSection }: TilstandDyna
                 {nodes.map((node, i) => {
                     const el = node as HTMLElement;
                     if (el.nodeType === 1 && el.tagName === 'BLOCKQUOTE') {
+                        const hasHeadingInside = !!el.querySelector?.('h1,h2,h3,h4,h5,h6');
+                        // In Directus content, blockquote is sometimes used for indentation/layout (not quotes).
+                        // If it contains headings, unwrap it to avoid nested "highlight boxes".
+                        if (hasHeadingInside) {
+                            return (
+                                <div
+                                    key={i}
+                                    className={styles.enhancedParagraph}
+                                    style={style}
+                                    dangerouslySetInnerHTML={{ __html: el.innerHTML }}
+                                />
+                            );
+                        }
                         return (
                             <div key={i} className={styles.highlightBox}>
                                 <div dangerouslySetInnerHTML={{ __html: el.innerHTML }} />
@@ -247,137 +260,181 @@ export const TilstandDynamicSection = ({ tilstand, activeSection }: TilstandDyna
             const root = doc.body.firstChild as HTMLElement;
             if (!root) return null;
 
-            // Split content at h4/h3 boundaries into separate sections
-            type CardSection = {
-                headingText: string;
-                headingTag: string;
-                paragraphs: string[];
-                links: { text: string; url: string }[];
-                images: { src: string; alt: string; caption: string }[];
-            };
+        // Top-level headings (h1, h2) start a new container; h3–h6 and their content stay inside it
+        type ContentBlock = {
+            headingTag?: 'h3' | 'h4' | 'h5' | 'h6';
+            headingText?: string;
+            paragraphs: string[];
+            links: { text: string; url: string }[];
+            images: { src: string; alt: string; caption: string }[];
+        };
+        type Section = {
+            mainHeadingTag: 'h1' | 'h2';
+            mainHeadingText: string;
+            blocks: ContentBlock[];
+        };
 
-            const introElements: string[] = [];
-            const cards: CardSection[] = [];
-            let currentCard: CardSection | null = null;
+        const introElements: string[] = [];
+        const sections: Section[] = [];
+        let currentSection: Section | null = null;
+        let currentBlock: ContentBlock | null = null;
 
-            Array.from(root.childNodes).forEach((node) => {
-                const el = node as HTMLElement;
-                const isHeading = el.nodeType === 1 && (el.tagName === 'H4' || el.tagName === 'H3');
+        const isHeadingTag = (tag: string) => /^H[1-6]$/.test(tag);
+        const isSectionStarter = (tag: string) => tag === 'H1' || tag === 'H2';
 
-                if (isHeading) {
-                    if (currentCard) cards.push(currentCard);
-                    currentCard = {
-                        headingText: el.textContent?.trim() || '',
-                        headingTag: el.tagName.toLowerCase(),
-                        paragraphs: [],
-                        links: [],
-                        images: []
-                    };
-                } else if (currentCard) {
-                    // Check if this node is purely an image element
-                    const isPureImg = el.nodeType === 1 && (
-                        el.tagName === 'IMG' ||
-                        (el.tagName === 'FIGURE' && !el.querySelector('p'))
-                    );
-                    // Check if this node is a container that has an image mixed with text
-                    const isMixedContainer = el.nodeType === 1 && !isPureImg &&
-                        el.querySelector && el.querySelector('img');
+        const pushContentToBlock = (block: ContentBlock, el: HTMLElement) => {
+            const isPureImg = el.nodeType === 1 && (
+                el.tagName === 'IMG' ||
+                (el.tagName === 'FIGURE' && !el.querySelector('p'))
+            );
+            const isMixedContainer = el.nodeType === 1 && !isPureImg && el.querySelector?.('img');
 
-                    if (isPureImg) {
-                        const img = el.tagName === 'IMG' ? el : (el.querySelector('img') as HTMLImageElement);
-                        if (img) {
-                            const src = img.getAttribute('src') || '';
-                            const alt = img.getAttribute('alt') || '';
-                            let caption = '';
-                            const figure = el.tagName === 'FIGURE' ? el : img.closest('figure');
-                            if (figure) {
-                                const fc = figure.querySelector('figcaption');
-                                caption = fc?.textContent?.trim() || '';
-                            }
-                            if (!caption) caption = alt;
-                            currentCard.images.push({ src, alt, caption });
-                        }
-                    } else if (isMixedContainer) {
-                        // Container has both text and images — extract both
-                        // Extract images
-                        el.querySelectorAll('img').forEach((img: HTMLImageElement) => {
-                            const src = img.getAttribute('src') || '';
-                            const alt = img.getAttribute('alt') || '';
-                            let caption = '';
-                            const figure = img.closest('figure');
-                            if (figure) {
-                                const fc = figure.querySelector('figcaption');
-                                caption = fc?.textContent?.trim() || '';
-                            }
-                            if (!caption) caption = alt;
-                            currentCard!.images.push({ src, alt, caption });
+            if (isPureImg) {
+                const img = el.tagName === 'IMG' ? el : (el.querySelector('img') as HTMLImageElement);
+                if (img) {
+                    const src = img.getAttribute('src') || '';
+                    const alt = img.getAttribute('alt') || '';
+                    let caption = '';
+                    const figure = el.tagName === 'FIGURE' ? el : img.closest('figure');
+                    if (figure) {
+                        const fc = figure.querySelector('figcaption');
+                        caption = fc?.textContent?.trim() || '';
+                    }
+                    block.images.push({ src, alt: alt || caption, caption: caption || alt });
+                }
+            } else if (isMixedContainer) {
+                el.querySelectorAll('img').forEach((img: HTMLImageElement) => {
+                    const src = img.getAttribute('src') || '';
+                    const alt = img.getAttribute('alt') || '';
+                    let caption = '';
+                    const figure = img.closest('figure');
+                    if (figure) {
+                        const fc = figure.querySelector('figcaption');
+                        caption = fc?.textContent?.trim() || '';
+                    }
+                    block.images.push({ src, alt, caption: caption || alt });
+                });
+                const clone = el.cloneNode(true) as HTMLElement;
+                Array.from(clone.querySelectorAll('figure, img')).forEach(imgEl => {
+                    const parent = imgEl.parentElement;
+                    imgEl.remove();
+                    if (parent && parent !== clone && !parent.textContent?.trim()) parent.remove();
+                });
+                const remainingText = clone.textContent?.trim();
+                if (remainingText) {
+                    clone.querySelectorAll('a').forEach((a) => {
+                        block.links.push({
+                            text: a.textContent?.trim() || '',
+                            url: a.getAttribute('href') || '#'
                         });
-                        // Extract text content (remove image elements first)
-                        const clone = el.cloneNode(true) as HTMLElement;
-                        const imgEls = Array.from(clone.querySelectorAll('figure, img'));
-                        imgEls.forEach(imgEl => {
-                            const parent = imgEl.parentElement;
-                            imgEl.remove();
-                            if (parent && parent !== clone && !parent.textContent?.trim()) {
-                                parent.remove();
-                            }
+                    });
+                    block.paragraphs.push(clone.innerHTML.trim());
+                }
+            } else if (el.nodeType === 1 && el.tagName === 'BLOCKQUOTE') {
+                block.paragraphs.push(el.outerHTML);
+            } else if (el.nodeType === 1) {
+                const anchors = el.querySelectorAll('a');
+                if (anchors.length > 0) {
+                    const textWithoutLinks = el.textContent?.trim() || '';
+                    anchors.forEach((a) => {
+                        block.links.push({
+                            text: a.textContent?.trim() || '',
+                            url: a.getAttribute('href') || '#'
                         });
-                        // Extract remaining text paragraphs
-                        const remainingText = clone.textContent?.trim();
-                        if (remainingText) {
-                            // Check for links
-                            const anchors = clone.querySelectorAll('a');
-                            if (anchors.length > 0) {
-                                anchors.forEach((a) => {
-                                    currentCard!.links.push({
-                                        text: a.textContent?.trim() || '',
-                                        url: a.getAttribute('href') || '#'
-                                    });
-                                });
-                            }
-                            currentCard.paragraphs.push(clone.innerHTML.trim());
-                        }
-                    } else if (el.nodeType === 1 && el.tagName === 'BLOCKQUOTE') {
-                        currentCard.paragraphs.push(el.outerHTML);
-                    } else if (el.nodeType === 1) {
-                        const anchors = el.querySelectorAll('a');
-                        if (anchors.length > 0) {
-                            const textWithoutLinks = el.textContent?.trim() || '';
-                            anchors.forEach((a) => {
-                                currentCard!.links.push({
-                                    text: a.textContent?.trim() || '',
-                                    url: a.getAttribute('href') || '#'
-                                });
-                            });
-                            if (anchors.length > 0 && textWithoutLinks !== anchors[0].textContent?.trim()) {
-                                currentCard.paragraphs.push(el.innerHTML);
-                            }
-                        } else {
-                            const text = el.textContent?.trim();
-                            if (text) {
-                                currentCard.paragraphs.push(el.innerHTML || text);
-                            }
-                        }
+                    });
+                    if (textWithoutLinks !== anchors[0].textContent?.trim()) {
+                        block.paragraphs.push(el.innerHTML);
                     }
                 } else {
-                    // Before any h4 — intro text
-                    if (el.nodeType === 1) {
-                        const text = el.textContent?.trim();
-                        if (text) introElements.push(el.outerHTML);
+                    const text = el.textContent?.trim();
+                    if (text) block.paragraphs.push(el.innerHTML || text);
+                }
+            }
+        };
+
+        const ensureBlock = () => {
+            if (!currentBlock) {
+                currentBlock = { paragraphs: [], links: [], images: [] };
+                if (currentSection) currentSection.blocks.push(currentBlock);
+            }
+            return currentBlock;
+        };
+
+        // Flatten relevant elements (headings, paragraphs/text, lists, figures, blockquotes) in document order,
+        // regardless of how deeply they are nested, while skipping purely structural wrappers.
+        const flatNodes: HTMLElement[] = [];
+        const collectRelevant = (node: ChildNode) => {
+            if (node.nodeType === 3) {
+                // Text node — wrap into a synthetic paragraph so we don't lose standalone text like
+                // "I noen tilfeller er det nødvendig ..." that isn't inside <p>.
+                const text = node.textContent?.trim();
+                if (text) {
+                    const docForNode = node.ownerDocument || doc;
+                    const p = docForNode.createElement('p');
+                    p.textContent = text;
+                    flatNodes.push(p);
+                }
+                return;
+            }
+            if (node.nodeType !== 1) return;
+            const el = node as HTMLElement;
+            const tag = el.tagName.toUpperCase();
+            if (isHeadingTag(tag) || tag === 'P' || tag === 'UL' || tag === 'OL' || tag === 'FIGURE' || tag === 'BLOCKQUOTE') {
+                flatNodes.push(el);
+                return;
+            }
+            Array.from(el.childNodes).forEach(collectRelevant);
+        };
+        collectRelevant(root);
+
+        flatNodes.forEach((el) => {
+            const isHeading = isHeadingTag(el.tagName);
+
+            if (isHeading) {
+                const tag = el.tagName.toUpperCase();
+                const text = el.textContent?.trim() || '';
+
+                if (isSectionStarter(tag)) {
+                    if (currentBlock) currentBlock = null;
+                    if (currentSection) sections.push(currentSection);
+                    currentSection = { mainHeadingTag: tag === 'H1' ? 'h1' : 'h2', mainHeadingText: text, blocks: [] };
+                } else {
+                    // h3–h6: new block under current section, or use as section title if no h1/h2 yet (don't duplicate)
+                    if (!currentSection) {
+                        currentSection = { mainHeadingTag: 'h2', mainHeadingText: text, blocks: [] };
+                        currentBlock = null;
+                    } else {
+                        currentBlock = {
+                            headingTag: tag.toLowerCase() as ContentBlock['headingTag'],
+                            headingText: text,
+                            paragraphs: [],
+                            links: [],
+                            images: []
+                        };
+                        currentSection.blocks.push(currentBlock);
                     }
                 }
-            });
+            } else if (currentSection) {
+                pushContentToBlock(ensureBlock(), el);
+            } else {
+                // Before first h1/h2 — intro
+                introElements.push(el.outerHTML);
+            }
+        });
 
-            if (currentCard) cards.push(currentCard);
+        if (currentSection) sections.push(currentSection);
 
-            // If there are no h4 cards, render as a simple block
-            if (cards.length === 0) {
-                const { textHtml, images } = parseContentAndImages(html);
-                return (
-                    <>
-                        {textHtml && renderRichText(textHtml, { width: '100%' })}
-                        {images && images.length > 0 && (
-                            <div className={styles.anatomyGrid} style={{ width: '100%' }}>
+        // No headings at all — render as simple block
+        if (sections.length === 0) {
+            const { textHtml, images } = parseContentAndImages(html);
+            return (
+                <>
+                    {textHtml && renderRichText(textHtml, { width: '100%' })}
+                    {images && images.length > 0 && (
+                        <div
+                            className={images.length > 1 ? `${styles.anatomyGrid} ${styles.anatomyGridTwoCol}` : styles.anatomyGrid}
+                            style={{ width: '100%' }}
+                        >
                                 {images.map((img, i) => (
                                     <div key={i} className={styles.anatomyItem}>
                                         <img
@@ -401,105 +458,113 @@ export const TilstandDynamicSection = ({ tilstand, activeSection }: TilstandDyna
                 );
             }
 
-            // Render using original CSS module classes
-            return (
+        // One container per section (h1/h2); all sub-headings (h3–h6) and content inside it
+        const renderBlock = (block: ContentBlock, blockIdx: number) => {
+            const imageCount = block.images.length;
+            const hasImages = imageCount > 0;
+            const hasContent = block.paragraphs.length > 0 || block.images.length > 0 || block.links.length > 0;
+            const headingOnly = !hasContent && block.headingTag != null && !!block.headingText;
+            const content = (
                 <>
-                    {introElements.map((elHtml, i) => (
-                        <React.Fragment key={`intro-${i}`}>
-                            {renderRichText(elHtml)}
-                        </React.Fragment>
+                    {block.paragraphs.map((p, j) => (
+                        <React.Fragment key={j}>{renderRichText(p)}</React.Fragment>
                     ))}
-
-                    {/* Each subsection: use h3.subsectionTitle when original was h3 (match urinary-incontinence treatment layout) */}
-                    {cards.map((card, i) => {
-                        const HeadingTag = card.headingTag === "h3" ? "h3" : "h4";
-                        const headingClass = card.headingTag === "h3" ? styles.subsectionTitle : styles.normalFunctionTitle;
-                        return (
-                            <div key={i} className={styles.normalFunctionSection}>
-                                <HeadingTag className={headingClass}>{card.headingText}</HeadingTag>
-
-                                {/* Side-by-side layout for causes with images */}
-                                {card.images.length > 0 ? (
-                                    <div className={styles.sideBySideContainer}>
-                                        <div className={styles.sideBySideText}>
-                                            {card.paragraphs.map((p, j) => (
-                                                <React.Fragment key={j}>
-                                                    {renderRichText(p)}
-                                                </React.Fragment>
-                                            ))}
-                                            {card.links.length > 0 && card.links.length <= 1 && (
-                                                <p className={styles.enhancedParagraph}>
-                                                    {card.links.map((link, j) => (
-                                                        <a key={j}
-                                                            href={link.url}
-                                                            target="_blank"
-                                                            rel="noopener noreferrer"
-                                                            className={styles.resourceLink}
-                                                        >
-                                                            {link.text}
-                                                        </a>
-                                                    ))}
-                                                </p>
-                                            )}
-                                        </div>
-                                        <div className={styles.sideBySideImage}>
-                                            {card.images.map((img, j) => (
-                                                <div key={j}>
-                                                    <img src={img.src} alt={img.alt} />
-                                                    {img.caption && (
-                                                        <p className={styles.sideBySideImageCaption}>{img.caption}</p>
-                                                    )}
-                                                </div>
-                                            ))}
-                                        </div>
-                                    </div>
-                                ) : (
-                                    <>
-                                        {card.paragraphs.map((p, j) => (
-                                            <React.Fragment key={j}>
-                                                {renderRichText(p)}
-                                            </React.Fragment>
-                                        ))}
-
-                                        {/* Single link */}
-                                        {card.links.length === 1 && !card.paragraphs.some(p => p.includes('<a ')) && (
-                                            <p className={styles.enhancedParagraph}>
-                                                <a
-                                                    href={card.links[0].url}
-                                                    target="_blank"
-                                                    rel="noopener noreferrer"
-                                                    className={styles.resourceLink}
-                                                >
-                                                    {card.links[0].text}
-                                                </a>
-                                            </p>
-                                        )}
-
-                                        {/* Multiple links (e.g., Obstipasjon) */}
-                                        {card.links.length > 1 && !card.paragraphs.some(p => p.includes('<a ')) && (
-                                            <p className={styles.enhancedParagraph}>
-                                                {card.links.map((link, j) => (
-                                                    <span key={j}>
-                                                        <a
-                                                            href={link.url}
-                                                            target="_blank"
-                                                            rel="noopener noreferrer"
-                                                            className={styles.resourceLink}
-                                                        >
-                                                            {link.text}
-                                                        </a>
-                                                        {j < card.links.length - 1 && ' og '}
-                                                    </span>
-                                                ))}
-                                            </p>
-                                        )}
-                                    </>
-                                )}
-                            </div>
-                        );
-                    })}
+                    {block.links.length === 1 && !block.paragraphs.some((p) => p.includes('<a ')) && (
+                        <p className={styles.enhancedParagraph}>
+                            <a href={block.links[0].url} target="_blank" rel="noopener noreferrer" className={styles.resourceLink}>
+                                {block.links[0].text}
+                            </a>
+                        </p>
+                    )}
+                    {block.links.length > 1 && !block.paragraphs.some((p) => p.includes('<a ')) && (
+                        <p className={styles.enhancedParagraph}>
+                            {block.links.map((link, j) => (
+                                <span key={j}>
+                                    <a href={link.url} target="_blank" rel="noopener noreferrer" className={styles.resourceLink}>
+                                        {link.text}
+                                    </a>
+                                    {j < block.links.length - 1 && ' og '}
+                                </span>
+                            ))}
+                        </p>
+                    )}
                 </>
             );
+            // Same-level headings as direct siblings of the section (no wrapper div per block)
+            const headingEl = block.headingTag && block.headingText
+                ? React.createElement(block.headingTag, {
+                    className: styles.enhancedSubheading,
+                    style: {
+                        ...(blockIdx > 0 ? { marginTop: '1.5rem' } : {}),
+                        ...(headingOnly ? { textAlign: 'center' as const } : {})
+                    }
+                  }, block.headingText)
+                : null;
+            return (
+                <React.Fragment key={blockIdx}>
+                    {headingEl}
+                    {imageCount === 1 ? (
+                        <div className={styles.sideBySideContainer}>
+                            <div className={styles.sideBySideText}>{content}</div>
+                            <div className={styles.sideBySideImage}>
+                                {block.images.map((img, j) => (
+                                    <div key={j}>
+                                        <img
+                                            src={img.src}
+                                            alt={img.alt}
+                                            className={styles.anatomyImage}
+                                            onClick={() => setSelectedImage({ src: img.src, alt: img.alt })}
+                                            onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setSelectedImage({ src: img.src, alt: img.alt }); } }}
+                                            role="button" // eslint-disable-line jsx-a11y/no-noninteractive-element-to-interactive-role
+                                            tabIndex={0}
+                                            style={{ cursor: 'pointer' }}
+                                        />
+                                        {img.caption && <p className={styles.sideBySideImageCaption}>{img.caption}</p>}
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    ) : imageCount > 1 ? (
+                        <>
+                            {content}
+                            <div className={`${styles.anatomyGrid} ${styles.anatomyGridTwoCol}`}>
+                                {block.images.map((img, j) => (
+                                    <div key={j} className={styles.anatomyItem}>
+                                        <img
+                                            src={img.src}
+                                            alt={img.alt}
+                                            className={styles.anatomyImage}
+                                            onClick={() => setSelectedImage({ src: img.src, alt: img.alt })}
+                                            onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setSelectedImage({ src: img.src, alt: img.alt }); } }}
+                                            role="button" // eslint-disable-line jsx-a11y/no-noninteractive-element-to-interactive-role
+                                            tabIndex={0}
+                                            style={{ cursor: 'pointer' }}
+                                        />
+                                        {img.caption && <p className={styles.anatomyCaption}>{img.caption}</p>}
+                                    </div>
+                                ))}
+                            </div>
+                        </>
+                    ) : (
+                        content
+                    )}
+                </React.Fragment>
+            );
+        };
+
+        return (
+            <>
+                {introElements.map((elHtml, i) => (
+                    <React.Fragment key={`intro-${i}`}>{renderRichText(elHtml)}</React.Fragment>
+                ))}
+                {sections.map((section, i) => (
+                    <div key={i} className={section.blocks.length === 0 ? `${styles.normalFunctionSection} ${styles.sectionTitleOnly}` : styles.normalFunctionSection}>
+                        {section.mainHeadingText ? <h1 className={styles.normalFunctionTitle}>{section.mainHeadingText}</h1> : null}
+                        {section.blocks.map((block, j) => renderBlock(block, j))}
+                    </div>
+                ))}
+            </>
+        );
         } catch (e) {
             console.error('renderContentWithImageCards error:', e);
             return html ? <div className={styles.enhancedParagraph} dangerouslySetInnerHTML={{ __html: html }} /> : null;
@@ -588,7 +653,8 @@ export const TilstandDynamicSection = ({ tilstand, activeSection }: TilstandDyna
                     const itemTitleNo = item.tittel;
                     const itemContent = getField(item, 'innhold');
                     const imgSrc = item.bilde_id ? getImageUrl(item.bilde_id) : item.bilde_url;
-                    const isSideBySide = item.bilde_posisjon === 'side' && imgSrc;
+                    const bildePosisjon = item.bilde_posisjon ?? (imgSrc ? 'side' : 'none');
+                    const isSideBySide = bildePosisjon === 'side' && imgSrc;
                     const itemId = slugify(itemTitleNo);
                     const hasUnderseksjoner = item.underseksjoner && item.underseksjoner.length > 0;
 
@@ -617,6 +683,45 @@ export const TilstandDynamicSection = ({ tilstand, activeSection }: TilstandDyna
 
                     const renderSubContent = (sub: TilstandUnderseksjon) => {
                         const subContent = (language === 'en' && sub.innhold_en) ? sub.innhold_en : sub.innhold;
+                        const subImgSrc = sub.bilde_url;
+                        const subAlt = sub.bilde_alt || sub.tittel;
+                        const subCaption = sub.bilde_caption;
+
+                        if (subImgSrc) {
+                            return (
+                                <div className={styles.sideBySideContainer}>
+                                    <div className={styles.sideBySideText}>
+                                        {renderContentWithImageCards(subContent)}
+                                        {sub.lenke_url && (
+                                            <p className={styles.enhancedParagraph}>
+                                                <a
+                                                    href={sub.lenke_url}
+                                                    target={sub.lenke_ekstern ? '_blank' : undefined}
+                                                    rel={sub.lenke_ekstern ? 'noopener noreferrer' : undefined}
+                                                    className={styles.resourceLink}
+                                                >
+                                                    {(language === 'en' && sub.lenke_tekst_en) ? sub.lenke_tekst_en : (sub.lenke_tekst || sub.lenke_url)}
+                                                </a>
+                                            </p>
+                                        )}
+                                    </div>
+                                    <div className={`${styles.sideBySideImage} ${styles.anatomyItem}`}>
+                                        <img
+                                            src={subImgSrc}
+                                            alt={subAlt}
+                                            className={styles.anatomyImage}
+                                            onClick={() => setSelectedImage({ src: subImgSrc, alt: subAlt })}
+                                            onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setSelectedImage({ src: subImgSrc, alt: subAlt }); } }}
+                                            role="button" // eslint-disable-line jsx-a11y/no-noninteractive-element-to-interactive-role
+                                            tabIndex={0}
+                                            style={{ cursor: 'pointer' }}
+                                        />
+                                        {subCaption && <p className={styles.anatomyCaption}>{subCaption}</p>}
+                                    </div>
+                                </div>
+                            );
+                        }
+
                         return (
                             <>
                                 {renderContentWithImageCards(subContent)}
@@ -649,9 +754,35 @@ export const TilstandDynamicSection = ({ tilstand, activeSection }: TilstandDyna
                                 <>
                                     {itemContent && (
                                         <>
-                                            {renderContentWithImageCards(itemContent)}
-                                            {renderImage(item)}
-                                            {renderLinks(item)}
+                                            {isSideBySide ? (
+                                                <div className={styles.sideBySideContainer}>
+                                                    <div className={styles.sideBySideText}>
+                                                        {renderContentWithImageCards(itemContent)}
+                                                        {renderLinks(item)}
+                                                    </div>
+                                                    <div className={`${styles.sideBySideImage} ${styles.anatomyItem}`}>
+                                                        <img
+                                                            src={imgSrc}
+                                                            alt={(language === 'en' && item.bilde_alt_en) ? item.bilde_alt_en : (item.bilde_alt || itemTitle)}
+                                                            className={styles.anatomyImage}
+                                                            onClick={() => setSelectedImage({ src: imgSrc!, alt: (language === 'en' && item.bilde_alt_en) ? item.bilde_alt_en! : (item.bilde_alt || itemTitle) })}
+                                                            onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setSelectedImage({ src: imgSrc!, alt: (language === 'en' && item.bilde_alt_en) ? item.bilde_alt_en! : (item.bilde_alt || itemTitle) }); } }}
+                                                            role="button" // eslint-disable-line jsx-a11y/no-noninteractive-element-to-interactive-role
+                                                            tabIndex={0}
+                                                            style={{ cursor: 'pointer' }}
+                                                        />
+                                                        {((language === 'en' && item.bilde_caption_en) || item.bilde_caption) && (
+                                                            <p className={styles.anatomyCaption}>{(language === 'en' && item.bilde_caption_en) ? item.bilde_caption_en : item.bilde_caption}</p>
+                                                        )}
+                                                    </div>
+                                                </div>
+                                            ) : (
+                                                <>
+                                                    {renderContentWithImageCards(itemContent)}
+                                                    {renderImage(item)}
+                                                    {renderLinks(item)}
+                                                </>
+                                            )}
                                         </>
                                     )}
                                     {item.underseksjoner!.map((sub, subIndex) => {
