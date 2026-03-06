@@ -371,6 +371,11 @@ function buildSectionsFromTilstand(
   const slug = (tilstand as { slug?: string }).slug;
   const sections: { id: string; title: string; icon: string }[] = [];
   for (const { id: sectionId, prefix, icon } of SECTION_CONFIG_FROM_TILSTAND) {
+    // Constipation and pelvic-pain have no Funksjon tab — they open directly on Symptomer
+    const noFunksjonConditions = ["constipation", "pelvic-pain"];
+    if (sectionId === "normal-functions" && noFunksjonConditions.includes(slug || "")) {
+      continue;
+    }
     const title = (language === "en" && t[`${prefix}_tittel_en`]) ? String(t[`${prefix}_tittel_en`]) : (t[`${prefix}_tittel`] ? String(t[`${prefix}_tittel`]) : "");
     let trekkspill = t[`${prefix}_trekkspill`] as unknown[] | string | null | undefined;
     if (typeof trekkspill === "string" && trekkspill.trim()) {
@@ -472,7 +477,8 @@ export default function ConditionPage() {
 
     // Section aliases: old/removed section IDs mapped to their replacement for specific conditions
     const SECTION_ALIASES: Record<string, Record<string, string>> = {
-      "pelvic-pain": { "normal-functions": "symptoms" }
+      "pelvic-pain": { "normal-functions": "symptoms" },
+      "constipation": { "normal-functions": "symptoms" },
     };
     const resolvedSectionParam = (sectionParam && SECTION_ALIASES[activeCondition]?.[sectionParam])
       ? SECTION_ALIASES[activeCondition][sectionParam]

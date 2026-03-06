@@ -507,13 +507,13 @@ const ContentRenderer = ({ item, styles, isDarkMode }: { item: Record<string, an
   switch (item.type) {
     case "paragraph":
       return <p className={styles.enhancedParagraph}>{item.text}</p>
-    
+
     case "image":
       return (
         <div className={styles.imageContainer}>
-          <img 
-            src={item.src} 
-            alt={item.alt} 
+          <img
+            src={item.src}
+            alt={item.alt}
             className={styles.sectionImage}
           />
           {item.caption && (
@@ -521,14 +521,14 @@ const ContentRenderer = ({ item, styles, isDarkMode }: { item: Record<string, an
           )}
         </div>
       )
-    
+
     case "highlight":
       return (
         <div className={styles.highlightBox}>
           <p className={styles.highlightText}>{item.content}</p>
         </div>
       )
-    
+
     case "list":
       return (
         <div className={styles.listContainer}>
@@ -540,7 +540,7 @@ const ContentRenderer = ({ item, styles, isDarkMode }: { item: Record<string, an
           </ul>
         </div>
       )
-    
+
     case "subsection":
       return (
         <div className={styles.subsection}>
@@ -550,7 +550,7 @@ const ContentRenderer = ({ item, styles, isDarkMode }: { item: Record<string, an
           ))}
         </div>
       )
-    
+
     case "exercise-steps":
       return (
         <div className={styles.exerciseSteps}>
@@ -572,7 +572,7 @@ const ContentRenderer = ({ item, styles, isDarkMode }: { item: Record<string, an
           ))}
         </div>
       )
-    
+
     default:
       return null
   }
@@ -582,7 +582,7 @@ export const NormalFunctions = () => {
   const { language } = useLanguage()
   const { resolvedTheme } = useTheme()
   const isDarkMode = resolvedTheme === 'dark'
-  
+
   const data = NORMAL_FUNCTIONS_DATA[language]
 
   // Introduction card data
@@ -621,7 +621,7 @@ export const NormalFunctions = () => {
         <div className={styles.introCardContent}>
           <h1 className={styles.introCardTitle}>{introductionData.title}</h1>
           <h2 className={styles.introCardSubtitle}>{introductionData.subtitle}</h2>
-          
+
           <div className={styles.introCardText}>
             {introductionData.content.map((paragraph, index) => (
               <p key={index} className={styles.introCardParagraph}>
@@ -630,10 +630,10 @@ export const NormalFunctions = () => {
             ))}
           </div>
         </div>
-        
+
         <div className={styles.introCardImage}>
-          <img 
-            src={introductionData.image.src} 
+          <img
+            src={introductionData.image.src}
             alt={introductionData.image.alt}
             loading="lazy"
           />
@@ -644,7 +644,7 @@ export const NormalFunctions = () => {
       {/* Main Content Sections */}
       <div className={styles.sectionsContainer}>
         {data.sections.map((section) => (
-          <SectionAccordion 
+          <SectionAccordion
             key={section.id}
             title={section.title}
             isDarkMode={isDarkMode}
