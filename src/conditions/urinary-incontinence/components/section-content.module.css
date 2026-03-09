@@ -3420,6 +3420,7 @@
 
 .sideBySideImage {
   flex: 0 0 280px;
+  max-width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -3450,6 +3451,14 @@
   .sideBySideImage {
     flex: none;
     width: 100%;
+  }
+
+  /* Neutralise Directus inline flex/grid layouts that break mobile */
+  .sectionContent div[style*="display"],
+  .sectionContent p[style*="display"] {
+    display: block !important;
+    flex-direction: unset !important;
+    gap: unset !important;
   }
 }
 

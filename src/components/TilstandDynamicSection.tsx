@@ -3,7 +3,6 @@ import { useLanguage } from "../context/LanguageContext";
 import { useTheme } from "../context/ThemeContext";
 import { SectionAccordion } from "./SectionAccordion";
 import { CommonExerciseSection } from "./CommonExerciseSection";
-import type { ExerciseStep, GenderInstruction, Video, SmartphoneApps } from "./CommonExerciseSection";
 import { ImageModal } from "./ui/ImageModal";
 import type { Tilstand, TilstandAccordionItem, TilstandUnderseksjon } from "../types/cms";
 import { getImageUrl } from "../lib/directus";
@@ -74,8 +73,8 @@ export const TilstandDynamicSection = ({ tilstand, activeSection }: TilstandDyna
     const sitat = ((language === 'en' && t[`${prefix}_sitat_en`]) || t[`${prefix}_sitat`]) as string | undefined;
     const sitatKilde = ((language === 'en' && t[`${prefix}_sitat_kilde_en`]) || t[`${prefix}_sitat_kilde`]) as string | undefined;
 
-    // Exercises: render original design (CommonExerciseSection) when structured data from Directus exists
-    if (activeSection === "exercises") {
+    if (activeSection === "exercises" && !(Array.isArray(trekkspill) && trekkspill.length > 0)) {
+        const esc = (s: string) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
         const tryTitle = ((language === "en" && t.ovelse_try_yourself_title_en) || t.ovelse_try_yourself_title || "") as string;
         const step1 = ((language === "en" && t.ovelse_step1_text_en) || t.ovelse_step1_text || "") as string;
         const tipsTitle = ((language === "en" && t.ovelse_tips_title_en) || t.ovelse_tips_title || "") as string;
@@ -85,51 +84,52 @@ export const TilstandDynamicSection = ({ tilstand, activeSection }: TilstandDyna
         const videosRaw = (t.ovelse_videos as { src: string; title?: string; title_en?: string }[] | null) || [];
         const stepsRaw = (t.ovelse_steps as { number: number; text?: string; text_en?: string }[] | null) || [];
         const genderRaw = (t.ovelse_gender_instructions as { title?: string; title_en?: string; text?: string; text_en?: string; icon?: string; iconColor?: string }[] | null) || [];
-        const appsRaw = t.ovelse_smartphone_apps as SmartphoneApps | null | undefined;
+        const app = t.ovelse_smartphone_apps as Record<string, string | undefined> | null | undefined;
 
         const hasStructured = tryTitle || step1 || videoSectionTitle || videosRaw.length > 0;
         if (hasStructured) {
-            const videos: Video[] = videosRaw.map((v) => ({
-                src: v.src,
-                title: (language === "en" && v.title_en) ? v.title_en : (v.title || "")
-            }));
-            const exerciseSteps: ExerciseStep[] = stepsRaw
-                .sort((a, b) => a.number - b.number)
-                .map((s) => ({
-                    number: s.number,
-                    text: (language === "en" && s.text_en) ? s.text_en : (s.text || "")
-                }));
-            const genderInstructions: GenderInstruction[] = genderRaw.map((g) => ({
-                title: (language === "en" && g.title_en) ? g.title_en : (g.title || ""),
-                text: (language === "en" && g.text_en) ? g.text_en : (g.text || ""),
-                icon: g.icon || "",
-                iconColor: g.iconColor || "#053870"
-            }));
-            const app = appsRaw as Record<string, string | undefined> | null | undefined;
-            const smartphoneApps: SmartphoneApps | undefined = app
-                ? {
-                    title: (language === "en" && app.title_en) ? app.title_en : (app.title || ""),
-                    description: (language === "en" && app.description_en) ? app.description_en : (app.description || ""),
-                    linkText: (language === "en" && app.linkText_en) ? app.linkText_en : (app.linkText || ""),
-                    linkUrl: app.linkUrl || ""
-                }
-                : undefined;
+            const syntheticItems: TilstandAccordionItem[] = [];
 
-            return (
-                <CommonExerciseSection
-                    pageTitle={title || (language === "no" ? "Øvelser" : "Exercises")}
-                    tryYourselfTitle={tryTitle}
-                    step1Text={step1}
-                    genderInstructions={genderInstructions}
-                    tipsTitle={tipsTitle}
-                    tipsText={tipsText}
-                    exerciseSteps={exerciseSteps}
-                    videoSectionTitle={videoSectionTitle}
-                    videoSectionDescription={videoSectionDesc || undefined}
-                    videos={videos}
-                    smartphoneApps={smartphoneApps}
-                />
-            );
+            let tryHtml = '';
+            if (step1) tryHtml += `<p><strong>1.</strong> ${esc(step1)}</p>`;
+            genderRaw.forEach((g) => {
+                const gTitle = (language === 'en' && g.title_en) ? g.title_en : (g.title || '');
+                const gText = (language === 'en' && g.text_en) ? g.text_en : (g.text || '');
+                const gIcon = g.icon || '';
+                tryHtml += `<p><strong>${esc(gIcon)} ${esc(gTitle)}</strong></p><p>${esc(gText)}</p>`;
+            });
+            if (tipsTitle || tipsText) {
+                tryHtml += `<blockquote><p><strong>${esc(tipsTitle)}</strong></p><p>${esc(tipsText)}</p></blockquote>`;
+            }
+            stepsRaw.sort((a, b) => a.number - b.number).forEach((s) => {
+                const sText = (language === 'en' && s.text_en) ? s.text_en : (s.text || '');
+                tryHtml += `<p><strong>${s.number}.</strong> ${esc(sText)}</p>`;
+            });
+            if (tryTitle && tryHtml) {
+                syntheticItems.push({ tittel: tryTitle, innhold: tryHtml });
+            }
+
+            let videoHtml = '';
+            if (videoSectionDesc) videoHtml += `<p>${esc(videoSectionDesc)}</p>`;
+            videosRaw.forEach((v) => {
+                const vTitle = (language === 'en' && v.title_en) ? v.title_en : (v.title || '');
+                if (vTitle) videoHtml += `<p><strong>${esc(vTitle)}</strong></p>`;
+                videoHtml += `<div style="position:relative;padding-bottom:56.25%;height:0;margin:1rem 0"><iframe src="${v.src}" title="${esc(vTitle)}" style="position:absolute;top:0;left:0;width:100%;height:100%;border:none;border-radius:8px" allowfullscreen loading="lazy"></iframe></div>`;
+            });
+            if (app) {
+                const appTitle = (language === 'en' && app.title_en) ? app.title_en : (app.title || '');
+                const appDesc = (language === 'en' && app.description_en) ? app.description_en : (app.description || '');
+                const appLinkText = (language === 'en' && app.linkText_en) ? app.linkText_en : (app.linkText || '');
+                const appLinkUrl = app.linkUrl || '';
+                videoHtml += `<blockquote><p><strong>${esc(appTitle)}</strong></p><p>${esc(appDesc)}</p><p><a href="${appLinkUrl}" target="_blank" rel="noopener noreferrer">${esc(appLinkText)}</a></p></blockquote>`;
+            }
+            if (videoSectionTitle && videoHtml) {
+                syntheticItems.push({ tittel: videoSectionTitle, innhold: videoHtml });
+            }
+
+            if (syntheticItems.length > 0) {
+                trekkspill = syntheticItems;
+            }
         }
     }
 
@@ -165,6 +165,8 @@ export const TilstandDynamicSection = ({ tilstand, activeSection }: TilstandDyna
         if (!root) return { textHtml: '', images: [] };
         const images: { src: string; alt: string; caption: string }[] = [];
 
+        const captionTexts = new Set<string>();
+
         root.querySelectorAll('img').forEach((img) => {
             const src = img.getAttribute('src') || '';
             const alt = img.getAttribute('alt') || '';
@@ -175,12 +177,17 @@ export const TilstandDynamicSection = ({ tilstand, activeSection }: TilstandDyna
                 const fc = figure.querySelector('figcaption');
                 caption = fc?.textContent?.trim() || '';
             } else {
-                const parent = img.parentElement;
-                if (parent) {
-                    const siblingP = Array.from(parent.children).find(
-                        (el) => el.tagName === 'P' && el !== img
-                    );
-                    if (siblingP) caption = siblingP.textContent?.trim() || '';
+                let nextEl: Element | null = img.nextElementSibling;
+                const imgParent = img.parentElement;
+                if (!nextEl && imgParent && imgParent !== root) {
+                    nextEl = imgParent.nextElementSibling;
+                }
+                if (nextEl && nextEl.tagName === 'P') {
+                    const capText = nextEl.textContent?.replace(/\u00a0/g, ' ').trim() || '';
+                    if (capText) {
+                        caption = capText;
+                        captionTexts.add(capText);
+                    }
                 }
             }
 
@@ -196,11 +203,24 @@ export const TilstandDynamicSection = ({ tilstand, activeSection }: TilstandDyna
         });
         clone.querySelectorAll('img').forEach((img) => {
             const parent = img.parentElement;
-            if (parent && parent.children.length <= 2) parent.remove();
-            else img.remove();
+            const nextSib = (parent && parent !== clone && parent.children.length <= 2)
+                ? parent.nextElementSibling
+                : img.nextElementSibling;
+
+            if (parent && parent !== clone && parent.children.length <= 2) {
+                parent.remove();
+            } else {
+                img.remove();
+            }
+
+            if (nextSib && nextSib.tagName === 'P') {
+                const t = nextSib.textContent?.replace(/\u00a0/g, ' ').trim() || '';
+                if (!t || captionTexts.has(t)) nextSib.remove();
+            }
         });
         clone.querySelectorAll('p, div').forEach((el) => {
-            if (!el.textContent?.trim() && !el.querySelector('img, iframe')) el.remove();
+            const t = el.textContent?.replace(/\u00a0/g, ' ').trim() || '';
+            if (!t && !el.querySelector('img, iframe')) el.remove();
         });
 
         return { textHtml: clone.innerHTML.trim(), images };
@@ -225,32 +245,24 @@ export const TilstandDynamicSection = ({ tilstand, activeSection }: TilstandDyna
                 {nodes.map((node, i) => {
                     const el = node as HTMLElement;
                     if (el.nodeType === 1 && el.tagName === 'BLOCKQUOTE') {
-                        const hasHeadingInside = !!el.querySelector?.('h1,h2,h3,h4,h5,h6');
-                        // In Directus content, blockquote is sometimes used for indentation/layout (not quotes).
-                        // If it contains headings, unwrap it to avoid nested "highlight boxes".
-                        if (hasHeadingInside) {
-                            return (
-                                <div
-                                    key={i}
-                                    className={styles.enhancedParagraph}
-                                    style={style}
-                                    dangerouslySetInnerHTML={{ __html: el.innerHTML }}
-                                />
-                            );
-                        }
                         return (
                             <div key={i} className={styles.highlightBox}>
                                 <div dangerouslySetInnerHTML={{ __html: el.innerHTML }} />
                             </div>
                         );
                     }
-                    if (el.nodeType === 1 && el.textContent?.trim()) {
+                    if (el.nodeType === 1 && (el.textContent?.trim() || el.querySelector?.('iframe, video'))) {
                         return <div key={i} className={styles.enhancedParagraph} style={style} dangerouslySetInnerHTML={{ __html: el.outerHTML }} />;
                     }
                     return null;
                 })}
             </>
         );
+    };
+
+    const isBlankHtml = (html: string): boolean => {
+        const text = html.replace(/&nbsp;/gi, ' ').replace(/<[^>]*>/g, '').trim();
+        return text.length === 0;
     };
 
     const renderContentWithImageCards = (html: string) => {
@@ -260,13 +272,14 @@ export const TilstandDynamicSection = ({ tilstand, activeSection }: TilstandDyna
             const root = doc.body.firstChild as HTMLElement;
             if (!root) return null;
 
-        // Top-level headings (h1, h2) start a new container; h3–h6 and their content stay inside it
+        type ContentItem =
+            | { type: 'paragraph'; html: string }
+            | { type: 'image'; src: string; alt: string; caption: string };
         type ContentBlock = {
             headingTag?: 'h3' | 'h4' | 'h5' | 'h6';
             headingText?: string;
-            paragraphs: string[];
+            items: ContentItem[];
             links: { text: string; url: string }[];
-            images: { src: string; alt: string; caption: string }[];
         };
         type Section = {
             mainHeadingTag: 'h1' | 'h2';
@@ -300,20 +313,9 @@ export const TilstandDynamicSection = ({ tilstand, activeSection }: TilstandDyna
                         const fc = figure.querySelector('figcaption');
                         caption = fc?.textContent?.trim() || '';
                     }
-                    block.images.push({ src, alt: alt || caption, caption: caption || alt });
+                    block.items.push({ type: 'image', src, alt: alt || caption, caption: caption || alt });
                 }
             } else if (isMixedContainer) {
-                el.querySelectorAll('img').forEach((img: HTMLImageElement) => {
-                    const src = img.getAttribute('src') || '';
-                    const alt = img.getAttribute('alt') || '';
-                    let caption = '';
-                    const figure = img.closest('figure');
-                    if (figure) {
-                        const fc = figure.querySelector('figcaption');
-                        caption = fc?.textContent?.trim() || '';
-                    }
-                    block.images.push({ src, alt, caption: caption || alt });
-                });
                 const clone = el.cloneNode(true) as HTMLElement;
                 Array.from(clone.querySelectorAll('figure, img')).forEach(imgEl => {
                     const parent = imgEl.parentElement;
@@ -328,10 +330,23 @@ export const TilstandDynamicSection = ({ tilstand, activeSection }: TilstandDyna
                             url: a.getAttribute('href') || '#'
                         });
                     });
-                    block.paragraphs.push(clone.innerHTML.trim());
+                    block.items.push({ type: 'paragraph', html: clone.innerHTML.trim() });
                 }
+                el.querySelectorAll('img').forEach((img: HTMLImageElement) => {
+                    const src = img.getAttribute('src') || '';
+                    const alt = img.getAttribute('alt') || '';
+                    let caption = '';
+                    const figure = img.closest('figure');
+                    if (figure) {
+                        const fc = figure.querySelector('figcaption');
+                        caption = fc?.textContent?.trim() || '';
+                    }
+                    block.items.push({ type: 'image', src, alt, caption: caption || alt });
+                });
             } else if (el.nodeType === 1 && el.tagName === 'BLOCKQUOTE') {
-                block.paragraphs.push(el.outerHTML);
+                block.items.push({ type: 'paragraph', html: el.outerHTML });
+            } else if (el.nodeType === 1 && (el.tagName === 'IFRAME' || el.tagName === 'VIDEO' || el.querySelector?.('iframe, video'))) {
+                block.items.push({ type: 'paragraph', html: el.outerHTML });
             } else if (el.nodeType === 1) {
                 const anchors = el.querySelectorAll('a');
                 if (anchors.length > 0) {
@@ -343,30 +358,26 @@ export const TilstandDynamicSection = ({ tilstand, activeSection }: TilstandDyna
                         });
                     });
                     if (textWithoutLinks !== anchors[0].textContent?.trim()) {
-                        block.paragraphs.push(el.innerHTML);
+                        block.items.push({ type: 'paragraph', html: el.innerHTML });
                     }
                 } else {
                     const text = el.textContent?.trim();
-                    if (text) block.paragraphs.push(el.innerHTML || text);
+                    if (text) block.items.push({ type: 'paragraph', html: el.innerHTML || text });
                 }
             }
         };
 
         const ensureBlock = () => {
             if (!currentBlock) {
-                currentBlock = { paragraphs: [], links: [], images: [] };
+                currentBlock = { items: [], links: [] };
                 if (currentSection) currentSection.blocks.push(currentBlock);
             }
             return currentBlock;
         };
 
-        // Flatten relevant elements (headings, paragraphs/text, lists, figures, blockquotes) in document order,
-        // regardless of how deeply they are nested, while skipping purely structural wrappers.
         const flatNodes: HTMLElement[] = [];
         const collectRelevant = (node: ChildNode) => {
             if (node.nodeType === 3) {
-                // Text node — wrap into a synthetic paragraph so we don't lose standalone text like
-                // "I noen tilfeller er det nødvendig ..." that isn't inside <p>.
                 const text = node.textContent?.trim();
                 if (text) {
                     const docForNode = node.ownerDocument || doc;
@@ -379,7 +390,35 @@ export const TilstandDynamicSection = ({ tilstand, activeSection }: TilstandDyna
             if (node.nodeType !== 1) return;
             const el = node as HTMLElement;
             const tag = el.tagName.toUpperCase();
-            if (isHeadingTag(tag) || tag === 'P' || tag === 'UL' || tag === 'OL' || tag === 'FIGURE' || tag === 'BLOCKQUOTE') {
+            if (isHeadingTag(tag) || tag === 'UL' || tag === 'OL' || tag === 'BLOCKQUOTE') {
+                flatNodes.push(el);
+                return;
+            }
+            if (tag === 'IMG') {
+                flatNodes.push(el);
+                return;
+            }
+            if (tag === 'P') {
+                const imgs = el.querySelectorAll('img');
+                const textOnly = el.textContent?.replace(/\s+/g, '').replace(/\u00a0/g, '').trim() || '';
+                if (imgs.length > 0 && textOnly === '') {
+                    imgs.forEach(img => flatNodes.push(img as HTMLElement));
+                    return;
+                }
+                if (isBlankHtml(el.innerHTML)) return;
+                flatNodes.push(el);
+                return;
+            }
+            if (tag === 'FIGURE') {
+                if (!el.querySelector('img')) return;
+                flatNodes.push(el);
+                return;
+            }
+            if (tag === 'IFRAME' || tag === 'VIDEO') {
+                flatNodes.push(el);
+                return;
+            }
+            if (el.querySelector?.('iframe, video') && !el.querySelector?.('p, h1, h2, h3, h4, h5, h6')) {
                 flatNodes.push(el);
                 return;
             }
@@ -407,9 +446,8 @@ export const TilstandDynamicSection = ({ tilstand, activeSection }: TilstandDyna
                         currentBlock = {
                             headingTag: tag.toLowerCase() as ContentBlock['headingTag'],
                             headingText: text,
-                            paragraphs: [],
-                            links: [],
-                            images: []
+                            items: [],
+                            links: []
                         };
                         currentSection.blocks.push(currentBlock);
                     }
@@ -458,39 +496,34 @@ export const TilstandDynamicSection = ({ tilstand, activeSection }: TilstandDyna
                 );
             }
 
-        // One container per section (h1/h2); all sub-headings (h3–h6) and content inside it
         const renderBlock = (block: ContentBlock, blockIdx: number) => {
-            const imageCount = block.images.length;
-            const hasImages = imageCount > 0;
-            const hasContent = block.paragraphs.length > 0 || block.images.length > 0 || block.links.length > 0;
+            type Segment = {
+                paragraphs: string[];
+                images: { src: string; alt: string; caption: string }[];
+            };
+            const segments: Segment[] = [];
+            let segParas: string[] = [];
+            let segImgs: { src: string; alt: string; caption: string }[] = [];
+
+            for (const item of block.items) {
+                if (item.type === 'paragraph') {
+                    if (segImgs.length > 0) {
+                        segments.push({ paragraphs: segParas, images: segImgs });
+                        segParas = [];
+                        segImgs = [];
+                    }
+                    segParas.push(item.html);
+                } else {
+                    segImgs.push({ src: item.src, alt: item.alt, caption: item.caption });
+                }
+            }
+            if (segParas.length > 0 || segImgs.length > 0) {
+                segments.push({ paragraphs: segParas, images: segImgs });
+            }
+
+            const hasContent = block.items.length > 0 || block.links.length > 0;
             const headingOnly = !hasContent && block.headingTag != null && !!block.headingText;
-            const content = (
-                <>
-                    {block.paragraphs.map((p, j) => (
-                        <React.Fragment key={j}>{renderRichText(p)}</React.Fragment>
-                    ))}
-                    {block.links.length === 1 && !block.paragraphs.some((p) => p.includes('<a ')) && (
-                        <p className={styles.enhancedParagraph}>
-                            <a href={block.links[0].url} target="_blank" rel="noopener noreferrer" className={styles.resourceLink}>
-                                {block.links[0].text}
-                            </a>
-                        </p>
-                    )}
-                    {block.links.length > 1 && !block.paragraphs.some((p) => p.includes('<a ')) && (
-                        <p className={styles.enhancedParagraph}>
-                            {block.links.map((link, j) => (
-                                <span key={j}>
-                                    <a href={link.url} target="_blank" rel="noopener noreferrer" className={styles.resourceLink}>
-                                        {link.text}
-                                    </a>
-                                    {j < block.links.length - 1 && ' og '}
-                                </span>
-                            ))}
-                        </p>
-                    )}
-                </>
-            );
-            // Same-level headings as direct siblings of the section (no wrapper div per block)
+
             const headingEl = block.headingTag && block.headingText
                 ? React.createElement(block.headingTag, {
                     className: styles.enhancedSubheading,
@@ -500,54 +533,87 @@ export const TilstandDynamicSection = ({ tilstand, activeSection }: TilstandDyna
                     }
                   }, block.headingText)
                 : null;
+
+            const renderParas = (paras: string[]) =>
+                paras.map((p, j) => <React.Fragment key={j}>{renderRichText(p)}</React.Fragment>);
+
+            const renderImgEl = (img: { src: string; alt: string; caption: string }, j: number, captionClass: string) => (
+                <div key={j}>
+                    <img
+                        src={img.src}
+                        alt={img.alt}
+                        className={styles.anatomyImage}
+                        onClick={() => setSelectedImage({ src: img.src, alt: img.alt })}
+                        onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setSelectedImage({ src: img.src, alt: img.alt }); } }}
+                        role="button" // eslint-disable-line jsx-a11y/no-noninteractive-element-to-interactive-role
+                        tabIndex={0}
+                        style={{ cursor: 'pointer' }}
+                    />
+                    {img.caption && <p className={captionClass}>{img.caption}</p>}
+                </div>
+            );
+
+            const hasLinksInParagraphs = block.items.some(
+                (it) => it.type === 'paragraph' && it.html.includes('<a ')
+            );
+            const renderBlockLinks = () => {
+                if (block.links.length === 0 || hasLinksInParagraphs) return null;
+                if (block.links.length === 1) {
+                    return (
+                        <p className={styles.enhancedParagraph}>
+                            <a href={block.links[0].url} target="_blank" rel="noopener noreferrer" className={styles.resourceLink}>
+                                {block.links[0].text}
+                            </a>
+                        </p>
+                    );
+                }
+                return (
+                    <p className={styles.enhancedParagraph}>
+                        {block.links.map((link, j) => (
+                            <span key={j}>
+                                <a href={link.url} target="_blank" rel="noopener noreferrer" className={styles.resourceLink}>
+                                    {link.text}
+                                </a>
+                                {j < block.links.length - 1 && ' og '}
+                            </span>
+                        ))}
+                    </p>
+                );
+            };
+
             return (
                 <React.Fragment key={blockIdx}>
                     {headingEl}
-                    {imageCount === 1 ? (
-                        <div className={styles.sideBySideContainer}>
-                            <div className={styles.sideBySideText}>{content}</div>
-                            <div className={styles.sideBySideImage}>
-                                {block.images.map((img, j) => (
-                                    <div key={j}>
-                                        <img
-                                            src={img.src}
-                                            alt={img.alt}
-                                            className={styles.anatomyImage}
-                                            onClick={() => setSelectedImage({ src: img.src, alt: img.alt })}
-                                            onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setSelectedImage({ src: img.src, alt: img.alt }); } }}
-                                            role="button" // eslint-disable-line jsx-a11y/no-noninteractive-element-to-interactive-role
-                                            tabIndex={0}
-                                            style={{ cursor: 'pointer' }}
-                                        />
-                                        {img.caption && <p className={styles.sideBySideImageCaption}>{img.caption}</p>}
+                    {segments.map((seg, si) => {
+                        if (seg.images.length === 0) {
+                            return <React.Fragment key={si}>{renderParas(seg.paragraphs)}</React.Fragment>;
+                        }
+                        if (seg.images.length === 1) {
+                            return (
+                                <div key={si} className={styles.sideBySideContainer}>
+                                    <div className={styles.sideBySideText}>
+                                        {renderParas(seg.paragraphs)}
                                     </div>
-                                ))}
-                            </div>
-                        </div>
-                    ) : imageCount > 1 ? (
-                        <>
-                            {content}
-                            <div className={`${styles.anatomyGrid} ${styles.anatomyGridTwoCol}`}>
-                                {block.images.map((img, j) => (
-                                    <div key={j} className={styles.anatomyItem}>
-                                        <img
-                                            src={img.src}
-                                            alt={img.alt}
-                                            className={styles.anatomyImage}
-                                            onClick={() => setSelectedImage({ src: img.src, alt: img.alt })}
-                                            onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setSelectedImage({ src: img.src, alt: img.alt }); } }}
-                                            role="button" // eslint-disable-line jsx-a11y/no-noninteractive-element-to-interactive-role
-                                            tabIndex={0}
-                                            style={{ cursor: 'pointer' }}
-                                        />
-                                        {img.caption && <p className={styles.anatomyCaption}>{img.caption}</p>}
+                                    <div className={styles.sideBySideImage}>
+                                        {renderImgEl(seg.images[0], 0, styles.sideBySideImageCaption)}
                                     </div>
-                                ))}
-                            </div>
-                        </>
-                    ) : (
-                        content
-                    )}
+                                </div>
+                            );
+                        }
+                        return (
+                            <React.Fragment key={si}>
+                                {renderParas(seg.paragraphs)}
+                                <div className={`${styles.anatomyGrid} ${styles.anatomyGridTwoCol}`}>
+                                    {seg.images.map((img, j) => (
+                                        <div key={j} className={styles.anatomyItem}>
+                                            {renderImgEl(img, j, styles.anatomyCaption)}
+                                        </div>
+                                    ))}
+                                </div>
+                            </React.Fragment>
+                        );
+                    })}
+                    {renderBlockLinks()}
                 </React.Fragment>
             );
         };
@@ -559,7 +625,7 @@ export const TilstandDynamicSection = ({ tilstand, activeSection }: TilstandDyna
                 ))}
                 {sections.map((section, i) => (
                     <div key={i} className={section.blocks.length === 0 ? `${styles.normalFunctionSection} ${styles.sectionTitleOnly}` : styles.normalFunctionSection}>
-                        {section.mainHeadingText ? <h1 className={styles.normalFunctionTitle}>{section.mainHeadingText}</h1> : null}
+                        {section.mainHeadingText ? React.createElement(section.mainHeadingTag, { className: styles.normalFunctionTitle }, section.mainHeadingText) : null}
                         {section.blocks.map((block, j) => renderBlock(block, j))}
                     </div>
                 ))}
