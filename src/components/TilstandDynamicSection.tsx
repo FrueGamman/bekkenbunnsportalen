@@ -8,6 +8,57 @@ import type { Tilstand, TilstandAccordionItem, TilstandUnderseksjon } from "../t
 import { getImageUrl } from "../lib/directus";
 import styles from "../conditions/urinary-incontinence/components/section-content.module.css";
 
+/** One container for paragraph + single image; for intro only, uses block layout when image is horizontal. */
+function ParagraphWithImageContainer({
+    content,
+    image,
+    isIntro,
+    setSelectedImage,
+}: {
+    content: React.ReactNode;
+    image: { src: string; alt: string; caption: string };
+    isIntro: boolean;
+    setSelectedImage: (x: { src: string; alt: string }) => void;
+}) {
+    const [useBlockLayout, setUseBlockLayout] = useState(false);
+    const onImageLoad = (e: React.SyntheticEvent<HTMLImageElement>) => {
+        if (!isIntro) return;
+        const img = e.currentTarget;
+        if (img.naturalWidth >= img.naturalHeight) setUseBlockLayout(true);
+    };
+    const containerClass = useBlockLayout
+        ? `${styles.sideBySideContainer} ${styles.sideBySideContainerBlock}`
+        : styles.sideBySideContainer;
+    return (
+        <div className={containerClass}>
+            <div className={styles.sideBySideText}>{content}</div>
+            <div className={styles.sideBySideImage}>
+                <div className={styles.anatomyItem}>
+                    <img
+                        src={image.src}
+                        alt={image.alt}
+                        className={styles.anatomyImage}
+                        onClick={() => setSelectedImage({ src: image.src, alt: image.alt })}
+                        onKeyDown={(e) => {
+                            if (e.key === "Enter" || e.key === " ") {
+                                e.preventDefault();
+                                setSelectedImage({ src: image.src, alt: image.alt });
+                            }
+                        }}
+                        onLoad={onImageLoad}
+                        role="button" // eslint-disable-line jsx-a11y/no-noninteractive-element-to-interactive-role
+                        tabIndex={0}
+                        style={{ cursor: "pointer" }}
+                    />
+                    {image.caption && (
+                        <p className={styles.sideBySideImageCaption}>{image.caption}</p>
+                    )}
+                </div>
+            </div>
+        </div>
+    );
+}
+
 interface TilstandDynamicSectionProps {
     tilstand: Tilstand;
     activeSection: string;
@@ -381,8 +432,9 @@ export const TilstandDynamicSection = ({ tilstand, activeSection }: TilstandDyna
         );
     };
 
-    const renderContentWithImageCards = (html: string) => {
+    const renderContentWithImageCards = (html: string, options?: { isIntro?: boolean }) => {
         if (!html) return null;
+        const isIntro = options?.isIntro === true;
         try {
             const doc = new DOMParser().parseFromString(`<div>${html}</div>`, 'text/html');
             const root = doc.body.firstChild as HTMLElement;
@@ -583,39 +635,53 @@ export const TilstandDynamicSection = ({ tilstand, activeSection }: TilstandDyna
 
         if (currentSection) sections.push(currentSection);
 
-        // No headings at all — render as simple block
+        // No headings at all — render as simple block; 1 paragraph + 1 image = side-by-side on larger screens
         if (sections.length === 0) {
             const { textHtml, images } = parseContentAndImages(html);
+            const hasText = !!textHtml?.trim();
+            const singleImage = images && images.length === 1 ? images[0] : null;
+
+            if (hasText && singleImage) {
+                return (
+                    <ParagraphWithImageContainer
+                        content={renderRichText(textHtml, { width: '100%' })}
+                        image={singleImage}
+                        isIntro={isIntro}
+                        setSelectedImage={setSelectedImage}
+                    />
+                );
+            }
+
             return (
-                <>
+                <div className={styles.introContentBlock}>
                     {textHtml && renderRichText(textHtml, { width: '100%' })}
                     {images && images.length > 0 && (
                         <div
                             className={images.length > 1 ? `${styles.anatomyGrid} ${styles.anatomyGridTwoCol}` : styles.anatomyGrid}
                             style={{ width: '100%' }}
                         >
-                                {images.map((img, i) => (
-                                    <div key={i} className={styles.anatomyItem}>
-                                        <img
-                                            src={img.src}
-                                            alt={img.alt}
-                                            className={styles.anatomyImage}
-                                            onClick={() => setSelectedImage({ src: img.src, alt: img.alt })}
-                                            onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setSelectedImage({ src: img.src, alt: img.alt }); } }}
-                                            role="button" // eslint-disable-line jsx-a11y/no-noninteractive-element-to-interactive-role
-                                            tabIndex={0}
-                                            style={{ cursor: 'pointer' }}
-                                        />
-                                        {img.caption && (
-                                            <p className={styles.anatomyCaption}>{img.caption}</p>
-                                        )}
-                                    </div>
-                                ))}
-                            </div>
-                        )}
-                    </>
-                );
-            }
+                            {images.map((img, i) => (
+                                <div key={i} className={styles.anatomyItem}>
+                                    <img
+                                        src={img.src}
+                                        alt={img.alt}
+                                        className={styles.anatomyImage}
+                                        onClick={() => setSelectedImage({ src: img.src, alt: img.alt })}
+                                        onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setSelectedImage({ src: img.src, alt: img.alt }); } }}
+                                        role="button" // eslint-disable-line jsx-a11y/no-noninteractive-element-to-interactive-role
+                                        tabIndex={0}
+                                        style={{ cursor: 'pointer' }}
+                                    />
+                                    {img.caption && (
+                                        <p className={styles.anatomyCaption}>{img.caption}</p>
+                                    )}
+                                </div>
+                            ))}
+                        </div>
+                    )}
+                </div>
+            );
+        }
 
         const renderBlock = (block: ContentBlock, blockIdx: number) => {
             type Segment = {
@@ -647,13 +713,19 @@ export const TilstandDynamicSection = ({ tilstand, activeSection }: TilstandDyna
 
             const headingEl = block.headingTag && block.headingText
                 ? React.createElement(block.headingTag, {
-                    className: styles.enhancedSubheading,
+                    className: headingOnly
+                        ? `${styles.enhancedSubheading} ${styles.enhancedSubheadingStandalone}`
+                        : styles.enhancedSubheading,
                     style: {
                         ...(blockIdx > 0 ? { marginTop: '1.5rem' } : {}),
                         ...(headingOnly ? { textAlign: 'center' as const } : {})
                     }
                   }, block.headingText)
                 : null;
+
+            const wrapStandaloneHeading = headingOnly && headingEl ? (
+                <div style={{ textAlign: 'center' }}>{headingEl}</div>
+            ) : headingEl;
 
             const renderParas = (paras: string[]) =>
                 paras.map((p, j) => <React.Fragment key={j}>{renderRichText(p)}</React.Fragment>);
@@ -704,7 +776,7 @@ export const TilstandDynamicSection = ({ tilstand, activeSection }: TilstandDyna
 
             return (
                 <React.Fragment key={blockIdx}>
-                    {headingEl}
+                    {wrapStandaloneHeading}
                     {segments.map((seg, si) => {
                         if (seg.images.length === 0) {
                             return <React.Fragment key={si}>{renderParas(seg.paragraphs)}</React.Fragment>;
@@ -833,7 +905,7 @@ export const TilstandDynamicSection = ({ tilstand, activeSection }: TilstandDyna
             )}
 
             <div className={styles.sectionContent}>
-                {intro && renderContentWithImageCards(intro)}
+                {intro && renderContentWithImageCards(intro, { isIntro: true })}
 
                 {Array.isArray(trekkspill) && trekkspill.map((item: TilstandAccordionItem, index: number) => {
                     const itemTitle = getField(item, 'tittel');

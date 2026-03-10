@@ -1170,9 +1170,63 @@
   left: 0;
 }
 
-/* Section with only a title (no blocks) — center the main heading */
+/* Stand-alone section (title only, e.g. Sykdommer): same card bg, reduced vertical padding, not interactive */
+.sectionTitleOnly {
+  text-align: center;
+  background: #F7F8FA;
+  padding: 0.75rem 2.5rem;
+  margin: 1.25rem 0;
+  cursor: default;
+  pointer-events: none;
+}
+
+.sectionTitleOnly:hover {
+  transform: none;
+  box-shadow: 0 8px 25px rgba(5, 56, 112, 0.12);
+  background: #F7F8FA;
+}
+
 .sectionTitleOnly .normalFunctionTitle {
   text-align: center;
+  display: inline-block;
+  border-bottom: none;
+  margin: 0;
+  padding-bottom: 0;
+}
+
+.sectionTitleOnly .normalFunctionTitle::before {
+  display: none;
+}
+
+.sectionTitleOnly .normalFunctionTitle::after {
+  content: "";
+  display: block;
+  width: 100%;
+  margin-top: 0.35rem;
+  height: 2px;
+  background: #9ca3af;
+  border-radius: 1px;
+}
+
+/* Block-level stand-alone heading (has sub-blocks, no content) — same as Sykdommer style */
+.enhancedSubheadingStandalone {
+  padding-left: 0 !important;
+  display: inline-block;
+  text-align: center;
+}
+
+.enhancedSubheadingStandalone::before {
+  display: none !important;
+}
+
+.enhancedSubheadingStandalone::after {
+  content: "";
+  display: block;
+  width: 100%;
+  margin-top: 0.35rem;
+  height: 2px;
+  background: #9ca3af;
+  border-radius: 1px;
 }
 
 /* Enhanced Anatomy Section */
@@ -3419,6 +3473,23 @@
   align-items: flex-start;
   gap: 2rem;
   margin: 1.5rem 0;
+}
+
+/* Block (stacked) layout for horizontal images in intro only */
+.sideBySideContainerBlock {
+  flex-direction: column;
+}
+
+.sideBySideContainerBlock .sideBySideImage {
+  flex: none;
+  width: 100%;
+  max-width: 100%;
+}
+
+/* Single container for intro content (text + images) when not single para + single image */
+.introContentBlock {
+  display: block;
+  width: 100%;
 }
 
 .sideBySideText {
