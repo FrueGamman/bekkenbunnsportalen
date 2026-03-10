@@ -1599,7 +1599,51 @@ export const TilstandDynamicSection = ({ tilstand, activeSection }: TilstandDyna
                                                             );
                                                         })}
                                                     </div>
-                                                    {remainingAfterVideo && renderContentWithImageCards(remainingAfterVideo, false, false)}
+                                                    {remainingAfterVideo && (() => {
+                                                        // Parse remaining content blocks and render each as a highlightBox
+                                                        // matching the pregnancy/CommonExerciseSection design exactly
+                                                        try {
+                                                            const rDoc = new DOMParser().parseFromString(`<div>${remainingAfterVideo}</div>`, 'text/html');
+                                                            const rRoot = rDoc.body.firstChild as HTMLElement;
+                                                            // Collect top-level blocks (div or p groups)
+                                                            const blocks: HTMLElement[] = [];
+                                                            let currentPGroup: HTMLElement[] = [];
+                                                            Array.from(rRoot.childNodes).forEach(node => {
+                                                                const el = node as HTMLElement;
+                                                                if (el.nodeType !== 1) return;
+                                                                if (el.tagName === 'DIV') {
+                                                                    if (currentPGroup.length) {
+                                                                        const wrapper = document.createElement('div');
+                                                                        currentPGroup.forEach(p => wrapper.appendChild(p.cloneNode(true)));
+                                                                        blocks.push(wrapper);
+                                                                        currentPGroup = [];
+                                                                    }
+                                                                    blocks.push(el);
+                                                                } else {
+                                                                    currentPGroup.push(el);
+                                                                }
+                                                            });
+                                                            if (currentPGroup.length) {
+                                                                const wrapper = document.createElement('div');
+                                                                currentPGroup.forEach(p => wrapper.appendChild(p.cloneNode(true)));
+                                                                blocks.push(wrapper);
+                                                            }
+                                                            if (blocks.length === 0) {
+                                                                // fallback: render whole thing as one highlightBox
+                                                                return <div className={styles.highlightBox} style={{ marginTop: '1rem' }} dangerouslySetInnerHTML={{ __html: remainingAfterVideo }} />;
+                                                            }
+                                                            return (
+                                                                <>
+                                                                    {blocks.map((block, bi) => (
+                                                                        <div key={bi} className={styles.highlightBox} style={{ marginTop: '1rem' }} dangerouslySetInnerHTML={{ __html: block.innerHTML }} />
+                                                                    ))}
+                                                                </>
+                                                            );
+                                                        } catch {
+                                                            return <div className={styles.highlightBox} style={{ marginTop: '1rem' }} dangerouslySetInnerHTML={{ __html: remainingAfterVideo }} />;
+                                                        }
+                                                    })()}
+
                                                     {renderLinks(item)}
                                                 </>
                                             );
