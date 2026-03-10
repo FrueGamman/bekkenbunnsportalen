@@ -1594,7 +1594,7 @@ export const TilstandDynamicSection = ({ tilstand, activeSection }: TilstandDyna
                                                                             loading="lazy"
                                                                         />
                                                                     </div>
-                                                                    {vTitle && <p className={styles.videoTitle}>{vTitle}</p>}
+
                                                                 </div>
                                                             );
                                                         })}
