@@ -1609,8 +1609,8 @@ export const TilstandDynamicSection = ({ tilstand, activeSection }: TilstandDyna
                 })}
             </div>
 
-            {/* Smartphone apps card — shown below the video section on exercises pages (not pelvic-pain) */}
-            {activeSection === "exercises" && conditionSlug !== "pelvic-pain" && (() => {
+            {/* Smartphone apps card — shown below the video section on exercises pages */}
+            {activeSection === "exercises" && (() => {
                 const appsData = t.ovelse_smartphone_apps as Record<string, string | undefined> | null | undefined;
                 if (!appsData) return null;
                 const appTitle = (language === 'en' && appsData.title_en) ? appsData.title_en : (appsData.title || '');
