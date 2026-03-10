@@ -1291,6 +1291,92 @@ export const TilstandDynamicSection = ({ tilstand, activeSection }: TilstandDyna
                                 }
                                 const isUrinveienes = activeSection === "normal-functions" && slugify(itemTitleNo) === "urinveienes-oppbygging";
 
+                                // For accordion items whose innhold contains Directus-formatted gender sections
+                                // (nested flex div wrapper → column divs with icon span + h4 title + p body),
+                                // extract and re-render as styled CSS module gender cards
+                                if (itemContent) {
+                                    try {
+                                        const gDoc = new DOMParser().parseFromString(`<div>${itemContent}</div>`, 'text/html');
+                                        const gRoot = gDoc.body.firstChild as HTMLElement;
+
+                                        // Find a direct child div that uses flex layout and contains h4/h5 headings (the gender wrapper)
+                                        const genderWrapper = Array.from(gRoot.children).find(el => {
+                                            if (el.tagName !== 'DIV') return false;
+                                            const style = (el as HTMLElement).style.display || (el as HTMLElement).getAttribute('style') || '';
+                                            const hasFlexStyle = style.includes('flex');
+                                            const hasGenderH4 = el.querySelectorAll('h4, h5').length >= 1;
+                                            const h4Text = Array.from(el.querySelectorAll('h4, h5')).map(h => h.textContent?.trim().toLowerCase() || '');
+                                            const hasGenderWord = h4Text.some(t => t.includes('kvinner') || t.includes('menn') || t.includes('women') || t.includes('men'));
+                                            return hasFlexStyle && hasGenderH4 && hasGenderWord;
+                                        }) as HTMLElement | undefined;
+
+                                        if (genderWrapper) {
+                                            const GENDER_ICONS: Record<string, { icon: string; color: string }> = {
+                                                kvinner: { icon: '♀', color: '#08488a' },
+                                                women: { icon: '♀', color: '#08488a' },
+                                                menn: { icon: '♂', color: '#053870' },
+                                                men: { icon: '♂', color: '#053870' },
+                                            };
+
+                                            // Extract gender column divs (direct children of wrapper that have an h4)
+                                            const columnDivs = Array.from(genderWrapper.children).filter(
+                                                el => el.tagName === 'DIV' && el.querySelector('h4, h5')
+                                            ) as HTMLElement[];
+
+                                            const genderCards = columnDivs.map(col => {
+                                                const heading = col.querySelector('h4, h5');
+                                                const title = heading?.textContent?.trim() || '';
+                                                const key = title.toLowerCase();
+                                                const iconInfo = Object.entries(GENDER_ICONS).find(([k]) => key.includes(k));
+                                                const { icon = '♀', color = '#08488a' } = iconInfo?.[1] ?? {};
+
+                                                // Get the icon from the span in the heading wrapper (or use detected icon)
+                                                const iconSpan = col.querySelector('span');
+                                                const iconChar = iconSpan?.textContent?.trim() || icon;
+
+                                                // Body text = paragraphs in this column that are NOT inside the heading wrapper
+                                                const bodyParagraphs = Array.from(col.querySelectorAll('p'));
+                                                const bodyHtml = bodyParagraphs.map(p => p.outerHTML).join('');
+
+                                                return { title, icon: iconChar, color, bodyHtml };
+                                            });
+
+                                            if (genderCards.length >= 1) {
+                                                // Remove the gender wrapper from the root, render remaining content normally
+                                                const rootClone = gRoot.cloneNode(true) as HTMLElement;
+                                                const wrapperClone = Array.from(rootClone.children).find(el =>
+                                                    el.tagName === 'DIV' && (el as HTMLElement).style?.display === 'flex' && el.querySelector('h4, h5')
+                                                );
+                                                wrapperClone?.remove();
+                                                const remainingHtml = rootClone.innerHTML;
+
+                                                return (
+                                                    <>
+                                                        {remainingHtml && renderContentWithImageCards(remainingHtml, isUrinveienes, false)}
+                                                        <div className={styles.genderInstructions}>
+                                                            {genderCards.map((card, ci) => (
+                                                                <div key={ci} className={styles.genderCard}>
+                                                                    <div className={styles.genderIcon}>
+                                                                        <span style={{ fontSize: '1.5rem', fontWeight: 'bold', color: card.color }}>
+                                                                            {card.icon}
+                                                                        </span>
+                                                                    </div>
+                                                                    <h6 className={styles.genderTitle}>{card.title}</h6>
+                                                                    <div
+                                                                        className={styles.genderText}
+                                                                        dangerouslySetInnerHTML={{ __html: card.bodyHtml }}
+                                                                    />
+                                                                </div>
+                                                            ))}
+                                                        </div>
+                                                        {renderLinks(item)}
+                                                    </>
+                                                );
+                                            }
+                                        }
+                                    } catch { /* fall through */ }
+                                }
+
                                 // For accordion items with embedded iframes, extract them as a video grid
                                 // with h4/h5 headings as per-video titles (avoids rendering empty h4 cards below)
                                 if (itemContent) {
@@ -1300,27 +1386,8 @@ export const TilstandDynamicSection = ({ tilstand, activeSection }: TilstandDyna
                                         const vIframes = Array.from(vRoot.querySelectorAll('iframe, [data-oembed-url]'));
                                         const vHeadings = Array.from(vRoot.querySelectorAll('h4, h5')).map(h => h.textContent?.trim() || '');
                                         if (vIframes.length > 0) {
-                                            // Collect text paragraphs that appear before the first iframe
-                                            const firstIframe = vIframes[0];
-                                            const preIframeTexts: string[] = [];
-                                            let node = vRoot.firstChild;
-                                            while (node && node !== firstIframe && !firstIframe.contains(node)) {
-                                                if (node.nodeType === 1) {
-                                                    const el = node as HTMLElement;
-                                                    const tag = el.tagName;
-                                                    if ((tag === 'P' || tag === 'DIV') && el.textContent?.trim()) {
-                                                        // skip empty or heading-only nodes
-                                                        const txt = el.textContent.trim();
-                                                        if (txt) preIframeTexts.push(txt);
-                                                    }
-                                                }
-                                                node = node.nextSibling;
-                                            }
                                             return (
                                                 <>
-                                                    {preIframeTexts.map((txt, i) => (
-                                                        <p key={i} className={styles.enhancedParagraph} style={{ marginBottom: '1rem' }}>{txt}</p>
-                                                    ))}
                                                     <div className={styles.videoGrid}>
                                                         {vIframes.map((iframe, vi) => {
                                                             const src = iframe.getAttribute('src') || iframe.getAttribute('data-oembed-url') || '';
@@ -1348,6 +1415,7 @@ export const TilstandDynamicSection = ({ tilstand, activeSection }: TilstandDyna
                                         }
                                     } catch { /* fall through to default rendering */ }
                                 }
+
 
                                 return (
                                     <>
