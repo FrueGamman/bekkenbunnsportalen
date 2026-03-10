@@ -144,9 +144,21 @@ export const TilstandDynamicSection = ({ tilstand, activeSection }: TilstandDyna
 
         const hasStructured = tryTitle || step1 || videoSectionTitle || videosRaw.length > 0;
         if (hasStructured) {
-            const videos: Video[] = videosRaw.map((v) => ({
+            // Extract h4/h5 headings from videoSectionDesc to use as per-video titles
+            let descHeadings: string[] = [];
+            if (videoSectionDesc) {
+                try {
+                    const descDoc = new DOMParser().parseFromString(`<div>${videoSectionDesc}</div>`, 'text/html');
+                    const headingEls = descDoc.querySelectorAll('h4, h5');
+                    descHeadings = Array.from(headingEls).map(el => el.textContent?.trim() || '').filter(Boolean);
+                } catch { /* ignore */ }
+            }
+
+            const videos: Video[] = videosRaw.map((v, i) => ({
                 src: v.src,
-                title: (language === "en" && v.title_en) ? v.title_en : (v.title || "")
+                title: (language === "en" && v.title_en)
+                    ? v.title_en
+                    : (v.title || descHeadings[i] || "")
             }));
             const exerciseSteps: ExerciseStep[] = stepsRaw
                 .sort((a, b) => a.number - b.number)
@@ -170,6 +182,10 @@ export const TilstandDynamicSection = ({ tilstand, activeSection }: TilstandDyna
                 }
                 : undefined;
 
+            // If we extracted titles from the description headings, don't pass the description
+            // (to avoid rendering the h4 list as cards below the video grid)
+            const finalDesc = descHeadings.length > 0 ? undefined : (videoSectionDesc || undefined);
+
             return (
                 <CommonExerciseSection
                     pageTitle={title || (language === "no" ? "Øvelser" : "Exercises")}
@@ -180,7 +196,7 @@ export const TilstandDynamicSection = ({ tilstand, activeSection }: TilstandDyna
                     tipsText={tipsText}
                     exerciseSteps={exerciseSteps}
                     videoSectionTitle={videoSectionTitle}
-                    videoSectionDescription={videoSectionDesc || undefined}
+                    videoSectionDescription={finalDesc}
                     videos={videos}
                     smartphoneApps={smartphoneApps}
                 />
@@ -647,7 +663,7 @@ export const TilstandDynamicSection = ({ tilstand, activeSection }: TilstandDyna
                     }
 
                     const imageMediasDefault = medias.filter(m => m.type === 'img');
-                    const useSideBySide = imageMediasDefault.length === 1 && textBefore.length > 0;
+                    const useSideBySide = imageMediasDefault.length === 1 && textBefore.length > 0 && activeSection !== "symptoms";
 
                     if (useSideBySide) {
                         const allText = [...textBefore, ...textAfter].join('');
@@ -1274,6 +1290,46 @@ export const TilstandDynamicSection = ({ tilstand, activeSection }: TilstandDyna
                                     );
                                 }
                                 const isUrinveienes = activeSection === "normal-functions" && slugify(itemTitleNo) === "urinveienes-oppbygging";
+
+                                // For accordion items with embedded iframes, extract them as a video grid
+                                // with h4/h5 headings as per-video titles (avoids rendering empty h4 cards below)
+                                if (itemContent) {
+                                    try {
+                                        const vDoc = new DOMParser().parseFromString(`<div>${itemContent}</div>`, 'text/html');
+                                        const vRoot = vDoc.body.firstChild as HTMLElement;
+                                        const vIframes = Array.from(vRoot.querySelectorAll('iframe, [data-oembed-url]'));
+                                        const vHeadings = Array.from(vRoot.querySelectorAll('h4, h5')).map(h => h.textContent?.trim() || '');
+                                        if (vIframes.length > 0) {
+                                            return (
+                                                <>
+                                                    <div className={styles.videoGrid}>
+                                                        {vIframes.map((iframe, vi) => {
+                                                            const src = iframe.getAttribute('src') || iframe.getAttribute('data-oembed-url') || '';
+                                                            const vTitle = vHeadings[vi] || '';
+                                                            return (
+                                                                <div key={vi} className={styles.videoItem}>
+                                                                    <div className={styles.videoContainer}>
+                                                                        <iframe
+                                                                            src={src}
+                                                                            title={vTitle || `Video ${vi + 1}`}
+                                                                            allowFullScreen
+                                                                            className={styles.videoIframe}
+                                                                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                                                            loading="lazy"
+                                                                        />
+                                                                    </div>
+                                                                    {vTitle && <p className={styles.videoTitle}>{vTitle}</p>}
+                                                                </div>
+                                                            );
+                                                        })}
+                                                    </div>
+                                                    {renderLinks(item)}
+                                                </>
+                                            );
+                                        }
+                                    } catch { /* fall through to default rendering */ }
+                                }
+
                                 return (
                                     <>
                                         {renderContentWithImageCards(itemContent, isUrinveienes, false)}

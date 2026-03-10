@@ -773,12 +773,7 @@
 }
 
 .normalFunctionTitle::before {
-  content: '';
-  width: 4px;
-  height: 2rem;
-  background: linear-gradient(180deg, rgba(5, 56, 112, 1) 0%, rgba(5, 56, 112, 0.6) 100%);
-  border-radius: 2px;
-  flex-shrink: 0;
+  display: none;
 }
 
 .normalFunctionContent {
@@ -1009,7 +1004,6 @@
   font-weight: 700;
   color: #053870;
   margin: 2.5rem 0 1.75rem 0;
-  padding-left: 1rem;
   position: relative;
   line-height: 1.4;
 }
@@ -1024,6 +1018,7 @@
   height: 24px;
   background: linear-gradient(180deg, #053870, #4993C1);
   border-radius: 2px;
+  display: none;
 }
 
 .enhancedParagraph {
