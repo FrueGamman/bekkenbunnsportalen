@@ -1565,52 +1565,47 @@ export const TilstandDynamicSection = ({ tilstand, activeSection }: TilstandDyna
                                         const vIframes = Array.from(vRoot.querySelectorAll('iframe, [data-oembed-url]'));
                                         const vHeadings = Array.from(vRoot.querySelectorAll('h4, h5')).map(h => h.textContent?.trim() || '');
                                         if (vIframes.length > 0) {
-                                            // Strip iframes and h4/h5 (used as video titles) from content
-                                            // then render whatever remains (e.g. smartphone apps card) below videos
-                                            const vClone = vRoot.cloneNode(true) as HTMLElement;
-                                            vClone.querySelectorAll('iframe, [data-oembed-url]').forEach(el => {
-                                                // Remove the parent container too (oembed div / figure)
-                                                const wrapper = el.closest('figure, [data-oembed-url], div:not([style])') as HTMLElement | null;
-                                                (wrapper && wrapper !== vClone ? wrapper : el).remove();
-                                            });
-                                            vClone.querySelectorAll('h4, h5').forEach(h => h.remove());
-                                            const remainingAfterVideo = vClone.innerHTML.trim().replace(/<p>\s*<\/p>/gi, '').trim();
-
+                                            // Strip iframes and h4/h5 headings, then render video grid
                                             return (
                                                 <>
                                                     <div className={styles.videoGrid}>
                                                         {vIframes.map((iframe, vi) => {
                                                             const src = iframe.getAttribute('src') || iframe.getAttribute('data-oembed-url') || '';
-                                                            const vTitle = vHeadings[vi] || '';
                                                             return (
                                                                 <div key={vi} className={styles.videoItem}>
                                                                     <div className={styles.videoContainer}>
                                                                         <iframe
                                                                             src={src}
-                                                                            title={vTitle || `Video ${vi + 1}`}
+                                                                            title={`Video ${vi + 1}`}
                                                                             allowFullScreen
                                                                             className={styles.videoIframe}
                                                                             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                                                                             loading="lazy"
                                                                         />
                                                                     </div>
-
                                                                 </div>
                                                             );
                                                         })}
                                                     </div>
                                                     {renderLinks(item)}
-
                                                 </>
                                             );
                                         }
                                     } catch { /* fall through to default rendering */ }
                                 }
 
-
+                                // Fallback: strip h4/h5 to prevent them rendering as blue boxes
+                                const safeItemContent = (() => {
+                                    try {
+                                        const sd = new DOMParser().parseFromString(`<div>${itemContent}</div>`, 'text/html');
+                                        const sr = sd.body.firstChild as HTMLElement;
+                                        sr.querySelectorAll('h4, h5').forEach(h => h.remove());
+                                        return sr.innerHTML;
+                                    } catch { return itemContent; }
+                                })();
                                 return (
                                     <>
-                                        {renderContentWithImageCards(itemContent, isUrinveienes, false)}
+                                        {renderContentWithImageCards(safeItemContent, isUrinveienes, false)}
                                         {renderImage(item)}
                                         {renderLinks(item)}
                                     </>
