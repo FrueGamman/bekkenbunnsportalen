@@ -1090,7 +1090,119 @@ export const TilstandDynamicSection = ({ tilstand, activeSection }: TilstandDyna
                     }
                     return renderContentWithImageCards(intro);
                 })()}
-                {intro && activeSection !== "causes" && activeSection !== "symptoms" && activeSection !== "diagnosis" && renderContentWithImageCards(intro)}
+                {intro && activeSection !== "causes" && activeSection !== "symptoms" && activeSection !== "diagnosis" && (() => {
+                    // For exercises section intro: apply the same Prøv selv parser (gender cards + step numbers)
+                    if (activeSection === "exercises" && intro) {
+                        try {
+                            const eDoc = new DOMParser().parseFromString(`<div>${intro}</div>`, 'text/html');
+                            const eRoot = eDoc.body.firstChild as HTMLElement;
+                            const genderWrapper = Array.from(eRoot.children).find(el => {
+                                if (el.tagName !== 'DIV') return false;
+                                const attrStyle = (el as HTMLElement).getAttribute('style') || '';
+                                const hasFlexStyle = attrStyle.includes('flex');
+                                const h4Text = Array.from(el.querySelectorAll('h4, h5')).map(h => h.textContent?.trim().toLowerCase() || '');
+                                const hasGenderWord = h4Text.some(t => t.includes('kvinner') || t.includes('menn') || t.includes('women') || t.includes('men'));
+                                return hasFlexStyle && hasGenderWord;
+                            }) as HTMLElement | undefined;
+
+                            if (genderWrapper) {
+                                const GENDER_ICONS: Record<string, { icon: string; color: string }> = {
+                                    kvinner: { icon: '♀', color: '#08488a' }, women: { icon: '♀', color: '#08488a' },
+                                    menn: { icon: '♂', color: '#053870' }, men: { icon: '♂', color: '#053870' },
+                                };
+                                const step1Paragraphs: { num: string; text: string }[] = [];
+                                let prevEl: Element | null = genderWrapper.previousElementSibling;
+                                while (prevEl) {
+                                    if (prevEl.tagName === 'P') {
+                                        const raw = prevEl.textContent?.trim() || '';
+                                        const m = raw.match(/^(\d+)\.\s+(.+)$/s);
+                                        if (m) step1Paragraphs.unshift({ num: m[1], text: m[2] });
+                                    }
+                                    prevEl = prevEl.previousElementSibling;
+                                }
+                                const columnDivs = Array.from(genderWrapper.children).filter(c => c.tagName === 'DIV' && c.querySelector('h4, h5')) as HTMLElement[];
+                                const genderCards = columnDivs.map(col => {
+                                    const heading = col.querySelector('h4, h5');
+                                    const title = heading?.textContent?.trim() || '';
+                                    const key = title.toLowerCase();
+                                    const iconInfo = Object.entries(GENDER_ICONS).find(([k]) => key.includes(k));
+                                    const { icon = '♀', color = '#08488a' } = iconInfo?.[1] ?? {};
+                                    const iconChar = col.querySelector('span')?.textContent?.trim() || icon;
+                                    const bodyHtml = Array.from(col.querySelectorAll('p')).map(p => p.outerHTML).join('');
+                                    return { title, icon: iconChar, color, bodyHtml };
+                                });
+                                let tipsTitle = '', tipsText = '';
+                                const tipsDiv = genderWrapper.nextElementSibling as HTMLElement | null;
+                                if (tipsDiv?.tagName === 'DIV') {
+                                    const tipsStyle = tipsDiv.getAttribute('style') || '';
+                                    if (tipsStyle.includes('#fff8e1') || tipsStyle.includes('#fef3c7') || tipsStyle.includes('#ffc107') || tipsStyle.includes('#f59e0b')) {
+                                        const textEls = tipsDiv.querySelectorAll('p');
+                                        tipsText = Array.from(textEls).slice(1).map(p => p.textContent?.trim() || '').join(' ') || Array.from(textEls).map(p => p.textContent?.trim() || '').join(' ');
+                                        tipsTitle = tipsDiv.querySelector('p:first-child, strong')?.textContent?.trim() || 'Tips:';
+                                        if (!Array.from(textEls).slice(1).length) tipsTitle = 'Tips:';
+                                    }
+                                }
+                                const afterEl = (tipsTitle && tipsDiv) ? tipsDiv.nextElementSibling : genderWrapper.nextElementSibling;
+                                const remainingSteps: { num: number; text: string }[] = [];
+                                let curEl: Element | null = afterEl;
+                                while (curEl) {
+                                    if (curEl.tagName === 'OL') {
+                                        const start = parseInt(curEl.getAttribute('start') || '1', 10);
+                                        Array.from(curEl.querySelectorAll('li')).forEach((li, idx) => remainingSteps.push({ num: start + idx, text: li.textContent?.trim() || '' }));
+                                    } else if (curEl.tagName === 'P') {
+                                        const raw = curEl.textContent?.trim() || '';
+                                        const m = raw.match(/^(\d+)\.\s+(.+)$/s);
+                                        if (m) remainingSteps.push({ num: parseInt(m[1], 10), text: m[2] });
+                                    }
+                                    curEl = curEl.nextElementSibling;
+                                }
+                                if (genderCards.length >= 1) {
+                                    return (
+                                        <div className={styles.normalFunctionContent}>
+                                            <div className={styles.pelvicFloorExerciseSection}>
+                                                {step1Paragraphs.map((s, si) => (
+                                                    <div key={si} className={styles.exerciseStep}>
+                                                        <div className={styles.stepNumber}>{s.num}</div>
+                                                        <p className={styles.enhancedParagraph}>{s.text}</p>
+                                                    </div>
+                                                ))}
+                                                <div className={styles.genderInstructions}>
+                                                    {genderCards.map((card, ci) => (
+                                                        <div key={ci} className={styles.genderCard}>
+                                                            <div className={styles.genderIcon}>
+                                                                <span style={{ fontSize: '1.5rem', fontWeight: 'bold', color: card.color }}>{card.icon}</span>
+                                                            </div>
+                                                            <h6 className={styles.genderTitle}>{card.title}</h6>
+                                                            <div className={styles.genderText} dangerouslySetInnerHTML={{ __html: card.bodyHtml }} />
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                                {tipsTitle && (
+                                                    <div className={styles.tipsBox}>
+                                                        <h6 className={styles.tipsTitle}>{tipsTitle}</h6>
+                                                        <p className={styles.enhancedParagraph}>{tipsText}</p>
+                                                    </div>
+                                                )}
+                                                {remainingSteps.length > 0 && (
+                                                    <div className={styles.exerciseSteps}>
+                                                        {remainingSteps.map(s => (
+                                                            <div key={s.num} className={styles.exerciseStep}>
+                                                                <div className={styles.stepNumber}>{s.num}</div>
+                                                                <p className={styles.enhancedParagraph}>{s.text}</p>
+                                                            </div>
+                                                        ))}
+                                                    </div>
+                                                )}
+                                            </div>
+                                        </div>
+                                    );
+                                }
+                            }
+                        } catch { /* fall through to default */ }
+                    }
+                    return renderContentWithImageCards(intro);
+                })()}
+
 
                 {Array.isArray(trekkspill) && trekkspill.map((item: TilstandAccordionItem, index: number) => {
                     const itemTitle = getField(item, 'tittel');
@@ -1496,6 +1608,29 @@ export const TilstandDynamicSection = ({ tilstand, activeSection }: TilstandDyna
                     );
                 })}
             </div>
+
+            {/* Smartphone apps card — shown below the video section on exercises pages */}
+            {activeSection === "exercises" && (() => {
+                const appsData = t.ovelse_smartphone_apps as Record<string, string | undefined> | null | undefined;
+                if (!appsData) return null;
+                const appTitle = (language === 'en' && appsData.title_en) ? appsData.title_en : (appsData.title || '');
+                const appDesc = (language === 'en' && appsData.description_en) ? appsData.description_en : (appsData.description || '');
+                const appLinkText = (language === 'en' && appsData.linkText_en) ? appsData.linkText_en : (appsData.linkText || '');
+                const appLinkUrl = appsData.linkUrl || '';
+                if (!appTitle && !appDesc) return null;
+                return (
+                    <div className={styles.highlightBox} style={{ marginTop: '1rem', display: 'flex', gap: '0.75rem', alignItems: 'flex-start' }}>
+                        <span style={{ fontSize: '1.25rem' }}>💡</span>
+                        <div>
+                            {appTitle && <p><strong>{appTitle}</strong></p>}
+                            {appDesc && <p>{appDesc}</p>}
+                            {appLinkText && appLinkUrl && (
+                                <p><a href={appLinkUrl} target="_blank" rel="noopener noreferrer">{appLinkText}</a></p>
+                            )}
+                        </div>
+                    </div>
+                );
+            })()}
 
             {selectedImage && (
                 <ImageModal
