@@ -482,7 +482,14 @@ export default function ConditionPage() {
     return (
       <>
         {showIntro && (
-          <TilstandIntroduction tilstand={cmsTilstand} />
+          <TilstandIntroduction tilstand={cmsTilstand} activeSection="normal-functions" />
+        )}
+        {activeSection === "symptoms" && (
+          <TilstandIntroduction
+            tilstand={cmsTilstand}
+            activeSection="symptoms"
+            stacked={["fecal-incontinence", "constipation", "pelvic-pain", "urinary-retention"].includes(activeCondition)}
+          />
         )}
         <TilstandDynamicSection tilstand={cmsTilstand} activeSection={activeSection} />
       </>

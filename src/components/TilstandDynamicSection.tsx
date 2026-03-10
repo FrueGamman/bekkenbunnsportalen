@@ -73,6 +73,61 @@ export const TilstandDynamicSection = ({ tilstand, activeSection }: TilstandDyna
     // Specific fields for symptoms/causes
     const sitat = ((language === 'en' && t[`${prefix}_sitat_en`]) || t[`${prefix}_sitat`]) as string | undefined;
     const sitatKilde = ((language === 'en' && t[`${prefix}_sitat_kilde_en`]) || t[`${prefix}_sitat_kilde`]) as string | undefined;
+    const isDiagnosisSection = activeSection === "diagnosis";
+
+    // Parse diagnosis intro: blockquote → testimonial, img → side image, text → paragraphs
+    // Only for urinary incontinence — other conditions use the default flow layout
+    const diagnosisParsed = (() => {
+        if (!isDiagnosisSection || !intro || conditionSlug !== "urinary-incontinence") return null;
+        try {
+            const doc = new DOMParser().parseFromString(`<div>${intro}</div>`, "text/html");
+            const root = doc.body.firstChild as HTMLElement;
+            if (!root) return null;
+
+            let testimonial = sitat || "";
+            let attribution = sitatKilde || "";
+            let imageSrc = "";
+            let imageAlt = "";
+
+            // 1. Extract blockquote
+            const bq = root.querySelector("blockquote");
+            if (bq && !sitat) {
+                const ps = Array.from(bq.querySelectorAll("p"));
+                const texts = ps.map(p => p.textContent?.trim() || "").filter(Boolean);
+                if (texts.length >= 2) {
+                    testimonial = texts.slice(0, -1).join(" ");
+                    attribution = texts[texts.length - 1];
+                } else if (texts.length === 1) {
+                    testimonial = texts[0];
+                }
+                bq.remove();
+            }
+
+            // 2. Extract image
+            const img = root.querySelector("img");
+            if (img) {
+                imageSrc = img.getAttribute("src") || "";
+                imageAlt = img.getAttribute("alt") || "";
+                const imgWrap = img.closest("p, figure") as HTMLElement | null;
+                if (imgWrap && imgWrap !== root) imgWrap.remove(); else img.remove();
+            }
+
+            // 3. Collect all remaining content blocks (preserve lists, headings, etc.)
+            const paragraphs: string[] = [];
+            Array.from(root.childNodes).forEach(node => {
+                const n = node as HTMLElement;
+                if (n.nodeType === 3 && n.textContent?.trim()) {
+                    paragraphs.push(`<p>${n.textContent.trim()}</p>`);
+                } else if (n.nodeType === 1 && n.textContent?.trim()) {
+                    paragraphs.push(n.outerHTML);
+                }
+            });
+
+            return { testimonial, attribution, imageSrc, imageAlt, paragraphs };
+        } catch {
+            return null;
+        }
+    })();
 
     // Exercises: render original design (CommonExerciseSection) when structured data from Directus exists
     if (activeSection === "exercises") {
@@ -240,7 +295,96 @@ export const TilstandDynamicSection = ({ tilstand, activeSection }: TilstandDyna
         );
     };
 
-    const renderContentWithImageCards = (html: string) => {
+    const renderPatientStoryCards = (html: string) => {
+        if (!html) return null;
+        try {
+            const doc = new DOMParser().parseFromString(`<div>${html}</div>`, 'text/html');
+            let root = doc.body.firstChild as HTMLElement;
+            if (!root) return null;
+
+            // Unwrap if content is wrapped in a single <div>
+            if (root.children.length === 1 && root.children[0].tagName === 'DIV') {
+                root = root.children[0] as HTMLElement;
+            }
+
+            type StoryCard = {
+                name: string;
+                imageSrc: string;
+                imageAlt: string;
+                description: string;
+                linkUrl: string;
+                linkText: string;
+            };
+
+            const stories: StoryCard[] = [];
+            let current: StoryCard | null = null;
+
+            Array.from(root.childNodes).forEach((node) => {
+                const el = node as HTMLElement;
+                if (el.nodeType !== 1) return;
+
+                if (el.tagName === 'H4' || el.tagName === 'H3') {
+                    if (current) stories.push(current);
+                    current = { name: el.textContent?.trim() || '', imageSrc: '', imageAlt: '', description: '', linkUrl: '', linkText: '' };
+                } else if (current) {
+                    const img = el.tagName === 'IMG' ? el as HTMLImageElement : el.querySelector('img');
+                    const anchor = el.tagName === 'A' ? el as HTMLAnchorElement : el.querySelector('a');
+
+                    if (img && !current.imageSrc) {
+                        current.imageSrc = img.getAttribute('src') || '';
+                        current.imageAlt = img.getAttribute('alt') || current.name;
+                    } else if (anchor && !current.linkUrl) {
+                        current.linkUrl = anchor.getAttribute('href') || '#';
+                        current.linkText = anchor.textContent?.trim() || (language === 'en' ? 'Read the story' : 'Les historien');
+                    } else {
+                        const text = el.textContent?.trim();
+                        if (text && !current.description) {
+                            current.description = text;
+                        }
+                    }
+                }
+            });
+            if (current) stories.push(current);
+
+            if (stories.length === 0) return renderContentWithImageCards(html);
+
+            return (
+                <div className={styles.patientStoryGrid}>
+                    {stories.map((story, i) => (
+                        <div key={i} className={styles.patientStoryCard}>
+                            <h4 className={styles.patientStoryName}>{story.name}</h4>
+                            {story.imageSrc && (
+                                <div className={styles.patientStoryImageWrapper}>
+                                    <img
+                                        src={story.imageSrc}
+                                        alt={story.imageAlt}
+                                        className={styles.patientStoryImage}
+                                    />
+                                </div>
+                            )}
+                            {story.description && (
+                                <p className={styles.patientStoryDescription}>{story.description}</p>
+                            )}
+                            {story.linkUrl && (
+                                <a
+                                    href={story.linkUrl}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className={styles.patientStoryLink}
+                                >
+                                    {story.linkText}
+                                </a>
+                            )}
+                        </div>
+                    ))}
+                </div>
+            );
+        } catch {
+            return renderContentWithImageCards(html);
+        }
+    };
+
+    const renderContentWithImageCards = (html: string, reverseImages = false, sideBySideImages = false) => {
         if (!html) return null;
         try {
             const doc = new DOMParser().parseFromString(`<div>${html}</div>`, 'text/html');
@@ -370,33 +514,243 @@ export const TilstandDynamicSection = ({ tilstand, activeSection }: TilstandDyna
 
             if (currentCard) cards.push(currentCard);
 
-            // If there are no h4 cards, render as a simple block
+            // If there are no h4 cards, render as a simple layout (side by side if media present)
             if (cards.length === 0) {
-                const { textHtml, images } = parseContentAndImages(html);
+                let textBefore: string[] = [];
+                let textAfter: string[] = [];
+                let foundMedia = false;
+                const medias: { type: 'img' | 'media'; src: string; alt: string; caption: string; html?: string }[] = [];
+
+                Array.from(root.childNodes).forEach((node) => {
+                    const el = node as HTMLElement;
+
+                    const isPureMedia = el.nodeType === 1 && (
+                        el.tagName === 'IMG' ||
+                        el.tagName === 'IFRAME' ||
+                        el.tagName === 'VIDEO' ||
+                        (el.tagName === 'FIGURE' && !el.querySelector('p')) ||
+                        (el.classList && el.classList.contains('video-wrapper'))
+                    );
+                    const isMixedContainer = el.nodeType === 1 && !isPureMedia && !!el.querySelector?.('img, iframe, video');
+
+                    if (isPureMedia || isMixedContainer) {
+                        foundMedia = true;
+
+                        // Extract media
+                        if (isPureMedia) {
+                            const img = el.tagName === 'IMG' ? el : (el.querySelector('img') as HTMLImageElement);
+                            const iframeOrVideo = (el.tagName === 'IFRAME' || el.tagName === 'VIDEO' || el.classList?.contains('video-wrapper'))
+                                ? el
+                                : (el.querySelector('iframe, video') as HTMLElement);
+
+                            let caption = '';
+                            const figure = el.tagName === 'FIGURE' ? el : el.closest('figure');
+                            if (figure) {
+                                const fc = figure.querySelector('figcaption');
+                                caption = fc?.textContent?.trim() || '';
+                            }
+
+                            if (img) {
+                                const src = img.getAttribute('src') || '';
+                                const alt = img.getAttribute('alt') || '';
+                                medias.push({ type: 'img', src, alt: alt || caption, caption });
+                            } else if (iframeOrVideo) {
+                                medias.push({ type: 'media', src: '', alt: caption, caption, html: iframeOrVideo.outerHTML });
+                            }
+                        } else if (isMixedContainer) {
+                            el.querySelectorAll('img, iframe, video').forEach((mediaEl: Element) => {
+                                const isImg = mediaEl.tagName === 'IMG';
+                                let caption = '';
+                                const figure = mediaEl.closest('figure');
+                                if (figure) {
+                                    const fc = figure.querySelector('figcaption');
+                                    caption = fc?.textContent?.trim() || '';
+                                }
+
+                                if (isImg) {
+                                    const img = mediaEl as HTMLImageElement;
+                                    const src = img.getAttribute('src') || '';
+                                    const alt = img.getAttribute('alt') || '';
+                                    medias.push({ type: 'img', src, alt: alt || caption, caption });
+                                } else {
+                                    medias.push({ type: 'media', src: '', alt: caption, caption, html: mediaEl.outerHTML });
+                                }
+                            });
+
+                            // Extract remaining text
+                            const clone = el.cloneNode(true) as HTMLElement;
+                            clone.querySelectorAll('figure, img, iframe, video').forEach(mediaEl => {
+                                const parent = mediaEl.parentElement;
+                                mediaEl.remove();
+                                if (parent && parent !== clone && !parent.textContent?.trim()) {
+                                    parent.remove();
+                                }
+                            });
+
+                            const remainingHtml = clone.innerHTML.trim();
+                            if (remainingHtml) {
+                                textAfter.push(remainingHtml);
+                            }
+                        }
+                    } else {
+                        const content = el.nodeType === 1 ? el.outerHTML : (el.textContent || '');
+                        if (content.trim()) {
+                            if (foundMedia) textAfter.push(content);
+                            else textBefore.push(content);
+                        }
+                    }
+                });
+
+                if (medias.length > 0) {
+                    if (reverseImages) medias.reverse();
+                    // Remove blank/whitespace-only entries so they don't render as empty cards
+                    const cleanedTextBefore = textBefore.filter(p => p.replace(/<[^>]*>/g, '').trim() !== '');
+                    textBefore.length = 0;
+                    cleanedTextBefore.forEach(p => textBefore.push(p));
+                    const cleanedTextAfter = textAfter.filter(p => p.replace(/<[^>]*>/g, '').trim() !== '');
+                    textAfter.length = 0;
+                    cleanedTextAfter.forEach(p => textAfter.push(p));
+                    const videoMedias = medias.filter(m => m.type === 'media');
+                    const imageMedias = medias.filter(m => m.type === 'img');
+                    const isVideoGrid = videoMedias.length > 1 && imageMedias.length === 0;
+
+                    if (isVideoGrid) {
+                        return (
+                            <>
+                                {textBefore.length > 0 && (
+                                    <div style={{ marginBottom: '1rem' }}>
+                                        {textBefore.map((p, j) => (
+                                            <React.Fragment key={j}>
+                                                {renderRichText(p)}
+                                            </React.Fragment>
+                                        ))}
+                                    </div>
+                                )}
+                                <div className={styles.videoGrid}>
+                                    {videoMedias.map((media, j) => (
+                                        <div key={j} className={styles.videoItem}>
+                                            <div className={styles.videoContainer} dangerouslySetInnerHTML={{ __html: media.html || '' }} />
+                                        </div>
+                                    ))}
+                                </div>
+                                {textAfter.length > 0 && (
+                                    <div style={{ marginTop: '1rem' }}>
+                                        {textAfter.map((p, j) => (
+                                            <React.Fragment key={j}>
+                                                {renderRichText(p)}
+                                            </React.Fragment>
+                                        ))}
+                                    </div>
+                                )}
+                            </>
+                        );
+                    }
+
+                    const imageMediasDefault = medias.filter(m => m.type === 'img');
+                    const useSideBySide = imageMediasDefault.length === 1 && textBefore.length > 0;
+
+                    if (useSideBySide) {
+                        const allText = [...textBefore, ...textAfter].join('');
+                        return (
+                            <div className={styles.sideBySideContainer}>
+                                <div className={styles.sideBySideText}>
+                                    {allText && (
+                                        <div className={styles.enhancedParagraph} dangerouslySetInnerHTML={{ __html: allText }} />
+                                    )}
+                                </div>
+                                <div className={styles.sideBySideImage}>
+                                    {imageMediasDefault.map((media, j) => (
+                                        <img
+                                            key={j}
+                                            src={media.src}
+                                            alt={media.alt}
+                                            className={styles.introImage}
+                                            style={{ borderRadius: '0.75rem' }}
+                                        />
+                                    ))}
+                                </div>
+                            </div>
+                        );
+                    }
+
+                    // Auto 2-column grid when there are 2+ images (covers urinveienes, tarmtomming, nervesystemet etc.)
+                    if (imageMedias.length >= 2) {
+                        return (
+                            <>
+                                {textBefore.map((p, j) => (
+                                    <React.Fragment key={j}>
+                                        {renderRichText(p)}
+                                    </React.Fragment>
+                                ))}
+                                <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', alignItems: 'flex-start' }}>
+                                    {imageMedias.map((media, j) => (
+                                        <div key={j} style={{ flex: '1 1 calc(50% - 0.5rem)', minWidth: 0 }}>
+                                            <img
+                                                src={media.src}
+                                                alt={media.alt}
+                                                className={styles.anatomyImage}
+                                                onClick={() => setSelectedImage({ src: media.src, alt: media.alt })}
+                                                onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setSelectedImage({ src: media.src, alt: media.alt }); } }}
+                                                role="button"
+                                                tabIndex={0}
+                                                style={{ cursor: 'pointer', width: '100%', height: '340px', objectFit: 'contain', display: 'block' }}
+                                            />
+                                            {media.caption && (
+                                                <p className={styles.anatomyCaption}>{media.caption}</p>
+                                            )}
+                                        </div>
+                                    ))}
+                                </div>
+                                {textAfter.map((p, j) => (
+                                    <React.Fragment key={j}>
+                                        {renderRichText(p)}
+                                    </React.Fragment>
+                                ))}
+                            </>
+                        );
+                    }
+
+                    return (
+                        <>
+                            {textBefore.map((p, j) => (
+                                <React.Fragment key={j}>
+                                    {renderRichText(p)}
+                                </React.Fragment>
+                            ))}
+                            {medias.map((media, j) => (
+                                <div key={j} style={{ margin: '1rem 0', textAlign: 'center' }}>
+                                    {media.type === 'img' ? (
+                                        <img
+                                            src={media.src}
+                                            alt={media.alt}
+                                            onClick={() => setSelectedImage({ src: media.src, alt: media.alt })}
+                                            onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setSelectedImage({ src: media.src, alt: media.alt }); } }}
+                                            role="button"
+                                            tabIndex={0}
+                                            style={{ cursor: 'pointer', width: '100%', maxWidth: '900px', height: 'auto', display: 'inline-block', borderRadius: '0.75rem', objectFit: 'contain' }}
+                                        />
+                                    ) : (
+                                        <div dangerouslySetInnerHTML={{ __html: media.html || '' }} />
+                                    )}
+                                    {media.caption && (
+                                        <p className={styles.anatomyCaption}>{media.caption}</p>
+                                    )}
+                                </div>
+                            ))}
+                            {textAfter.map((p, j) => (
+                                <React.Fragment key={j}>
+                                    {renderRichText(p)}
+                                </React.Fragment>
+                            ))}
+                        </>
+                    );
+                }
+
+                // Fallback for text only
+                const { textHtml } = parseContentAndImages(html);
                 return (
                     <>
                         {textHtml && renderRichText(textHtml, { width: '100%' })}
-                        {images && images.length > 0 && (
-                            <div className={styles.anatomyGrid} style={{ width: '100%' }}>
-                                {images.map((img, i) => (
-                                    <div key={i} className={styles.anatomyItem}>
-                                        <img
-                                            src={img.src}
-                                            alt={img.alt}
-                                            className={styles.anatomyImage}
-                                            onClick={() => setSelectedImage({ src: img.src, alt: img.alt })}
-                                            onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setSelectedImage({ src: img.src, alt: img.alt }); } }}
-                                            role="button" // eslint-disable-line jsx-a11y/no-noninteractive-element-to-interactive-role
-                                            tabIndex={0}
-                                            style={{ cursor: 'pointer' }}
-                                        />
-                                        {img.caption && (
-                                            <p className={styles.anatomyCaption}>{img.caption}</p>
-                                        )}
-                                    </div>
-                                ))}
-                            </div>
-                        )}
                     </>
                 );
             }
@@ -444,8 +798,8 @@ export const TilstandDynamicSection = ({ tilstand, activeSection }: TilstandDyna
                                         </div>
                                         <div className={styles.sideBySideImage}>
                                             {card.images.map((img, j) => (
-                                                <div key={j}>
-                                                    <img src={img.src} alt={img.alt} />
+                                                <div key={j} className={styles.causesImageWrapper}>
+                                                    <img src={img.src} alt={img.alt} className={styles.introImage} />
                                                     {img.caption && (
                                                         <p className={styles.sideBySideImageCaption}>{img.caption}</p>
                                                     )}
@@ -569,7 +923,7 @@ export const TilstandDynamicSection = ({ tilstand, activeSection }: TilstandDyna
                 <h2 className={styles.sectionTitle}>{title || (activeSection === "normal-functions" ? (language === 'no' ? 'Funksjon' : 'Normal Functions') : activeSection)}</h2>
             </div>
 
-            {sitat && (
+            {sitat && activeSection !== "causes" && activeSection !== "diagnosis" && (
                 <div className={styles.quoteContainer}>
                     <blockquote className={styles.patientQuote}>
                         <p className={styles.quoteText}>"{sitat}"</p>
@@ -581,7 +935,146 @@ export const TilstandDynamicSection = ({ tilstand, activeSection }: TilstandDyna
             )}
 
             <div className={styles.sectionContent}>
-                {intro && renderContentWithImageCards(intro)}
+                {diagnosisParsed && (
+                    <div className={styles.diagnosisContentCard}>
+                        {diagnosisParsed.testimonial && (
+                            <div className={styles.diagnosisTestimonialBox}>
+                                <blockquote className={styles.patientQuote}>
+                                    <p className={styles.quoteText}>{diagnosisParsed.testimonial}</p>
+                                    {diagnosisParsed.attribution && (
+                                        <cite className={styles.quoteAuthor}>{diagnosisParsed.attribution}</cite>
+                                    )}
+                                </blockquote>
+                            </div>
+                        )}
+                        {diagnosisParsed.imageSrc ? (
+                            <div className={styles.sideBySideContainer}>
+                                <div className={styles.sideBySideText}>
+                                    {diagnosisParsed.paragraphs.map((p, i) => (
+                                        <div key={i} className={styles.enhancedParagraph} dangerouslySetInnerHTML={{ __html: p }} />
+                                    ))}
+                                </div>
+                                <div className={styles.sideBySideImage}>
+                                    <img
+                                        src={diagnosisParsed.imageSrc}
+                                        alt={diagnosisParsed.imageAlt || ''}
+                                        className={styles.diagnosisImage}
+                                        onClick={() => setSelectedImage({ src: diagnosisParsed.imageSrc, alt: diagnosisParsed.imageAlt })}
+                                        onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); setSelectedImage({ src: diagnosisParsed.imageSrc, alt: diagnosisParsed.imageAlt }); } }}
+                                        role="button"
+                                        tabIndex={0}
+                                    />
+                                </div>
+                            </div>
+                        ) : (
+                            diagnosisParsed.paragraphs.map((p, i) => (
+                                <div key={i} className={styles.enhancedParagraph} dangerouslySetInnerHTML={{ __html: p }} />
+                            ))
+                        )}
+                    </div>
+                )}
+                {activeSection === "causes" && (sitat || intro) && (() => {
+                    let causesTextHtml = intro || '';
+                    let causesImgSrc = '';
+                    let causesImgAlt = '';
+                    if (intro) {
+                        try {
+                            const doc = new DOMParser().parseFromString(`<div>${intro}</div>`, 'text/html');
+                            const root = doc.body.firstChild as HTMLElement;
+                            if (root) {
+                                const img = root.querySelector('img');
+                                if (img) {
+                                    causesImgSrc = img.getAttribute('src') || '';
+                                    causesImgAlt = img.getAttribute('alt') || '';
+                                    const parent = img.parentElement;
+                                    img.remove();
+                                    if (parent && parent !== root && !parent.textContent?.trim()) parent.remove();
+                                    causesTextHtml = root.innerHTML;
+                                }
+                            }
+                        } catch { /* use raw intro */ }
+                    }
+                    return (
+                        <div className={styles.causesCard}>
+                            {sitat && (
+                                <div className={styles.causesQuoteWrap}>
+                                    <p className={styles.causesQuote}>"{sitat}"</p>
+                                    {sitatKilde && (
+                                        <cite className={styles.causesQuoteAuthor}>— {sitatKilde}</cite>
+                                    )}
+                                </div>
+                            )}
+                            {causesTextHtml && (
+                                <div className={causesImgSrc ? styles.sideBySideContainer : styles.causesIntro}>
+                                    <div className={causesImgSrc ? styles.sideBySideText : undefined}>
+                                        {renderRichText(causesTextHtml)}
+                                    </div>
+                                    {causesImgSrc && (
+                                        <div className={styles.sideBySideImage}>
+                                            <img
+                                                src={causesImgSrc}
+                                                alt={causesImgAlt}
+                                                className={styles.introImage}
+                                                style={{ borderRadius: '0.75rem' }}
+                                            />
+                                        </div>
+                                    )}
+                                </div>
+                            )}
+                        </div>
+                    );
+                })()}
+                {intro && activeSection === "diagnosis" && !diagnosisParsed && (() => {
+                    let diagTextHtml = intro;
+                    let diagImgSrc = '';
+                    let diagImgAlt = '';
+                    let diagImgCaption = '';
+                    try {
+                        const doc = new DOMParser().parseFromString(`<div>${intro}</div>`, 'text/html');
+                        const root = doc.body.firstChild as HTMLElement;
+                        if (root) {
+                            const img = root.querySelector('img');
+                            if (img) {
+                                diagImgSrc = img.getAttribute('src') || '';
+                                diagImgAlt = img.getAttribute('alt') || '';
+                                const figure = img.closest('figure');
+                                if (figure) {
+                                    const fc = figure.querySelector('figcaption');
+                                    diagImgCaption = fc?.textContent?.trim() || '';
+                                    figure.remove();
+                                } else {
+                                    const parent = img.parentElement;
+                                    img.remove();
+                                    if (parent && parent !== root && !parent.textContent?.trim()) parent.remove();
+                                }
+                                diagTextHtml = root.innerHTML;
+                            }
+                        }
+                    } catch { /* use raw intro */ }
+
+                    if (diagImgSrc) {
+                        return (
+                            <div className={styles.sideBySideContainer}>
+                                <div className={styles.sideBySideText}>
+                                    {renderRichText(diagTextHtml)}
+                                </div>
+                                <div className={styles.sideBySideImage}>
+                                    <img
+                                        src={diagImgSrc}
+                                        alt={diagImgAlt}
+                                        className={styles.introImage}
+                                        style={{ borderRadius: '0.75rem' }}
+                                    />
+                                    {diagImgCaption && (
+                                        <p className={styles.sideBySideImageCaption}>{diagImgCaption}</p>
+                                    )}
+                                </div>
+                            </div>
+                        );
+                    }
+                    return renderContentWithImageCards(intro);
+                })()}
+                {intro && activeSection !== "causes" && activeSection !== "symptoms" && activeSection !== "diagnosis" && renderContentWithImageCards(intro)}
 
                 {Array.isArray(trekkspill) && trekkspill.map((item: TilstandAccordionItem, index: number) => {
                     const itemTitle = getField(item, 'tittel');
@@ -693,6 +1186,16 @@ export const TilstandDynamicSection = ({ tilstand, activeSection }: TilstandDyna
                                     </div>
                                 </div>
                             ) : (() => {
+                                const isPatientStories = /pasienthistori/i.test(itemTitleNo) || /patient\s*stor/i.test(itemTitle);
+                                if (isPatientStories && itemContent) {
+                                    return (
+                                        <>
+                                            {renderPatientStoryCards(itemContent)}
+                                            {renderImage(item)}
+                                            {renderLinks(item)}
+                                        </>
+                                    );
+                                }
                                 const isFirstTreatmentAccordion = activeSection === "treatment" && index === 0 && conditionSlug === "urinary-incontinence";
                                 const tryTitle = ((language === "en" && t.ovelse_try_yourself_title_en) || t.ovelse_try_yourself_title || "") as string;
                                 const hasExerciseData = !!(tryTitle || (t.ovelse_steps as unknown[] | null)?.length || (t.ovelse_videos as unknown[] | null)?.length);
@@ -770,9 +1273,10 @@ export const TilstandDynamicSection = ({ tilstand, activeSection }: TilstandDyna
                                         </>
                                     );
                                 }
+                                const isUrinveienes = activeSection === "normal-functions" && slugify(itemTitleNo) === "urinveienes-oppbygging";
                                 return (
                                     <>
-                                        {renderContentWithImageCards(itemContent)}
+                                        {renderContentWithImageCards(itemContent, isUrinveienes, false)}
                                         {renderImage(item)}
                                         {renderLinks(item)}
                                     </>
