@@ -1300,8 +1300,27 @@ export const TilstandDynamicSection = ({ tilstand, activeSection }: TilstandDyna
                                         const vIframes = Array.from(vRoot.querySelectorAll('iframe, [data-oembed-url]'));
                                         const vHeadings = Array.from(vRoot.querySelectorAll('h4, h5')).map(h => h.textContent?.trim() || '');
                                         if (vIframes.length > 0) {
+                                            // Collect text paragraphs that appear before the first iframe
+                                            const firstIframe = vIframes[0];
+                                            const preIframeTexts: string[] = [];
+                                            let node = vRoot.firstChild;
+                                            while (node && node !== firstIframe && !firstIframe.contains(node)) {
+                                                if (node.nodeType === 1) {
+                                                    const el = node as HTMLElement;
+                                                    const tag = el.tagName;
+                                                    if ((tag === 'P' || tag === 'DIV') && el.textContent?.trim()) {
+                                                        // skip empty or heading-only nodes
+                                                        const txt = el.textContent.trim();
+                                                        if (txt) preIframeTexts.push(txt);
+                                                    }
+                                                }
+                                                node = node.nextSibling;
+                                            }
                                             return (
                                                 <>
+                                                    {preIframeTexts.map((txt, i) => (
+                                                        <p key={i} className={styles.enhancedParagraph} style={{ marginBottom: '1rem' }}>{txt}</p>
+                                                    ))}
                                                     <div className={styles.videoGrid}>
                                                         {vIframes.map((iframe, vi) => {
                                                             const src = iframe.getAttribute('src') || iframe.getAttribute('data-oembed-url') || '';
