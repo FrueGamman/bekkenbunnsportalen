@@ -62,7 +62,7 @@ export const TilstandIntroduction = ({ tilstand, activeSection = "normal-functio
     const hasForekomst = !!forekomstInnhold;
 
     let videoVal = tilstand.funksjon_video_id;
-    if (isSymptoms) videoVal = tilstand.symptomer_video_url;
+    if (isSymptoms) videoVal = tilstand.symptomer_video_url ?? null;
     else if (isDiagnosis) videoVal = null;
     const hasVideo = !!videoVal;
 
