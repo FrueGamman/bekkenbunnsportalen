@@ -265,6 +265,122 @@ export const TilstandDynamicSection = ({ tilstand, activeSection }: TilstandDyna
         return text.length === 0;
     };
 
+    type ResourceTableItem = { title: string; description: string; type: string; links: { text: string; url: string }[] };
+
+    const parseResourceItems = (html: string): ResourceTableItem[] | null => {
+        if (!html?.trim()) return null;
+        try {
+            const doc = new DOMParser().parseFromString(`<div>${html}</div>`, 'text/html');
+            const root = doc.body.firstChild as HTMLElement;
+            if (!root) return null;
+
+            const items: ResourceTableItem[] = [];
+
+            // Format A: div.resource-item with h4, p, em, a
+            const resourceItemDivs = root.querySelectorAll('.resource-item, div.resource-item');
+            if (resourceItemDivs.length > 0) {
+                resourceItemDivs.forEach((div) => {
+                    const h4 = div.querySelector('h4');
+                    const title = h4?.textContent?.trim() || '';
+                    const paragraphs = div.querySelectorAll('p');
+                    let description = '';
+                    let type = '';
+                    const links: { text: string; url: string }[] = [];
+                    paragraphs.forEach((p) => {
+                        const hasEm = p.querySelector('em');
+                        const anchors = p.querySelectorAll('a');
+                        if (anchors.length > 0) {
+                            anchors.forEach((a) => {
+                                links.push({
+                                    text: a.textContent?.trim() || '',
+                                    url: a.getAttribute('href') || '#'
+                                });
+                            });
+                        } else if (hasEm) {
+                            type = hasEm.textContent?.trim() || '';
+                        } else if (!description && p.textContent?.trim()) {
+                            description = p.textContent?.trim() || '';
+                        }
+                    });
+                    if (title || description || links.length > 0) {
+                        items.push({ title, description, type, links });
+                    }
+                });
+                return items.length > 0 ? items : null;
+            }
+
+            // Format B: h4 + ul > li with strong, – description, a
+            const h4s = root.querySelectorAll('h4');
+            if (h4s.length > 0) {
+                h4s.forEach((h4) => {
+                    const sectionType = h4.textContent?.trim() || '';
+                    let next: Element | null = h4.nextElementSibling;
+                    while (next && next.tagName !== 'UL') next = next.nextElementSibling;
+                    const ul = next;
+                    if (!ul) return;
+                    ul.querySelectorAll('li').forEach((li) => {
+                        const strong = li.querySelector('strong');
+                        const title = strong?.textContent?.trim() || '';
+                        let description = '';
+                        const text = li.innerHTML || '';
+                        const dashMatch = text.match(/[–\-]\s*([^<]*?)(?:<br\s*\/?>|<a)/i);
+                        if (dashMatch) description = dashMatch[1].replace(/<[^>]*>/g, '').trim();
+                        const links: { text: string; url: string }[] = [];
+                        li.querySelectorAll('a').forEach((a) => {
+                            links.push({
+                                text: a.textContent?.trim() || '',
+                                url: a.getAttribute('href') || '#'
+                            });
+                        });
+                        if (title || description || links.length > 0) {
+                            items.push({ title, description, type: sectionType, links });
+                        }
+                    });
+                });
+                return items.length > 0 ? items : null;
+            }
+
+            return null;
+        } catch {
+            return null;
+        }
+    };
+
+    const renderResourceTable = (items: ResourceTableItem[]) => {
+        const headerRessurs = language === 'en' ? 'RESOURCE' : 'RESSURS';
+        const headerLenke = language === 'en' ? 'LINK' : 'LENKE';
+        return (
+            <div className={styles.resourceTable}>
+                <div className={styles.resourceHeader}>
+                    <div className={styles.resourceColumn}>{headerRessurs}</div>
+                    <div className={styles.resourceColumn}>{headerLenke}</div>
+                </div>
+                {items.map((item, i) => (
+                    <div key={i} className={styles.resourceRow}>
+                        <div className={styles.resourceDescription}>
+                            <h4 className={styles.resourceName}>{item.title}</h4>
+                            {item.description ? <p className={styles.resourceDesc}>{item.description}</p> : null}
+                            {item.type ? <span className={styles.resourceType}>{item.type}</span> : null}
+                        </div>
+                        <div className={styles.resourceLinks}>
+                            {item.links.map((link, j) => (
+                                <a
+                                    key={j}
+                                    href={link.url}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className={styles.resourceLink}
+                                >
+                                    {link.text}
+                                </a>
+                            ))}
+                        </div>
+                    </div>
+                ))}
+            </div>
+        );
+    };
+
     const renderContentWithImageCards = (html: string) => {
         if (!html) return null;
         try {
@@ -348,6 +464,7 @@ export const TilstandDynamicSection = ({ tilstand, activeSection }: TilstandDyna
             } else if (el.nodeType === 1 && (el.tagName === 'IFRAME' || el.tagName === 'VIDEO' || el.querySelector?.('iframe, video'))) {
                 block.items.push({ type: 'paragraph', html: el.outerHTML });
             } else if (el.nodeType === 1) {
+                const preserveWrapper = el.tagName !== 'P' || el.hasAttribute('style');
                 const anchors = el.querySelectorAll('a');
                 if (anchors.length > 0) {
                     const textWithoutLinks = el.textContent?.trim() || '';
@@ -358,11 +475,11 @@ export const TilstandDynamicSection = ({ tilstand, activeSection }: TilstandDyna
                         });
                     });
                     if (textWithoutLinks !== anchors[0].textContent?.trim()) {
-                        block.items.push({ type: 'paragraph', html: el.innerHTML });
+                        block.items.push({ type: 'paragraph', html: preserveWrapper ? el.outerHTML : el.innerHTML });
                     }
                 } else {
                     const text = el.textContent?.trim();
-                    if (text) block.items.push({ type: 'paragraph', html: el.innerHTML || text });
+                    if (text) block.items.push({ type: 'paragraph', html: preserveWrapper ? el.outerHTML : (el.innerHTML || text) });
                 }
             }
         };
@@ -419,6 +536,10 @@ export const TilstandDynamicSection = ({ tilstand, activeSection }: TilstandDyna
                 return;
             }
             if (el.querySelector?.('iframe, video') && !el.querySelector?.('p, h1, h2, h3, h4, h5, h6')) {
+                flatNodes.push(el);
+                return;
+            }
+            if (el.hasAttribute('style')) {
                 flatNodes.push(el);
                 return;
             }
@@ -724,6 +845,11 @@ export const TilstandDynamicSection = ({ tilstand, activeSection }: TilstandDyna
                     const itemId = slugify(itemTitleNo);
                     const hasUnderseksjoner = item.underseksjoner && item.underseksjoner.length > 0;
 
+                    const resourceItems = activeSection === "resources" && typeof itemContent === "string"
+                        ? parseResourceItems(itemContent)
+                        : null;
+                    const isResourceAccordion = !!(resourceItems && resourceItems.length > 0);
+
                     // Render image for underseksjon (sub.bilde_url)
                     const renderUnderseksjonImage = (sub: TilstandUnderseksjon) => {
                         const src = sub.bilde_url;
@@ -816,7 +942,7 @@ export const TilstandDynamicSection = ({ tilstand, activeSection }: TilstandDyna
                             isDarkMode={resolvedTheme === 'dark'}
                             defaultOpen={false}
                         >
-                            {hasUnderseksjoner ? (
+                            {isResourceAccordion ? renderResourceTable(resourceItems!) : hasUnderseksjoner ? (
                                 <>
                                     {itemContent && (
                                         <>
