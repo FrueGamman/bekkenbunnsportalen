@@ -1565,6 +1565,17 @@ export const TilstandDynamicSection = ({ tilstand, activeSection }: TilstandDyna
                                         const vIframes = Array.from(vRoot.querySelectorAll('iframe, [data-oembed-url]'));
                                         const vHeadings = Array.from(vRoot.querySelectorAll('h4, h5')).map(h => h.textContent?.trim() || '');
                                         if (vIframes.length > 0) {
+                                            // Strip iframes and h4/h5 (used as video titles) from content
+                                            // then render whatever remains (e.g. smartphone apps card) below videos
+                                            const vClone = vRoot.cloneNode(true) as HTMLElement;
+                                            vClone.querySelectorAll('iframe, [data-oembed-url]').forEach(el => {
+                                                // Remove the parent container too (oembed div / figure)
+                                                const wrapper = el.closest('figure, [data-oembed-url], div:not([style])') as HTMLElement | null;
+                                                (wrapper && wrapper !== vClone ? wrapper : el).remove();
+                                            });
+                                            vClone.querySelectorAll('h4, h5').forEach(h => h.remove());
+                                            const remainingAfterVideo = vClone.innerHTML.trim().replace(/<p>\s*<\/p>/gi, '').trim();
+
                                             return (
                                                 <>
                                                     <div className={styles.videoGrid}>
@@ -1588,6 +1599,7 @@ export const TilstandDynamicSection = ({ tilstand, activeSection }: TilstandDyna
                                                             );
                                                         })}
                                                     </div>
+                                                    {remainingAfterVideo && renderContentWithImageCards(remainingAfterVideo, false, false)}
                                                     {renderLinks(item)}
                                                 </>
                                             );
