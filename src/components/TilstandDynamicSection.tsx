@@ -1291,23 +1291,22 @@ export const TilstandDynamicSection = ({ tilstand, activeSection }: TilstandDyna
                                 }
                                 const isUrinveienes = activeSection === "normal-functions" && slugify(itemTitleNo) === "urinveienes-oppbygging";
 
-                                // For accordion items whose innhold contains Directus-formatted gender sections
-                                // (nested flex div wrapper → column divs with icon span + h4 title + p body),
-                                // extract and re-render as styled CSS module gender cards
+                                // For Prøv selv accordion items: parse the HTML structure that Directus creates
+                                // and re-render using the same CSS classes as CommonExerciseSection.
+                                // Structure: <p>1. Step text</p> → <div flex/> (gender cards) → <div tipsbox/> → <ol> steps 2-N
                                 if (itemContent) {
                                     try {
                                         const gDoc = new DOMParser().parseFromString(`<div>${itemContent}</div>`, 'text/html');
                                         const gRoot = gDoc.body.firstChild as HTMLElement;
 
-                                        // Find a direct child div that uses flex layout and contains h4/h5 headings (the gender wrapper)
+                                        // Find a direct child div that uses flex layout and contains gender h4/h5 headings (the gender wrapper)
                                         const genderWrapper = Array.from(gRoot.children).find(el => {
                                             if (el.tagName !== 'DIV') return false;
-                                            const style = (el as HTMLElement).style.display || (el as HTMLElement).getAttribute('style') || '';
-                                            const hasFlexStyle = style.includes('flex');
-                                            const hasGenderH4 = el.querySelectorAll('h4, h5').length >= 1;
+                                            const attrStyle = (el as HTMLElement).getAttribute('style') || '';
+                                            const hasFlexStyle = attrStyle.includes('flex');
                                             const h4Text = Array.from(el.querySelectorAll('h4, h5')).map(h => h.textContent?.trim().toLowerCase() || '');
                                             const hasGenderWord = h4Text.some(t => t.includes('kvinner') || t.includes('menn') || t.includes('women') || t.includes('men'));
-                                            return hasFlexStyle && hasGenderH4 && hasGenderWord;
+                                            return hasFlexStyle && hasGenderWord;
                                         }) as HTMLElement | undefined;
 
                                         if (genderWrapper) {
@@ -1318,9 +1317,21 @@ export const TilstandDynamicSection = ({ tilstand, activeSection }: TilstandDyna
                                                 men: { icon: '♂', color: '#053870' },
                                             };
 
-                                            // Extract gender column divs (direct children of wrapper that have an h4)
+                                            // --- Step 1: Find p elements before the gender wrapper ---
+                                            const step1Paragraphs: { num: string; text: string }[] = [];
+                                            let el: Element | null = genderWrapper.previousElementSibling;
+                                            while (el) {
+                                                if (el.tagName === 'P') {
+                                                    const raw = el.textContent?.trim() || '';
+                                                    const m = raw.match(/^(\d+)\.\s+(.+)$/s);
+                                                    if (m) step1Paragraphs.unshift({ num: m[1], text: m[2] });
+                                                }
+                                                el = el.previousElementSibling;
+                                            }
+
+                                            // --- Gender cards: extract column divs ---
                                             const columnDivs = Array.from(genderWrapper.children).filter(
-                                                el => el.tagName === 'DIV' && el.querySelector('h4, h5')
+                                                c => c.tagName === 'DIV' && c.querySelector('h4, h5')
                                             ) as HTMLElement[];
 
                                             const genderCards = columnDivs.map(col => {
@@ -1329,48 +1340,104 @@ export const TilstandDynamicSection = ({ tilstand, activeSection }: TilstandDyna
                                                 const key = title.toLowerCase();
                                                 const iconInfo = Object.entries(GENDER_ICONS).find(([k]) => key.includes(k));
                                                 const { icon = '♀', color = '#08488a' } = iconInfo?.[1] ?? {};
-
-                                                // Get the icon from the span in the heading wrapper (or use detected icon)
                                                 const iconSpan = col.querySelector('span');
                                                 const iconChar = iconSpan?.textContent?.trim() || icon;
-
-                                                // Body text = paragraphs in this column that are NOT inside the heading wrapper
                                                 const bodyParagraphs = Array.from(col.querySelectorAll('p'));
                                                 const bodyHtml = bodyParagraphs.map(p => p.outerHTML).join('');
-
                                                 return { title, icon: iconChar, color, bodyHtml };
                                             });
 
-                                            if (genderCards.length >= 1) {
-                                                // Remove the gender wrapper from the root, render remaining content normally
-                                                const rootClone = gRoot.cloneNode(true) as HTMLElement;
-                                                const wrapperClone = Array.from(rootClone.children).find(el =>
-                                                    el.tagName === 'DIV' && (el as HTMLElement).style?.display === 'flex' && el.querySelector('h4, h5')
-                                                );
-                                                wrapperClone?.remove();
-                                                const remainingHtml = rootClone.innerHTML;
+                                            // --- Tips box: first div after genderWrapper with yellow/amber background ---
+                                            let tipsTitle = '';
+                                            let tipsText = '';
+                                            const tipsDiv = genderWrapper.nextElementSibling as HTMLElement | null;
+                                            if (tipsDiv && tipsDiv.tagName === 'DIV') {
+                                                const tipsStyle = tipsDiv.getAttribute('style') || '';
+                                                // detect yellow/amber background #fff8e1 or similar
+                                                if (tipsStyle.includes('#fff8e1') || tipsStyle.includes('#fef3c7') || tipsStyle.includes('#ffc107') || tipsStyle.includes('#f59e0b')) {
+                                                    const titleEl = tipsDiv.querySelector('p:first-child, strong');
+                                                    tipsTitle = titleEl?.textContent?.trim() || '';
+                                                    const textEl = tipsDiv.querySelectorAll('p');
+                                                    // take all paragraphs except first (which is the title)
+                                                    tipsText = Array.from(textEl).slice(1).map(p => p.textContent?.trim() || '').join(' ');
+                                                    if (!tipsText) {
+                                                        // If only one paragraph, use it (title + text may be same p)
+                                                        tipsText = Array.from(textEl).map(p => p.textContent?.trim() || '').join(' ');
+                                                        tipsTitle = 'Tips:';
+                                                    }
+                                                }
+                                            }
 
+                                            // --- Remaining steps: ol items after the tipsDiv (or genderWrapper if no tips) ---
+                                            const afterEl = (tipsTitle && tipsDiv) ? tipsDiv.nextElementSibling : genderWrapper.nextElementSibling;
+                                            const remainingSteps: { num: number; text: string }[] = [];
+                                            let cur: Element | null = afterEl;
+                                            while (cur) {
+                                                if (cur.tagName === 'OL') {
+                                                    const startAttr = parseInt(cur.getAttribute('start') || '1', 10);
+                                                    Array.from(cur.querySelectorAll('li')).forEach((li, idx) => {
+                                                        remainingSteps.push({ num: startAttr + idx, text: li.textContent?.trim() || '' });
+                                                    });
+                                                } else if (cur.tagName === 'P') {
+                                                    const raw = cur.textContent?.trim() || '';
+                                                    const m = raw.match(/^(\d+)\.\s+(.+)$/s);
+                                                    if (m) remainingSteps.push({ num: parseInt(m[1], 10), text: m[2] });
+                                                }
+                                                cur = cur.nextElementSibling;
+                                            }
+
+                                            if (genderCards.length >= 1) {
                                                 return (
-                                                    <>
-                                                        {remainingHtml && renderContentWithImageCards(remainingHtml, isUrinveienes, false)}
-                                                        <div className={styles.genderInstructions}>
-                                                            {genderCards.map((card, ci) => (
-                                                                <div key={ci} className={styles.genderCard}>
-                                                                    <div className={styles.genderIcon}>
-                                                                        <span style={{ fontSize: '1.5rem', fontWeight: 'bold', color: card.color }}>
-                                                                            {card.icon}
-                                                                        </span>
-                                                                    </div>
-                                                                    <h6 className={styles.genderTitle}>{card.title}</h6>
-                                                                    <div
-                                                                        className={styles.genderText}
-                                                                        dangerouslySetInnerHTML={{ __html: card.bodyHtml }}
-                                                                    />
+                                                    <div className={styles.normalFunctionContent}>
+                                                        <div className={styles.pelvicFloorExerciseSection}>
+                                                            {/* Step 1 */}
+                                                            {step1Paragraphs.map((s, si) => (
+                                                                <div key={si} className={styles.exerciseStep}>
+                                                                    <div className={styles.stepNumber}>{s.num}</div>
+                                                                    <p className={styles.enhancedParagraph}>{s.text}</p>
                                                                 </div>
                                                             ))}
+
+                                                            {/* Gender cards */}
+                                                            <div className={styles.genderInstructions}>
+                                                                {genderCards.map((card, ci) => (
+                                                                    <div key={ci} className={styles.genderCard}>
+                                                                        <div className={styles.genderIcon}>
+                                                                            <span style={{ fontSize: '1.5rem', fontWeight: 'bold', color: card.color }}>
+                                                                                {card.icon}
+                                                                            </span>
+                                                                        </div>
+                                                                        <h6 className={styles.genderTitle}>{card.title}</h6>
+                                                                        <div
+                                                                            className={styles.genderText}
+                                                                            dangerouslySetInnerHTML={{ __html: card.bodyHtml }}
+                                                                        />
+                                                                    </div>
+                                                                ))}
+                                                            </div>
+
+                                                            {/* Tips box */}
+                                                            {tipsTitle && (
+                                                                <div className={styles.tipsBox}>
+                                                                    <h6 className={styles.tipsTitle}>{tipsTitle}</h6>
+                                                                    <p className={styles.enhancedParagraph}>{tipsText}</p>
+                                                                </div>
+                                                            )}
+
+                                                            {/* Steps 2-N */}
+                                                            {remainingSteps.length > 0 && (
+                                                                <div className={styles.exerciseSteps}>
+                                                                    {remainingSteps.map((s) => (
+                                                                        <div key={s.num} className={styles.exerciseStep}>
+                                                                            <div className={styles.stepNumber}>{s.num}</div>
+                                                                            <p className={styles.enhancedParagraph}>{s.text}</p>
+                                                                        </div>
+                                                                    ))}
+                                                                </div>
+                                                            )}
                                                         </div>
                                                         {renderLinks(item)}
-                                                    </>
+                                                    </div>
                                                 );
                                             }
                                         }

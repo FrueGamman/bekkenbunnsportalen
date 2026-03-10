@@ -2933,6 +2933,32 @@
   flex-shrink: 0;
 }
 
+.tipsBox {
+  background: #fef3c7;
+  border-left: 4px solid #f59e0b;
+  border-radius: 0.75rem;
+  padding: 1.25rem;
+  margin: 1.25rem 0;
+}
+
+.tipsTitle {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #92400e;
+  margin-bottom: 0.4rem;
+}
+
+.enhancedParagraph {
+  font-size: 0.95rem;
+  line-height: 1.7;
+  color: var(--color-text-primary);
+  margin: 0;
+}
+
+.normalFunctionContent {
+  padding: 1.5rem;
+}
+
 .genderInstructions {
   display: grid;
   grid-template-columns: 1fr 1fr;
