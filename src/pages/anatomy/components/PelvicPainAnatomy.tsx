@@ -70,7 +70,6 @@ export const PelvicPainAnatomy = () => {
             <div className={styles.structureList}>
               <div className={styles.structureItem}>
                 <div className={styles.structureIcon}>
-                  <img src="/imagePelvic-1.png" alt="Pelvic Floor" />
                 </div>
                 <div className={styles.structureInfo}>
                   <h4>{data.pelvicFloorTitle}</h4>
@@ -80,7 +79,6 @@ export const PelvicPainAnatomy = () => {
 
               <div className={styles.structureItem}>
                 <div className={styles.structureIcon}>
-                  <img src="/image-1.png" alt="Nerves" />
                 </div>
                 <div className={styles.structureInfo}>
                   <h4>{data.nervesTitle}</h4>
@@ -90,7 +88,6 @@ export const PelvicPainAnatomy = () => {
 
               <div className={styles.structureItem}>
                 <div className={styles.structureIcon}>
-                  <img src="/health-1.png" alt="Organs" />
                 </div>
                 <div className={styles.structureInfo}>
                   <h4>{data.organsTitle}</h4>
@@ -101,7 +98,6 @@ export const PelvicPainAnatomy = () => {
           </div>
 
           <div className={styles.anatomyImage}>
-            <img src="/imagePelvic-2.png" alt={data.imageAlt} />
             <p className={styles.imageCaption}>{data.imageCaption}</p>
           </div>
         </div>

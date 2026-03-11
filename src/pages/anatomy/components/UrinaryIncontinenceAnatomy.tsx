@@ -84,7 +84,6 @@ export const UrinaryIncontinenceAnatomy = () => {
             <div className={styles.structureList}>
               <div className={styles.structureItem}>
                 <div className={styles.structureIcon}>
-                  <img src="/health-1.png" alt="Kidneys" />
                 </div>
                 <div className={styles.structureInfo}>
                   <h4>{data.kidneysTitle}</h4>
@@ -104,7 +103,6 @@ export const UrinaryIncontinenceAnatomy = () => {
 
               <div className={styles.structureItem}>
                 <div className={styles.structureIcon}>
-                  <img src="/imagePelvic-1.png" alt="Pelvic Floor" />
                 </div>
                 <div className={styles.structureInfo}>
                   <h4>{data.pelvicFloorTitle}</h4>
@@ -115,7 +113,6 @@ export const UrinaryIncontinenceAnatomy = () => {
           </div>
 
           <div className={styles.anatomyImage}>
-            <img src="/imagePelvic-2.png" alt={data.imageAlt} />
             <p className={styles.imageCaption}>{data.imageCaption}</p>
           </div>
         </div>

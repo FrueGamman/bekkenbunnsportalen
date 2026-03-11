@@ -6,7 +6,7 @@ import styles from "./conference-section.module.css"
 interface ConferenceSectionProps {
   cmsData?: {
     title: string
-    subtitle: string
+  subtitle: string
     description: string
     buttonText: string
     date: string

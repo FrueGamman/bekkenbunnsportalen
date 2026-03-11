@@ -143,24 +143,21 @@ const EXERCISE_DATA = {
         title: "Grunnleggende bekkenbunnsknip",
         duration: "5-10 sekunder",
         reps: "10 repetisjoner, 3 sett daglig",
-        description: "Stram bekkenbunnsmusklene som om du holder på urin. Hold knipet i 5-10 sekunder, deretter slapp av helt. Husk å puste normalt under øvelsen.",
-        image: "/imagePelvic-1.png"
+        description: "Stram bekkenbunnsmusklene som om du holder på urin. Hold knipet i 5-10 sekunder, deretter slapp av helt. Husk å puste normalt under øvelsen."
       },
       {
         id: "quick",
         title: "Raske knip",
         duration: "1 sekund",
         reps: "10 repetisjoner, 3 sett daglig",
-        description: "Gjør raske, kraftige knip av bekkenbunnen. Hold i 1 sekund, slipp helt av. Dette styrker hurtige muskelfibre.",
-        image: "/imagePelvic-2.png"
+        description: "Gjør raske, kraftige knip av bekkenbunnen. Hold i 1 sekund, slipp helt av. Dette styrker hurtige muskelfibre."
       },
       {
         id: "functional",
         title: "Funksjonell trening",
         duration: "Under aktivitet",
         reps: "Integrer i daglige aktiviteter",
-        description: "Aktiver bekkenbunnen før hosting, nysing, løfting eller annen belastning. Dette trener funksjonell styrke.",
-        image: "/imagePelvic-3.png"
+        description: "Aktiver bekkenbunnen før hosting, nysing, løfting eller annen belastning. Dette trener funksjonell styrke."
       }
     ],
     tips: {
@@ -185,24 +182,21 @@ const EXERCISE_DATA = {
         title: "Basic pelvic floor contraction",
         duration: "5-10 seconds",
         reps: "10 repetitions, 3 sets daily",
-        description: "Tighten the pelvic floor muscles as if holding urine. Hold the contraction for 5-10 seconds, then relax completely. Remember to breathe normally during the exercise.",
-        image: "/imagePelvic-1.png"
+        description: "Tighten the pelvic floor muscles as if holding urine. Hold the contraction for 5-10 seconds, then relax completely. Remember to breathe normally during the exercise."
       },
       {
         id: "quick",
         title: "Quick flicks",
         duration: "1 second",
         reps: "10 repetitions, 3 sets daily",
-        description: "Do quick, strong contractions of the pelvic floor. Hold for 1 second, release completely. This strengthens fast muscle fibers.",
-        image: "/imagePelvic-2.png"
+        description: "Do quick, strong contractions of the pelvic floor. Hold for 1 second, release completely. This strengthens fast muscle fibers."
       },
       {
         id: "functional",
         title: "Functional training",
         duration: "During activity",
         reps: "Integrate into daily activities",
-        description: "Activate the pelvic floor before coughing, sneezing, lifting or other stress. This trains functional strength.",
-        image: "/imagePelvic-3.png"
+        description: "Activate the pelvic floor before coughing, sneezing, lifting or other stress. This trains functional strength."
       }
     ],
     tips: {
@@ -235,11 +229,6 @@ export const PelvicFloorAnatomy = () => {
           <p className={styles.intro}>{data.intro}</p>
         </div>
         <div className={styles.heroImageContainer}>
-          <img 
-            src="/media/images/bekkengulv_med_tekst-768x503.png" 
-            alt={data.title}
-            className={styles.heroImage}
-          />
         </div>
       </div>
 
@@ -253,7 +242,6 @@ export const PelvicFloorAnatomy = () => {
             ))}
           </div>
           <div className={styles.structureImage}>
-            <img src="/media/images/bekkengulv_med_tekst-768x503.png" alt="Bekkenbunn anatomi" />
           </div>
         </div>
       </div>
@@ -298,9 +286,6 @@ export const PelvicFloorAnatomy = () => {
         <div className={styles.exercisesGrid}>
           {exerciseData.exercises.map((exercise) => (
             <div key={exercise.id} className={styles.exerciseCard}>
-              <div className={styles.exerciseImageContainer}>
-                <img src={exercise.image} alt={exercise.title} className={styles.exerciseImage} />
-              </div>
               <div className={styles.exerciseContent}>
                 <h4 className={styles.exerciseTitle}>{exercise.title}</h4>
                 <div className={styles.exerciseDetails}>

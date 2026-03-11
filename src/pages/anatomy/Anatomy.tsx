@@ -78,7 +78,6 @@ export const Anatomy = () => {
                   <p className={styles.heroDescription}>{data.overview.description}</p>
                 </div>
                 <div className={styles.heroImage}>
-                  <img src="/imagePelvic-2.png" alt={data.overview.imageAlt} />
                 </div>
               </div>
 
