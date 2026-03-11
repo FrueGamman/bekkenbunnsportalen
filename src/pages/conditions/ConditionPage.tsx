@@ -312,7 +312,13 @@ export default function ConditionPage() {
   const [activeCondition, setActiveCondition] = useState(
     id || "urinary-incontinence"
   );
-  const [activeSection, setActiveSection] = useState("overview");
+  // Default section per condition: pregnancy → overview, constipation/pelvic-pain → symptoms, others → normal-functions
+  const getDefaultSection = (conditionId: string) => {
+    if (conditionId === "pregnancy") return "overview";
+    if (conditionId === "constipation" || conditionId === "pelvic-pain") return "symptoms";
+    return "normal-functions";
+  };
+  const [activeSection, setActiveSection] = useState(() => getDefaultSection(id || "urinary-incontinence"));
 
   const conditionListFromDirectus = useConditionList(language);
   const { tilstand: cmsTilstand, loading: cmsLoading } = useConditionDetails(activeCondition, language);
@@ -390,9 +396,16 @@ export default function ConditionPage() {
           setActiveSection("overview");
         }
       } else {
-        const firstSection = CONDITION_SECTIONS[0]?.id || "overview";
-        if (activeSection !== firstSection) {
-          setActiveSection(firstSection);
+        // Use condition-aware default when no valid section param is present
+        const defaultForCondition = getDefaultSection(activeCondition);
+        const firstSection = CONDITION_SECTIONS[0]?.id || defaultForCondition;
+        const resolved = firstSection !== "normal-functions" ? firstSection : defaultForCondition;
+        if (activeSection !== resolved) {
+          setActiveSection(resolved);
+        }
+        // Canonicalize URL with the correct default section
+        if (!sectionParam) {
+          navigate(`/conditions/${activeCondition}?section=${resolved}`, { replace: true });
         }
       }
     }
