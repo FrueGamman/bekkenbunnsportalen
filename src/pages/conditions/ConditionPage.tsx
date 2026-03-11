@@ -517,9 +517,15 @@ export default function ConditionPage() {
       conditionId === "pregnancy"
         ? [{ id: "overview", title: "", icon: "" }, ...PREGNANCY_SECTION_CARDS[language]]
         : CONDITION_SECTIONS_MAP[conditionId as keyof typeof CONDITION_SECTIONS_MAP]?.[language] ?? [];
-    const firstSection = newSections[0]?.id || "normal-functions";
-    setActiveSection(firstSection);
-    navigate(`/conditions/${conditionId}?section=${firstSection}`);
+    const firstSection = newSections[0]?.id || "overview";
+    // Map legacy/removed section IDs for specific conditions (e.g. constipation has no Funksjon tab)
+    const FIRST_SECTION_OVERRIDES: Record<string, string> = {
+      "constipation": "symptoms",
+      "pelvic-pain": "symptoms",
+    };
+    const resolvedFirst = FIRST_SECTION_OVERRIDES[conditionId] ?? firstSection;
+    setActiveSection(resolvedFirst);
+    navigate(`/conditions/${conditionId}?section=${resolvedFirst}`);
   };
 
   const handleSectionChange = (sectionId: string) => {
