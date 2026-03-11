@@ -70,7 +70,6 @@ export const ConstipationAnatomy = () => {
             <div className={styles.structureList}>
               <div className={styles.structureItem}>
                 <div className={styles.structureIcon}>
-                  <img src="/belly-1.png" alt="Large Intestine" />
                 </div>
                 <div className={styles.structureInfo}>
                   <h4>{data.colonTitle}</h4>
@@ -80,7 +79,6 @@ export const ConstipationAnatomy = () => {
 
               <div className={styles.structureItem}>
                 <div className={styles.structureIcon}>
-                  <img src="/consipationZ.jpg" alt="Rectum" />
                 </div>
                 <div className={styles.structureInfo}>
                   <h4>{data.rectumTitle}</h4>
@@ -90,7 +88,6 @@ export const ConstipationAnatomy = () => {
 
               <div className={styles.structureItem}>
                 <div className={styles.structureIcon}>
-                  <img src="/imagePelvic-1.png" alt="Pelvic Floor" />
                 </div>
                 <div className={styles.structureInfo}>
                   <h4>{data.pelvicFloorTitle}</h4>
@@ -101,7 +98,6 @@ export const ConstipationAnatomy = () => {
           </div>
 
           <div className={styles.anatomyImage}>
-            <img src="/korrekt-toiledPosistion.png" alt={data.imageAlt} />
             <p className={styles.imageCaption}>{data.imageCaption}</p>
           </div>
         </div>

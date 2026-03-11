@@ -90,7 +90,6 @@ export const FecalIncontinenceAnatomy = () => {
             <div className={styles.structureList}>
               <div className={styles.structureItem}>
                 <div className={styles.structureIcon}>
-                  <img src="/belly-1.png" alt="Large Intestine" />
                 </div>
                 <div className={styles.structureInfo}>
                   <h4>{data.colonTitle}</h4>
@@ -110,7 +109,6 @@ export const FecalIncontinenceAnatomy = () => {
 
               <div className={styles.structureItem}>
                 <div className={styles.structureIcon}>
-                  <img src="/imagePelvic-1.png" alt="Anal Canal" />
                 </div>
                 <div className={styles.structureInfo}>
                   <h4>{data.analCanalTitle}</h4>
