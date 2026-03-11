@@ -72,34 +72,36 @@ export const TilstandIntroduction = ({ tilstand }: TilstandIntroductionProps) =>
                     )}
                 </div>
 
-                <div className={styles.introductionImage}>
-                    {hasVideo && videoEmbedUrl ? (
-                        <div className={styles.introVideoWrapper}>
-                            <div className={styles.introVideoContainer}>
-                                <iframe
-                                    className={styles.introVideoIframe}
-                                    src={videoEmbedUrl}
-                                    title={tilstand.funksjon_video_tittel || "Video"}
-                                    allow="autoplay; fullscreen; picture-in-picture"
-                                    allowFullScreen
-                                ></iframe>
+                {(hasVideo || hasImage) && (
+                    <div className={styles.introductionImage}>
+                        {hasVideo && videoEmbedUrl ? (
+                            <div className={styles.introVideoWrapper}>
+                                <div className={styles.introVideoContainer}>
+                                    <iframe
+                                        className={styles.introVideoIframe}
+                                        src={videoEmbedUrl}
+                                        title={tilstand.funksjon_video_tittel || "Video"}
+                                        allow="autoplay; fullscreen; picture-in-picture"
+                                        allowFullScreen
+                                    ></iframe>
+                                </div>
+                                {tilstand.funksjon_video_tittel && (
+                                    <p className={styles.introductionImageCaption}>
+                                        {tilstand.funksjon_video_tittel}
+                                    </p>
+                                )}
                             </div>
-                            {tilstand.funksjon_video_tittel && (
-                                <p className={styles.introductionImageCaption}>
-                                    {tilstand.funksjon_video_tittel}
-                                </p>
-                            )}
-                        </div>
-                    ) : hasImage ? (
-                        <div className={styles.introImageWrapper}>
-                            <img
-                                src={getImageUrl(tilstand.side_intro_Image!)}
-                                alt={tilstand.side_tittel || ""}
-                                className={styles.introImage}
-                            />
-                        </div>
-                    ) : null}
-                </div>
+                        ) : hasImage ? (
+                            <div className={styles.introImageWrapper}>
+                                <img
+                                    src={getImageUrl(tilstand.side_intro_Image!)}
+                                    alt={tilstand.side_tittel || ""}
+                                    className={styles.introImage}
+                                />
+                            </div>
+                        ) : null}
+                    </div>
+                )}
             </div>
         </div>
     );

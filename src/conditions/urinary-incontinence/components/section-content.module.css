@@ -64,6 +64,60 @@
   border-radius: 1rem;
 }
 
+/* Single white container for intro + sitat (quote) so they share one card */
+.introAndQuoteCard {
+  background: white;
+  border-radius: 1rem;
+  padding: 1.5rem 2rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  border: 1px solid rgba(5, 56, 112, 0.08);
+  margin-bottom: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.75rem;
+}
+
+.introAndQuoteCard .quoteContainer {
+  margin: 0;
+  padding: 1rem 0 1rem 1rem;
+  background: transparent;
+  border-left: 4px solid #08488a;
+  border-radius: 0;
+}
+
+.introAndQuoteCard .quoteContainer:last-child {
+  margin-bottom: 0;
+}
+
+/* Intro content inside this card shares the same white container – no nested card */
+.introAndQuoteCard .sideBySideContainer {
+  background: transparent;
+  box-shadow: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+}
+
+/* Spacing between paragraphs and blocks inside intro card (e.g. function section) */
+.introAndQuoteCard .enhancedParagraph {
+  margin-bottom: 1.5rem;
+}
+
+.introAndQuoteCard .enhancedParagraph:last-child {
+  margin-bottom: 0;
+}
+
+.introAndQuoteCard .introContentBlock > * + * {
+  margin-top: 1.5rem;
+}
+
+.introAndQuoteCard .sideBySideContainer .anatomyItem {
+  background: transparent;
+  box-shadow: none;
+  border: none;
+  padding: 0;
+}
+
 /* Quote Section Styles */
 .quoteSection {
   margin: 1.5rem 2rem;
@@ -826,13 +880,13 @@
   }
 }
 
-/* Resource Table Styles */
+/* Resource Table Styles – match design: row hover = light blue fill; buttons = white + light blue border, same blue on row hover; pill = light blue fill, white text */
 .resourceTable {
   margin: 2rem 0;
   border-radius: 0.5rem;
   overflow: hidden;
-  border: 1px solid #bfdbfe;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border: 1px solid #bae6fd;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
 }
 
 .resourceHeader {
@@ -858,14 +912,15 @@
 .resourceRow {
   display: flex;
   border-bottom: 1px solid #e5e7eb;
-  background: white;
+  background: #fff;
   transition: background 0.2s ease;
   min-height: 100px;
   align-items: center;
+  padding: 0;
 }
 
 .resourceRow:hover {
-  background: #f8fafc;
+  background: #e0f2fe;
 }
 
 .resourceRow:last-child {
@@ -877,35 +932,36 @@
   padding: 1.5rem;
   font-size: clamp(0.875rem, 1.2vw + 0.5rem, 1rem);
   line-height: 1.5;
-  color: #758297;
+  color: #475569;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  gap: 0.5rem;
 }
 
 .resourceName {
   font-size: clamp(0.9375rem, 1.3vw + 0.5rem, 1.125rem);
-  font-weight: 600;
-  color: #053870;
-  margin: 0 0 clamp(0.375rem, 0.75vw, 0.5rem) 0;
+  font-weight: 700;
+  color: #0c4a6e;
+  margin: 0;
 }
 
 .resourceDesc {
   font-size: clamp(0.8125rem, 1.1vw + 0.5rem, 0.9375rem);
-  line-height: 1.4;
-  color: #758297;
-  margin: 0 0 clamp(0.375rem, 0.75vw, 0.5rem) 0;
+  line-height: 1.5;
+  color: #475569;
+  margin: 0;
 }
 
 .resourceType {
   font-size: clamp(0.75rem, 1vw + 0.5rem, 0.875rem);
   font-weight: 500;
-  color: #1e40af;
-  background-color: #93c5fd;
-  padding: clamp(0.25rem, 0.5vw, 0.375rem) clamp(0.625rem, 0.75vw, 0.75rem);
-  border-radius: 9999px;
+  color: #053870;
+  background-color: #E5F3FF;
+  padding: 0.25rem 0.75rem;
+  border-radius: 6px;
   display: inline-block;
-  text-align: center;
+  margin-top: 0.25rem;
 }
 
 .resourceLinks {
@@ -919,26 +975,29 @@
 }
 
 .resourceLink {
-  color: white;
+  color: #053870;
   text-decoration: none;
   font-weight: 500;
   padding: 0.5rem 1rem;
-  background-color: #3b82f6;
-  border: none;
-  border-radius: 9999px;
-  transition: all 0.2s ease;
+  background-color: #fff;
+  border: 1px solid #E5F3FF;
+  border-radius: 6px;
+  transition: background 0.2s ease, border-color 0.2s ease;
   font-size: 0.875rem;
   text-align: center;
   min-width: 120px;
   white-space: nowrap;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.resourceRow:hover .resourceLink {
+  background-color: #e0f2fe;
+  border-color: #7dd3fc;
 }
 
 .resourceLink:hover {
-  background-color: #2563eb;
+  background-color: #bae6fd !important;
+  border-color: #38bdf8;
 }
-
-/* Resource link hover effects removed */
 
 /* Mobile responsiveness for resource table */
 @media (max-width: 768px) {
@@ -2307,7 +2366,11 @@
 
 .darkMode .resourceRow:hover {
   background: var(--color-card-hover);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.darkMode .resourceRow:hover .resourceLink {
+  background: var(--color-card-hover) !important;
+  border-color: var(--color-border-primary);
 }
 
 .darkMode .resourceDescription {
@@ -2319,17 +2382,15 @@
 }
 
 .darkMode .resourceDescription span {
-  color: var(--color-text-primary) !important;
-  background-color: var(--color-bg-tertiary) !important;
+  color: var(--color-text-inverse) !important;
+  background-color: var(--color-button-primary) !important;
 }
 
 .darkMode .resourceLink {
-  color: var(--color-text-link);
+  color: var(--color-text-primary);
   border-color: var(--color-border-primary);
   background: var(--color-card-bg);
 }
-
-/* Dark mode resource link hover effects removed */
 
 .darkMode .resourceList {
   background: var(--color-card-bg);
@@ -2982,6 +3043,13 @@
 
 .introductionText {
   flex: 1.2;
+  min-width: 0;
+}
+
+/* When intro has no image/video, text takes full width (single child in flex) */
+.introductionContent:not(:has(.introductionImage)) .introductionText {
+  flex: 1 1 100%;
+  max-width: 100%;
 }
 
 .introductionImage {
@@ -3466,13 +3534,33 @@
   }
 }
 
-/* Side-by-side text and image layout */
+/* Side-by-side text and image layout – single white container for title + content + image */
 .sideBySideContainer {
   display: flex;
   flex-direction: row;
   align-items: flex-start;
   gap: 2rem;
   margin: 1.5rem 0;
+  background: white;
+  border-radius: 1rem;
+  padding: 1.5rem 2rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  border: 1px solid rgba(5, 56, 112, 0.08);
+}
+
+/* Image inside this container is part of the same card – no nested card */
+.sideBySideContainer .anatomyItem {
+  background: transparent;
+  box-shadow: none;
+  border: none;
+  padding: 0;
+  border-radius: 0;
+  height: auto;
+}
+
+.sideBySideContainer .anatomyItem:hover {
+  transform: none;
+  box-shadow: none;
 }
 
 /* Block (stacked) layout for horizontal images in intro only */
@@ -3486,10 +3574,20 @@
   max-width: 100%;
 }
 
-/* Single container for intro content (text + images) when not single para + single image */
+/* Single container for intro content (text + images) when not single para + single image) */
 .introContentBlock {
-  display: block;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
   width: 100%;
+}
+
+.introContentBlock .enhancedParagraph {
+  margin-bottom: 0;
+}
+
+.introContentBlock .enhancedParagraph:last-child {
+  margin-bottom: 0;
 }
 
 .sideBySideText {
@@ -3510,7 +3608,7 @@
   width: 100%;
   height: auto;
   border-radius: 8px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
 }
 
 .sideBySideImageCaption {
@@ -3557,6 +3655,20 @@ html.dark .sectionTitle {
 :global(:root[data-theme="dark"]) .sectionContent,
 html.dark .sectionContent {
   background: transparent;
+}
+
+:global(:root[data-theme="dark"]) .sideBySideContainer,
+html.dark .sideBySideContainer {
+  background: var(--color-card-bg, #1e293b);
+  border-color: var(--color-border-primary, rgba(255, 255, 255, 0.1));
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+:global(:root[data-theme="dark"]) .introAndQuoteCard,
+html.dark .introAndQuoteCard {
+  background: var(--color-card-bg, #1e293b);
+  border-color: var(--color-border-primary, rgba(255, 255, 255, 0.1));
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
 :global(:root[data-theme="dark"]) .quoteSection,

@@ -184,6 +184,76 @@ export const TilstandDynamicSection = ({ tilstand, activeSection }: TilstandDyna
         }
     }
 
+    // On treatment (urinary-incontinence), compute exercise section items to show after treatment accordions (same as exercises page)
+    let exerciseSectionItems: TilstandAccordionItem[] | null = null;
+    if (activeSection === "treatment" && conditionSlug === "urinary-incontinence") {
+        let ovelseTrekkspill = t.ovelse_trekkspill as TilstandAccordionItem[] | string | undefined;
+        if (typeof ovelseTrekkspill === "string" && ovelseTrekkspill.trim()) {
+            try {
+                ovelseTrekkspill = JSON.parse(ovelseTrekkspill) as TilstandAccordionItem[];
+            } catch {
+                ovelseTrekkspill = undefined;
+            }
+        }
+        if (Array.isArray(ovelseTrekkspill) && ovelseTrekkspill.length > 0) {
+            exerciseSectionItems = ovelseTrekkspill;
+        } else {
+            const esc = (s: string) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+            const tryTitle = ((language === "en" && t.ovelse_try_yourself_title_en) || t.ovelse_try_yourself_title || "") as string;
+            const step1 = ((language === "en" && t.ovelse_step1_text_en) || t.ovelse_step1_text || "") as string;
+            const tipsTitle = ((language === "en" && t.ovelse_tips_title_en) || t.ovelse_tips_title || "") as string;
+            const tipsText = ((language === "en" && t.ovelse_tips_text_en) || t.ovelse_tips_text || "") as string;
+            const videoSectionTitle = ((language === "en" && t.ovelse_video_section_title_en) || t.ovelse_video_section_title || "") as string;
+            const videoSectionDesc = ((language === "en" && t.ovelse_video_section_description_en) || t.ovelse_video_section_description || "") as string;
+            const videosRaw = (t.ovelse_videos as { src: string; title?: string; title_en?: string }[] | null) || [];
+            const stepsRaw = (t.ovelse_steps as { number: number; text?: string; text_en?: string }[] | null) || [];
+            const genderRaw = (t.ovelse_gender_instructions as { title?: string; title_en?: string; text?: string; text_en?: string; icon?: string; iconColor?: string }[] | null) || [];
+            const app = t.ovelse_smartphone_apps as Record<string, string | undefined> | null | undefined;
+            const hasStructured = tryTitle || step1 || videoSectionTitle || videosRaw.length > 0;
+            if (hasStructured) {
+                const syntheticItems: TilstandAccordionItem[] = [];
+                let tryHtml = '';
+                if (step1) tryHtml += `<p><strong>1.</strong> ${esc(step1)}</p>`;
+                genderRaw.forEach((g) => {
+                    const gTitle = (language === 'en' && g.title_en) ? g.title_en : (g.title || '');
+                    const gText = (language === 'en' && g.text_en) ? g.text_en : (g.text || '');
+                    const gIcon = g.icon || '';
+                    tryHtml += `<p><strong>${esc(gIcon)} ${esc(gTitle)}</strong></p><p>${esc(gText)}</p>`;
+                });
+                if (tipsTitle || tipsText) {
+                    tryHtml += `<blockquote><p><strong>${esc(tipsTitle)}</strong></p><p>${esc(tipsText)}</p></blockquote>`;
+                }
+                stepsRaw.sort((a, b) => a.number - b.number).forEach((s) => {
+                    const sText = (language === 'en' && s.text_en) ? s.text_en : (s.text || '');
+                    tryHtml += `<p><strong>${s.number}.</strong> ${esc(sText)}</p>`;
+                });
+                if (tryTitle && tryHtml) {
+                    syntheticItems.push({ tittel: tryTitle, innhold: tryHtml });
+                }
+                let videoHtml = '';
+                if (videoSectionDesc) videoHtml += `<p>${esc(videoSectionDesc)}</p>`;
+                videosRaw.forEach((v) => {
+                    const vTitle = (language === 'en' && v.title_en) ? v.title_en : (v.title || '');
+                    if (vTitle) videoHtml += `<p><strong>${esc(vTitle)}</strong></p>`;
+                    videoHtml += `<div style="position:relative;padding-bottom:56.25%;height:0;margin:1rem 0"><iframe src="${v.src}" title="${esc(vTitle)}" style="position:absolute;top:0;left:0;width:100%;height:100%;border:none;border-radius:8px" allowfullscreen loading="lazy"></iframe></div>`;
+                });
+                if (app) {
+                    const appTitle = (language === 'en' && app.title_en) ? app.title_en : (app.title || '');
+                    const appDesc = (language === 'en' && app.description_en) ? app.description_en : (app.description || '');
+                    const appLinkText = (language === 'en' && app.linkText_en) ? app.linkText_en : (app.linkText || '');
+                    const appLinkUrl = app.linkUrl || '';
+                    videoHtml += `<blockquote><p><strong>${esc(appTitle)}</strong></p><p>${esc(appDesc)}</p><p><a href="${appLinkUrl}" target="_blank" rel="noopener noreferrer">${esc(appLinkText)}</a></p></blockquote>`;
+                }
+                if (videoSectionTitle && videoHtml) {
+                    syntheticItems.push({ tittel: videoSectionTitle, innhold: videoHtml });
+                }
+                if (syntheticItems.length > 0) {
+                    exerciseSectionItems = syntheticItems;
+                }
+            }
+        }
+    }
+
     const hasTrekkspill = Array.isArray(trekkspill) && trekkspill.length > 0;
     if (!title && !intro && !hasTrekkspill && !sitat) return null;
 
@@ -432,9 +502,23 @@ export const TilstandDynamicSection = ({ tilstand, activeSection }: TilstandDyna
         );
     };
 
-    const renderContentWithImageCards = (html: string, options?: { isIntro?: boolean }) => {
+    const renderContentWithImageCards = (html: string, options?: {
+        isIntro?: boolean;
+        /** Inject this node after the block whose heading matches (e.g. "Bekkenbunnstrening"), so it appears above the next block (e.g. Biofeedback). */
+        injectExerciseAfterHeading?: RegExp | string;
+        exerciseSectionNode?: React.ReactNode;
+    }) => {
         if (!html) return null;
         const isIntro = options?.isIntro === true;
+        const injectExerciseAfterHeading = options?.injectExerciseAfterHeading;
+        const exerciseSectionNode = options?.exerciseSectionNode;
+        const matchBekkenbunnstrening = (heading: string) => {
+            if (!injectExerciseAfterHeading || !exerciseSectionNode) return false;
+            const text = (heading || '').trim();
+            if (!text) return false;
+            if (typeof injectExerciseAfterHeading === 'string') return text.toLowerCase() === injectExerciseAfterHeading.toLowerCase();
+            return injectExerciseAfterHeading.test(text);
+        };
         try {
             const doc = new DOMParser().parseFromString(`<div>${html}</div>`, 'text/html');
             const root = doc.body.firstChild as HTMLElement;
@@ -819,7 +903,13 @@ export const TilstandDynamicSection = ({ tilstand, activeSection }: TilstandDyna
                 {sections.map((section, i) => (
                     <div key={i} className={section.blocks.length === 0 ? `${styles.normalFunctionSection} ${styles.sectionTitleOnly}` : styles.normalFunctionSection}>
                         {section.mainHeadingText ? React.createElement(section.mainHeadingTag, { className: styles.normalFunctionTitle }, section.mainHeadingText) : null}
-                        {section.blocks.map((block, j) => renderBlock(block, j))}
+                        {section.blocks.map((block, j) => (
+                            <React.Fragment key={j}>
+                                {renderBlock(block, j)}
+                                {/* Inject after block whose heading is Bekkenbunnstrening, or after first block when section title is Bekkenbunnstrening (CMS uses H3 as section title, so paragraph is in a block with no headingText) */}
+                                {(matchBekkenbunnstrening(block.headingText || '') || (j === 0 && matchBekkenbunnstrening(section.mainHeadingText || ''))) ? exerciseSectionNode : null}
+                            </React.Fragment>
+                        ))}
                     </div>
                 ))}
             </>
@@ -893,19 +983,22 @@ export const TilstandDynamicSection = ({ tilstand, activeSection }: TilstandDyna
                 <h2 className={styles.sectionTitle}>{title || (activeSection === "normal-functions" ? (language === 'no' ? 'Funksjon' : 'Normal Functions') : activeSection)}</h2>
             </div>
 
-            {sitat && (
-                <div className={styles.quoteContainer}>
-                    <blockquote className={styles.patientQuote}>
-                        <p className={styles.quoteText}>"{sitat}"</p>
-                        {sitatKilde && (
-                            <cite className={styles.quoteAuthor}>— {sitatKilde}</cite>
-                        )}
-                    </blockquote>
-                </div>
-            )}
-
             <div className={styles.sectionContent}>
-                {intro && renderContentWithImageCards(intro, { isIntro: true })}
+                {(intro || sitat) && (
+                    <div className={styles.introAndQuoteCard}>
+                        {sitat && (
+                            <div className={styles.quoteContainer}>
+                                <blockquote className={styles.patientQuote}>
+                                    <p className={styles.quoteText}>"{sitat}"</p>
+                                    {sitatKilde && (
+                                        <cite className={styles.quoteAuthor}>— {sitatKilde}</cite>
+                                    )}
+                                </blockquote>
+                            </div>
+                        )}
+                        {intro && renderContentWithImageCards(intro, { isIntro: true })}
+                    </div>
+                )}
 
                 {Array.isArray(trekkspill) && trekkspill.map((item: TilstandAccordionItem, index: number) => {
                     const itemTitle = getField(item, 'tittel');
@@ -1006,6 +1099,45 @@ export const TilstandDynamicSection = ({ tilstand, activeSection }: TilstandDyna
                         );
                     };
 
+                    // Exercise section: under Bekkenbunnstrening paragraph, above Biofeedback/Elektrostimulering (injected inside content).
+                    const isKonservativBehandling =
+                        itemId === 'konservativ-behandling' || itemId === 'conservative-treatment' ||
+                        /konservativ|conservative/i.test(String(itemTitleNo ?? itemTitle));
+                    const showExerciseSectionHere = isKonservativBehandling && exerciseSectionItems && exerciseSectionItems.length > 0;
+                    const exerciseSectionNodeForInject = showExerciseSectionHere ? (
+                        <>
+                            <div className={styles.sectionHeader} style={{ marginTop: '2rem' }}>
+                                <div className={styles.sectionIcon}>
+                                    <img src="/exercises.png" alt={language === 'no' ? 'Øvelser' : 'Exercises'} width="24" height="24" />
+                                </div>
+                                <h2 className={styles.sectionTitle}>{language === 'no' ? 'Øvelser' : 'Exercises'}</h2>
+                            </div>
+                            <div className={styles.sectionContent}>
+                                {exerciseSectionItems!.map((exItem: TilstandAccordionItem, exIndex: number) => {
+                                    const exTitle = getField(exItem, 'tittel');
+                                    const exTitleNo = exItem.tittel;
+                                    const exContent = getField(exItem, 'innhold');
+                                    const exId = slugify(exTitleNo);
+                                    return (
+                                        <SectionAccordion
+                                            key={exIndex}
+                                            title={exTitle}
+                                            id={exId}
+                                            isDarkMode={resolvedTheme === 'dark'}
+                                            defaultOpen={false}
+                                        >
+                                            {renderContentWithImageCards(exContent)}
+                                        </SectionAccordion>
+                                    );
+                                })}
+                            </div>
+                        </>
+                    ) : null;
+                    const injectOptions = showExerciseSectionHere ? {
+                        injectExerciseAfterHeading: /bekkenbunnstrening|pelvic floor training/i,
+                        exerciseSectionNode: exerciseSectionNodeForInject
+                    } : undefined;
+
                     return (
                         <SectionAccordion
                             key={index}
@@ -1014,14 +1146,15 @@ export const TilstandDynamicSection = ({ tilstand, activeSection }: TilstandDyna
                             isDarkMode={resolvedTheme === 'dark'}
                             defaultOpen={false}
                         >
-                            {isResourceAccordion ? renderResourceTable(resourceItems!) : hasUnderseksjoner ? (
+                            <>
+                                {isResourceAccordion ? renderResourceTable(resourceItems!) : hasUnderseksjoner ? (
                                 <>
                                     {itemContent && (
                                         <>
                                             {isSideBySide ? (
                                                 <div className={styles.sideBySideContainer}>
                                                     <div className={styles.sideBySideText}>
-                                                        {renderContentWithImageCards(itemContent)}
+                                                        {renderContentWithImageCards(itemContent, injectOptions)}
                                                         {renderLinks(item)}
                                                     </div>
                                                     <div className={`${styles.sideBySideImage} ${styles.anatomyItem}`}>
@@ -1042,7 +1175,7 @@ export const TilstandDynamicSection = ({ tilstand, activeSection }: TilstandDyna
                                                 </div>
                                             ) : (
                                                 <>
-                                                    {renderContentWithImageCards(itemContent)}
+                                                    {renderContentWithImageCards(itemContent, injectOptions)}
                                                     {renderImage(item)}
                                                     {renderLinks(item)}
                                                 </>
@@ -1068,7 +1201,7 @@ export const TilstandDynamicSection = ({ tilstand, activeSection }: TilstandDyna
                             ) : isSideBySide ? (
                                 <div className={styles.sideBySideContainer}>
                                     <div className={styles.sideBySideText}>
-                                        {renderContentWithImageCards(itemContent)}
+                                        {renderContentWithImageCards(itemContent, injectOptions)}
                                         {renderLinks(item)}
                                     </div>
                                     <div className={`${styles.sideBySideImage} ${styles.anatomyItem}`}>
@@ -1091,7 +1224,8 @@ export const TilstandDynamicSection = ({ tilstand, activeSection }: TilstandDyna
                                 const isFirstTreatmentAccordion = activeSection === "treatment" && index === 0 && conditionSlug === "urinary-incontinence";
                                 const tryTitle = ((language === "en" && t.ovelse_try_yourself_title_en) || t.ovelse_try_yourself_title || "") as string;
                                 const hasExerciseData = !!(tryTitle || (t.ovelse_steps as unknown[] | null)?.length || (t.ovelse_videos as unknown[] | null)?.length);
-                                const injectExerciseSection = isFirstTreatmentAccordion && hasExerciseData;
+                                // Don't inject inside accordion when we show the full exercise section after treatment accordions
+                                const injectExerciseSection = isFirstTreatmentAccordion && hasExerciseData && !(exerciseSectionItems && exerciseSectionItems.length > 0);
                                 const exerciseMarker = "<!-- INJECT_EXERCISE_SECTION -->";
                                 const parts = injectExerciseSection && typeof itemContent === "string" && itemContent.includes(exerciseMarker)
                                     ? itemContent.split(exerciseMarker)
@@ -1167,12 +1301,13 @@ export const TilstandDynamicSection = ({ tilstand, activeSection }: TilstandDyna
                                 }
                                 return (
                                     <>
-                                        {renderContentWithImageCards(itemContent)}
+                                        {renderContentWithImageCards(itemContent, injectOptions)}
                                         {renderImage(item)}
                                         {renderLinks(item)}
                                     </>
                                 );
                             })()}
+                            </>
                         </SectionAccordion>
                     );
                 })}
