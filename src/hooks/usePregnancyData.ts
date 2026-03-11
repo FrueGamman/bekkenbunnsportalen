@@ -103,6 +103,11 @@ export const usePregnancyData = (language: string) => {
                     "fields=problems.*",
                     "fields=chapters.*",
                     "fields=chapters.sections.*",
+                    "fields=ressurser_tittel",
+                    "fields=ressurser_tittel_en",
+                    "fields=ressurser_intro",
+                    "fields=ressurser_intro_en",
+                    "fields=ressurser_trekkspill",
                 ].join("&");
 
                 const response = await directusFetch<ConditionPregnancy>(
