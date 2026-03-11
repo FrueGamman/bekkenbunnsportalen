@@ -107,7 +107,7 @@
   margin-bottom: 0;
 }
 
-.introAndQuoteCard .introContentBlock > * + * {
+.introAndQuoteCard .introContentBlock>*+* {
   margin-top: 1.5rem;
 }
 
@@ -305,6 +305,34 @@
   .contentSubheading {
     font-size: clamp(1.125rem, 2vw + 0.25rem, 1.5rem);
   }
+}
+
+/* Centered group headers for sections like fecal-incontinence causes */
+.groupHeader {
+  text-align: center;
+  font-size: clamp(1.25rem, 2.5vw, 1.5rem);
+  font-weight: 700;
+  color: #053870;
+  margin: 2.5rem 0;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1.5rem;
+  background: #D9E0E8;
+  border: 1px solid rgba(5, 56, 112, 0.08);
+  border-radius: 1rem;
+  box-shadow: 0 4px 12px rgba(5, 56, 112, 0.05);
+}
+
+.groupHeader::after {
+  content: '';
+  display: block;
+  width: 40px;
+  height: 2px;
+  background-color: #053870;
+  border-radius: 2px;
 }
 
 /* Subsection Title - for nested subsections within accordions */
@@ -1212,20 +1240,20 @@
 }
 
 /* Headings (h2–h6) are direct children of the section — same type = same level, no nesting */
-.normalFunctionSection > h2.enhancedSubheading,
-.normalFunctionSection > h3.enhancedSubheading,
-.normalFunctionSection > h4.enhancedSubheading,
-.normalFunctionSection > h5.enhancedSubheading,
-.normalFunctionSection > h6.enhancedSubheading {
+.normalFunctionSection>h2.enhancedSubheading,
+.normalFunctionSection>h3.enhancedSubheading,
+.normalFunctionSection>h4.enhancedSubheading,
+.normalFunctionSection>h5.enhancedSubheading,
+.normalFunctionSection>h6.enhancedSubheading {
   margin-left: 0;
   padding-left: 1rem;
 }
 
-.normalFunctionSection > h2.enhancedSubheading::before,
-.normalFunctionSection > h3.enhancedSubheading::before,
-.normalFunctionSection > h4.enhancedSubheading::before,
-.normalFunctionSection > h5.enhancedSubheading::before,
-.normalFunctionSection > h6.enhancedSubheading::before {
+.normalFunctionSection>h2.enhancedSubheading::before,
+.normalFunctionSection>h3.enhancedSubheading::before,
+.normalFunctionSection>h4.enhancedSubheading::before,
+.normalFunctionSection>h5.enhancedSubheading::before,
+.normalFunctionSection>h6.enhancedSubheading::before {
   left: 0;
 }
 

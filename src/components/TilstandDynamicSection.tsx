@@ -524,396 +524,396 @@ export const TilstandDynamicSection = ({ tilstand, activeSection }: TilstandDyna
             const root = doc.body.firstChild as HTMLElement;
             if (!root) return null;
 
-        type ContentItem =
-            | { type: 'paragraph'; html: string }
-            | { type: 'image'; src: string; alt: string; caption: string };
-        type ContentBlock = {
-            headingTag?: 'h3' | 'h4' | 'h5' | 'h6';
-            headingText?: string;
-            items: ContentItem[];
-            links: { text: string; url: string }[];
-        };
-        type Section = {
-            mainHeadingTag: 'h1' | 'h2';
-            mainHeadingText: string;
-            blocks: ContentBlock[];
-        };
+            type ContentItem =
+                | { type: 'paragraph'; html: string }
+                | { type: 'image'; src: string; alt: string; caption: string };
+            type ContentBlock = {
+                headingTag?: 'h3' | 'h4' | 'h5' | 'h6';
+                headingText?: string;
+                items: ContentItem[];
+                links: { text: string; url: string }[];
+            };
+            type Section = {
+                mainHeadingTag: 'h1' | 'h2';
+                mainHeadingText: string;
+                blocks: ContentBlock[];
+            };
 
-        const introElements: string[] = [];
-        const sections: Section[] = [];
-        let currentSection: Section | null = null;
-        let currentBlock: ContentBlock | null = null;
+            const introElements: string[] = [];
+            const sections: Section[] = [];
+            let currentSection: Section | null = null;
+            let currentBlock: ContentBlock | null = null;
 
-        const isHeadingTag = (tag: string) => /^H[1-6]$/.test(tag);
-        const isSectionStarter = (tag: string) => tag === 'H1' || tag === 'H2';
+            const isHeadingTag = (tag: string) => /^H[1-6]$/.test(tag);
+            const isSectionStarter = (tag: string) => tag === 'H1' || tag === 'H2';
 
-        const pushContentToBlock = (block: ContentBlock, el: HTMLElement) => {
-            const isPureImg = el.nodeType === 1 && (
-                el.tagName === 'IMG' ||
-                (el.tagName === 'FIGURE' && !el.querySelector('p'))
-            );
-            const isMixedContainer = el.nodeType === 1 && !isPureImg && el.querySelector?.('img');
+            const pushContentToBlock = (block: ContentBlock, el: HTMLElement) => {
+                const isPureImg = el.nodeType === 1 && (
+                    el.tagName === 'IMG' ||
+                    (el.tagName === 'FIGURE' && !el.querySelector('p'))
+                );
+                const isMixedContainer = el.nodeType === 1 && !isPureImg && el.querySelector?.('img');
 
-            if (isPureImg) {
-                const img = el.tagName === 'IMG' ? el : (el.querySelector('img') as HTMLImageElement);
-                if (img) {
-                    const src = img.getAttribute('src') || '';
-                    const alt = img.getAttribute('alt') || '';
-                    let caption = '';
-                    const figure = el.tagName === 'FIGURE' ? el : img.closest('figure');
-                    if (figure) {
-                        const fc = figure.querySelector('figcaption');
-                        caption = fc?.textContent?.trim() || '';
+                if (isPureImg) {
+                    const img = el.tagName === 'IMG' ? el : (el.querySelector('img') as HTMLImageElement);
+                    if (img) {
+                        const src = img.getAttribute('src') || '';
+                        const alt = img.getAttribute('alt') || '';
+                        let caption = '';
+                        const figure = el.tagName === 'FIGURE' ? el : img.closest('figure');
+                        if (figure) {
+                            const fc = figure.querySelector('figcaption');
+                            caption = fc?.textContent?.trim() || '';
+                        }
+                        block.items.push({ type: 'image', src, alt: alt || caption, caption: caption || alt });
                     }
-                    block.items.push({ type: 'image', src, alt: alt || caption, caption: caption || alt });
-                }
-            } else if (isMixedContainer) {
-                const clone = el.cloneNode(true) as HTMLElement;
-                Array.from(clone.querySelectorAll('figure, img')).forEach(imgEl => {
-                    const parent = imgEl.parentElement;
-                    imgEl.remove();
-                    if (parent && parent !== clone && !parent.textContent?.trim()) parent.remove();
-                });
-                const remainingText = clone.textContent?.trim();
-                if (remainingText) {
-                    clone.querySelectorAll('a').forEach((a) => {
-                        block.links.push({
-                            text: a.textContent?.trim() || '',
-                            url: a.getAttribute('href') || '#'
-                        });
+                } else if (isMixedContainer) {
+                    const clone = el.cloneNode(true) as HTMLElement;
+                    Array.from(clone.querySelectorAll('figure, img')).forEach(imgEl => {
+                        const parent = imgEl.parentElement;
+                        imgEl.remove();
+                        if (parent && parent !== clone && !parent.textContent?.trim()) parent.remove();
                     });
-                    block.items.push({ type: 'paragraph', html: clone.innerHTML.trim() });
-                }
-                el.querySelectorAll('img').forEach((img: HTMLImageElement) => {
-                    const src = img.getAttribute('src') || '';
-                    const alt = img.getAttribute('alt') || '';
-                    let caption = '';
-                    const figure = img.closest('figure');
-                    if (figure) {
-                        const fc = figure.querySelector('figcaption');
-                        caption = fc?.textContent?.trim() || '';
-                    }
-                    block.items.push({ type: 'image', src, alt, caption: caption || alt });
-                });
-            } else if (el.nodeType === 1 && el.tagName === 'BLOCKQUOTE') {
-                block.items.push({ type: 'paragraph', html: el.outerHTML });
-            } else if (el.nodeType === 1 && (el.tagName === 'IFRAME' || el.tagName === 'VIDEO' || el.querySelector?.('iframe, video'))) {
-                block.items.push({ type: 'paragraph', html: el.outerHTML });
-            } else if (el.nodeType === 1) {
-                const preserveWrapper = el.tagName !== 'P' || el.hasAttribute('style');
-                const anchors = el.querySelectorAll('a');
-                if (anchors.length > 0) {
-                    const textWithoutLinks = el.textContent?.trim() || '';
-                    anchors.forEach((a) => {
-                        block.links.push({
-                            text: a.textContent?.trim() || '',
-                            url: a.getAttribute('href') || '#'
+                    const remainingText = clone.textContent?.trim();
+                    if (remainingText) {
+                        clone.querySelectorAll('a').forEach((a) => {
+                            block.links.push({
+                                text: a.textContent?.trim() || '',
+                                url: a.getAttribute('href') || '#'
+                            });
                         });
-                    });
-                    if (textWithoutLinks !== anchors[0].textContent?.trim()) {
-                        block.items.push({ type: 'paragraph', html: preserveWrapper ? el.outerHTML : el.innerHTML });
+                        block.items.push({ type: 'paragraph', html: clone.innerHTML.trim() });
                     }
-                } else {
-                    const text = el.textContent?.trim();
-                    if (text) block.items.push({ type: 'paragraph', html: preserveWrapper ? el.outerHTML : (el.innerHTML || text) });
+                    el.querySelectorAll('img').forEach((img: HTMLImageElement) => {
+                        const src = img.getAttribute('src') || '';
+                        const alt = img.getAttribute('alt') || '';
+                        let caption = '';
+                        const figure = img.closest('figure');
+                        if (figure) {
+                            const fc = figure.querySelector('figcaption');
+                            caption = fc?.textContent?.trim() || '';
+                        }
+                        block.items.push({ type: 'image', src, alt, caption: caption || alt });
+                    });
+                } else if (el.nodeType === 1 && el.tagName === 'BLOCKQUOTE') {
+                    block.items.push({ type: 'paragraph', html: el.outerHTML });
+                } else if (el.nodeType === 1 && (el.tagName === 'IFRAME' || el.tagName === 'VIDEO' || el.querySelector?.('iframe, video'))) {
+                    block.items.push({ type: 'paragraph', html: el.outerHTML });
+                } else if (el.nodeType === 1) {
+                    const preserveWrapper = el.tagName !== 'P' || el.hasAttribute('style');
+                    const anchors = el.querySelectorAll('a');
+                    if (anchors.length > 0) {
+                        const textWithoutLinks = el.textContent?.trim() || '';
+                        anchors.forEach((a) => {
+                            block.links.push({
+                                text: a.textContent?.trim() || '',
+                                url: a.getAttribute('href') || '#'
+                            });
+                        });
+                        if (textWithoutLinks !== anchors[0].textContent?.trim()) {
+                            block.items.push({ type: 'paragraph', html: preserveWrapper ? el.outerHTML : el.innerHTML });
+                        }
+                    } else {
+                        const text = el.textContent?.trim();
+                        if (text) block.items.push({ type: 'paragraph', html: preserveWrapper ? el.outerHTML : (el.innerHTML || text) });
+                    }
                 }
-            }
-        };
+            };
 
-        const ensureBlock = () => {
-            if (!currentBlock) {
-                currentBlock = { items: [], links: [] };
-                if (currentSection) currentSection.blocks.push(currentBlock);
-            }
-            return currentBlock;
-        };
-
-        const flatNodes: HTMLElement[] = [];
-        const collectRelevant = (node: ChildNode) => {
-            if (node.nodeType === 3) {
-                const text = node.textContent?.trim();
-                if (text) {
-                    const docForNode = node.ownerDocument || doc;
-                    const p = docForNode.createElement('p');
-                    p.textContent = text;
-                    flatNodes.push(p);
+            const ensureBlock = () => {
+                if (!currentBlock) {
+                    currentBlock = { items: [], links: [] };
+                    if (currentSection) currentSection.blocks.push(currentBlock);
                 }
-                return;
-            }
-            if (node.nodeType !== 1) return;
-            const el = node as HTMLElement;
-            const tag = el.tagName.toUpperCase();
-            if (isHeadingTag(tag) || tag === 'UL' || tag === 'OL' || tag === 'BLOCKQUOTE') {
-                flatNodes.push(el);
-                return;
-            }
-            if (tag === 'IMG') {
-                flatNodes.push(el);
-                return;
-            }
-            if (tag === 'P') {
-                const imgs = el.querySelectorAll('img');
-                const textOnly = el.textContent?.replace(/\s+/g, '').replace(/\u00a0/g, '').trim() || '';
-                if (imgs.length > 0 && textOnly === '') {
-                    imgs.forEach(img => flatNodes.push(img as HTMLElement));
+                return currentBlock;
+            };
+
+            const flatNodes: HTMLElement[] = [];
+            const collectRelevant = (node: ChildNode) => {
+                if (node.nodeType === 3) {
+                    const text = node.textContent?.trim();
+                    if (text) {
+                        const docForNode = node.ownerDocument || doc;
+                        const p = docForNode.createElement('p');
+                        p.textContent = text;
+                        flatNodes.push(p);
+                    }
                     return;
                 }
-                if (isBlankHtml(el.innerHTML)) return;
-                flatNodes.push(el);
-                return;
-            }
-            if (tag === 'FIGURE') {
-                if (!el.querySelector('img')) return;
-                flatNodes.push(el);
-                return;
-            }
-            if (tag === 'IFRAME' || tag === 'VIDEO') {
-                flatNodes.push(el);
-                return;
-            }
-            if (el.querySelector?.('iframe, video') && !el.querySelector?.('p, h1, h2, h3, h4, h5, h6')) {
-                flatNodes.push(el);
-                return;
-            }
-            if (el.hasAttribute('style')) {
-                flatNodes.push(el);
-                return;
-            }
-            Array.from(el.childNodes).forEach(collectRelevant);
-        };
-        collectRelevant(root);
-
-        flatNodes.forEach((el) => {
-            const isHeading = isHeadingTag(el.tagName);
-
-            if (isHeading) {
+                if (node.nodeType !== 1) return;
+                const el = node as HTMLElement;
                 const tag = el.tagName.toUpperCase();
-                const text = el.textContent?.trim() || '';
-
-                if (isSectionStarter(tag)) {
-                    if (currentBlock) currentBlock = null;
-                    if (currentSection) sections.push(currentSection);
-                    currentSection = { mainHeadingTag: tag === 'H1' ? 'h1' : 'h2', mainHeadingText: text, blocks: [] };
-                } else {
-                    // h3–h6: new block under current section, or use as section title if no h1/h2 yet (don't duplicate)
-                    if (!currentSection) {
-                        currentSection = { mainHeadingTag: 'h2', mainHeadingText: text, blocks: [] };
-                        currentBlock = null;
-                    } else {
-                        currentBlock = {
-                            headingTag: tag.toLowerCase() as ContentBlock['headingTag'],
-                            headingText: text,
-                            items: [],
-                            links: []
-                        };
-                        currentSection.blocks.push(currentBlock);
-                    }
+                if (isHeadingTag(tag) || tag === 'UL' || tag === 'OL' || tag === 'BLOCKQUOTE') {
+                    flatNodes.push(el);
+                    return;
                 }
-            } else if (currentSection) {
-                pushContentToBlock(ensureBlock(), el);
-            } else {
-                // Before first h1/h2 — intro
-                introElements.push(el.outerHTML);
-            }
-        });
-
-        if (currentSection) sections.push(currentSection);
-
-        // No headings at all — render as simple block; 1 paragraph + 1 image = side-by-side on larger screens
-        if (sections.length === 0) {
-            const { textHtml, images } = parseContentAndImages(html);
-            const hasText = !!textHtml?.trim();
-            const singleImage = images && images.length === 1 ? images[0] : null;
-
-            if (hasText && singleImage) {
-                return (
-                    <ParagraphWithImageContainer
-                        content={renderRichText(textHtml, { width: '100%' })}
-                        image={singleImage}
-                        isIntro={isIntro}
-                        setSelectedImage={setSelectedImage}
-                    />
-                );
-            }
-
-            return (
-                <div className={styles.introContentBlock}>
-                    {textHtml && renderRichText(textHtml, { width: '100%' })}
-                    {images && images.length > 0 && (
-                        <div
-                            className={images.length > 1 ? `${styles.anatomyGrid} ${styles.anatomyGridTwoCol}` : styles.anatomyGrid}
-                            style={{ width: '100%' }}
-                        >
-                            {images.map((img, i) => (
-                                <div key={i} className={styles.anatomyItem}>
-                                    <img
-                                        src={img.src}
-                                        alt={img.alt}
-                                        className={styles.anatomyImage}
-                                        onClick={() => setSelectedImage({ src: img.src, alt: img.alt })}
-                                        onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setSelectedImage({ src: img.src, alt: img.alt }); } }}
-                                        role="button" // eslint-disable-line jsx-a11y/no-noninteractive-element-to-interactive-role
-                                        tabIndex={0}
-                                        style={{ cursor: 'pointer' }}
-                                    />
-                                    {img.caption && (
-                                        <p className={styles.anatomyCaption}>{img.caption}</p>
-                                    )}
-                                </div>
-                            ))}
-                        </div>
-                    )}
-                </div>
-            );
-        }
-
-        const renderBlock = (block: ContentBlock, blockIdx: number) => {
-            type Segment = {
-                paragraphs: string[];
-                images: { src: string; alt: string; caption: string }[];
+                if (tag === 'IMG') {
+                    flatNodes.push(el);
+                    return;
+                }
+                if (tag === 'P') {
+                    const imgs = el.querySelectorAll('img');
+                    const textOnly = el.textContent?.replace(/\s+/g, '').replace(/\u00a0/g, '').trim() || '';
+                    if (imgs.length > 0 && textOnly === '') {
+                        imgs.forEach(img => flatNodes.push(img as HTMLElement));
+                        return;
+                    }
+                    if (isBlankHtml(el.innerHTML)) return;
+                    flatNodes.push(el);
+                    return;
+                }
+                if (tag === 'FIGURE') {
+                    if (!el.querySelector('img')) return;
+                    flatNodes.push(el);
+                    return;
+                }
+                if (tag === 'IFRAME' || tag === 'VIDEO') {
+                    flatNodes.push(el);
+                    return;
+                }
+                if (el.querySelector?.('iframe, video') && !el.querySelector?.('p, h1, h2, h3, h4, h5, h6')) {
+                    flatNodes.push(el);
+                    return;
+                }
+                if (el.hasAttribute('style')) {
+                    flatNodes.push(el);
+                    return;
+                }
+                Array.from(el.childNodes).forEach(collectRelevant);
             };
-            const segments: Segment[] = [];
-            let segParas: string[] = [];
-            let segImgs: { src: string; alt: string; caption: string }[] = [];
+            collectRelevant(root);
 
-            for (const item of block.items) {
-                if (item.type === 'paragraph') {
-                    if (segImgs.length > 0) {
-                        segments.push({ paragraphs: segParas, images: segImgs });
-                        segParas = [];
-                        segImgs = [];
+            flatNodes.forEach((el) => {
+                const isHeading = isHeadingTag(el.tagName);
+
+                if (isHeading) {
+                    const tag = el.tagName.toUpperCase();
+                    const text = el.textContent?.trim() || '';
+
+                    if (isSectionStarter(tag)) {
+                        if (currentBlock) currentBlock = null;
+                        if (currentSection) sections.push(currentSection);
+                        currentSection = { mainHeadingTag: tag === 'H1' ? 'h1' : 'h2', mainHeadingText: text, blocks: [] };
+                    } else {
+                        // h3–h6: new block under current section, or use as section title if no h1/h2 yet (don't duplicate)
+                        if (!currentSection) {
+                            currentSection = { mainHeadingTag: 'h2', mainHeadingText: text, blocks: [] };
+                            currentBlock = null;
+                        } else {
+                            currentBlock = {
+                                headingTag: tag.toLowerCase() as ContentBlock['headingTag'],
+                                headingText: text,
+                                items: [],
+                                links: []
+                            };
+                            currentSection.blocks.push(currentBlock);
+                        }
                     }
-                    segParas.push(item.html);
+                } else if (currentSection) {
+                    pushContentToBlock(ensureBlock(), el);
                 } else {
-                    segImgs.push({ src: item.src, alt: item.alt, caption: item.caption });
+                    // Before first h1/h2 — intro
+                    introElements.push(el.outerHTML);
                 }
-            }
-            if (segParas.length > 0 || segImgs.length > 0) {
-                segments.push({ paragraphs: segParas, images: segImgs });
-            }
+            });
 
-            const hasContent = block.items.length > 0 || block.links.length > 0;
-            const headingOnly = !hasContent && block.headingTag != null && !!block.headingText;
+            if (currentSection) sections.push(currentSection);
 
-            const headingEl = block.headingTag && block.headingText
-                ? React.createElement(block.headingTag, {
-                    className: headingOnly
-                        ? `${styles.enhancedSubheading} ${styles.enhancedSubheadingStandalone}`
-                        : styles.enhancedSubheading,
-                    style: {
-                        ...(blockIdx > 0 ? { marginTop: '1.5rem' } : {}),
-                        ...(headingOnly ? { textAlign: 'center' as const } : {})
-                    }
-                  }, block.headingText)
-                : null;
+            // No headings at all — render as simple block; 1 paragraph + 1 image = side-by-side on larger screens
+            if (sections.length === 0) {
+                const { textHtml, images } = parseContentAndImages(html);
+                const hasText = !!textHtml?.trim();
+                const singleImage = images && images.length === 1 ? images[0] : null;
 
-            const wrapStandaloneHeading = headingOnly && headingEl ? (
-                <div style={{ textAlign: 'center' }}>{headingEl}</div>
-            ) : headingEl;
-
-            const renderParas = (paras: string[]) =>
-                paras.map((p, j) => <React.Fragment key={j}>{renderRichText(p)}</React.Fragment>);
-
-            const renderImgEl = (img: { src: string; alt: string; caption: string }, j: number, captionClass: string) => (
-                <div key={j}>
-                    <img
-                        src={img.src}
-                        alt={img.alt}
-                        className={styles.anatomyImage}
-                        onClick={() => setSelectedImage({ src: img.src, alt: img.alt })}
-                        onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setSelectedImage({ src: img.src, alt: img.alt }); } }}
-                        role="button" // eslint-disable-line jsx-a11y/no-noninteractive-element-to-interactive-role
-                        tabIndex={0}
-                        style={{ cursor: 'pointer' }}
-                    />
-                    {img.caption && <p className={captionClass}>{img.caption}</p>}
-                </div>
-            );
-
-            const hasLinksInParagraphs = block.items.some(
-                (it) => it.type === 'paragraph' && it.html.includes('<a ')
-            );
-            const renderBlockLinks = () => {
-                if (block.links.length === 0 || hasLinksInParagraphs) return null;
-                if (block.links.length === 1) {
+                if (hasText && singleImage) {
                     return (
-                        <p className={styles.enhancedParagraph}>
-                            <a href={block.links[0].url} target="_blank" rel="noopener noreferrer" className={styles.resourceLink}>
-                                {block.links[0].text}
-                            </a>
-                        </p>
+                        <ParagraphWithImageContainer
+                            content={renderRichText(textHtml, { width: '100%' })}
+                            image={singleImage}
+                            isIntro={isIntro}
+                            setSelectedImage={setSelectedImage}
+                        />
                     );
                 }
+
                 return (
-                    <p className={styles.enhancedParagraph}>
-                        {block.links.map((link, j) => (
-                            <span key={j}>
-                                <a href={link.url} target="_blank" rel="noopener noreferrer" className={styles.resourceLink}>
-                                    {link.text}
+                    <div className={styles.introContentBlock}>
+                        {textHtml && renderRichText(textHtml, { width: '100%' })}
+                        {images && images.length > 0 && (
+                            <div
+                                className={images.length > 1 ? `${styles.anatomyGrid} ${styles.anatomyGridTwoCol}` : styles.anatomyGrid}
+                                style={{ width: '100%' }}
+                            >
+                                {images.map((img, i) => (
+                                    <div key={i} className={styles.anatomyItem}>
+                                        <img
+                                            src={img.src}
+                                            alt={img.alt}
+                                            className={styles.anatomyImage}
+                                            onClick={() => setSelectedImage({ src: img.src, alt: img.alt })}
+                                            onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setSelectedImage({ src: img.src, alt: img.alt }); } }}
+                                            role="button" // eslint-disable-line jsx-a11y/no-noninteractive-element-to-interactive-role
+                                            tabIndex={0}
+                                            style={{ cursor: 'pointer' }}
+                                        />
+                                        {img.caption && (
+                                            <p className={styles.anatomyCaption}>{img.caption}</p>
+                                        )}
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+                    </div>
+                );
+            }
+
+            const renderBlock = (block: ContentBlock, blockIdx: number) => {
+                type Segment = {
+                    paragraphs: string[];
+                    images: { src: string; alt: string; caption: string }[];
+                };
+                const segments: Segment[] = [];
+                let segParas: string[] = [];
+                let segImgs: { src: string; alt: string; caption: string }[] = [];
+
+                for (const item of block.items) {
+                    if (item.type === 'paragraph') {
+                        if (segImgs.length > 0) {
+                            segments.push({ paragraphs: segParas, images: segImgs });
+                            segParas = [];
+                            segImgs = [];
+                        }
+                        segParas.push(item.html);
+                    } else {
+                        segImgs.push({ src: item.src, alt: item.alt, caption: item.caption });
+                    }
+                }
+                if (segParas.length > 0 || segImgs.length > 0) {
+                    segments.push({ paragraphs: segParas, images: segImgs });
+                }
+
+                const hasContent = block.items.length > 0 || block.links.length > 0;
+                const headingOnly = !hasContent && block.headingTag != null && !!block.headingText;
+
+                const headingEl = block.headingTag && block.headingText
+                    ? React.createElement(block.headingTag, {
+                        className: headingOnly
+                            ? `${styles.enhancedSubheading} ${styles.enhancedSubheadingStandalone}`
+                            : styles.enhancedSubheading,
+                        style: {
+                            ...(blockIdx > 0 ? { marginTop: '1.5rem' } : {}),
+                            ...(headingOnly ? { textAlign: 'center' as const } : {})
+                        }
+                    }, block.headingText)
+                    : null;
+
+                const wrapStandaloneHeading = headingOnly && headingEl ? (
+                    <div style={{ textAlign: 'center' }}>{headingEl}</div>
+                ) : headingEl;
+
+                const renderParas = (paras: string[]) =>
+                    paras.map((p, j) => <React.Fragment key={j}>{renderRichText(p)}</React.Fragment>);
+
+                const renderImgEl = (img: { src: string; alt: string; caption: string }, j: number, captionClass: string) => (
+                    <div key={j}>
+                        <img
+                            src={img.src}
+                            alt={img.alt}
+                            className={styles.anatomyImage}
+                            onClick={() => setSelectedImage({ src: img.src, alt: img.alt })}
+                            onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setSelectedImage({ src: img.src, alt: img.alt }); } }}
+                            role="button" // eslint-disable-line jsx-a11y/no-noninteractive-element-to-interactive-role
+                            tabIndex={0}
+                            style={{ cursor: 'pointer' }}
+                        />
+                        {img.caption && <p className={captionClass}>{img.caption}</p>}
+                    </div>
+                );
+
+                const hasLinksInParagraphs = block.items.some(
+                    (it) => it.type === 'paragraph' && it.html.includes('<a ')
+                );
+                const renderBlockLinks = () => {
+                    if (block.links.length === 0 || hasLinksInParagraphs) return null;
+                    if (block.links.length === 1) {
+                        return (
+                            <p className={styles.enhancedParagraph}>
+                                <a href={block.links[0].url} target="_blank" rel="noopener noreferrer" className={styles.resourceLink}>
+                                    {block.links[0].text}
                                 </a>
-                                {j < block.links.length - 1 && ' og '}
-                            </span>
-                        ))}
-                    </p>
+                            </p>
+                        );
+                    }
+                    return (
+                        <p className={styles.enhancedParagraph}>
+                            {block.links.map((link, j) => (
+                                <span key={j}>
+                                    <a href={link.url} target="_blank" rel="noopener noreferrer" className={styles.resourceLink}>
+                                        {link.text}
+                                    </a>
+                                    {j < block.links.length - 1 && ' og '}
+                                </span>
+                            ))}
+                        </p>
+                    );
+                };
+
+                return (
+                    <React.Fragment key={blockIdx}>
+                        {wrapStandaloneHeading}
+                        {segments.map((seg, si) => {
+                            if (seg.images.length === 0) {
+                                return <React.Fragment key={si}>{renderParas(seg.paragraphs)}</React.Fragment>;
+                            }
+                            if (seg.images.length === 1) {
+                                return (
+                                    <div key={si} className={styles.sideBySideContainer}>
+                                        <div className={styles.sideBySideText}>
+                                            {renderParas(seg.paragraphs)}
+                                        </div>
+                                        <div className={styles.sideBySideImage}>
+                                            {renderImgEl(seg.images[0], 0, styles.sideBySideImageCaption)}
+                                        </div>
+                                    </div>
+                                );
+                            }
+                            return (
+                                <React.Fragment key={si}>
+                                    {renderParas(seg.paragraphs)}
+                                    <div className={`${styles.anatomyGrid} ${styles.anatomyGridTwoCol}`}>
+                                        {seg.images.map((img, j) => (
+                                            <div key={j} className={styles.anatomyItem}>
+                                                {renderImgEl(img, j, styles.anatomyCaption)}
+                                            </div>
+                                        ))}
+                                    </div>
+                                </React.Fragment>
+                            );
+                        })}
+                        {renderBlockLinks()}
+                    </React.Fragment>
                 );
             };
 
             return (
-                <React.Fragment key={blockIdx}>
-                    {wrapStandaloneHeading}
-                    {segments.map((seg, si) => {
-                        if (seg.images.length === 0) {
-                            return <React.Fragment key={si}>{renderParas(seg.paragraphs)}</React.Fragment>;
-                        }
-                        if (seg.images.length === 1) {
-                            return (
-                                <div key={si} className={styles.sideBySideContainer}>
-                                    <div className={styles.sideBySideText}>
-                                        {renderParas(seg.paragraphs)}
-                                    </div>
-                                    <div className={styles.sideBySideImage}>
-                                        {renderImgEl(seg.images[0], 0, styles.sideBySideImageCaption)}
-                                    </div>
-                                </div>
-                            );
-                        }
-                        return (
-                            <React.Fragment key={si}>
-                                {renderParas(seg.paragraphs)}
-                                <div className={`${styles.anatomyGrid} ${styles.anatomyGridTwoCol}`}>
-                                    {seg.images.map((img, j) => (
-                                        <div key={j} className={styles.anatomyItem}>
-                                            {renderImgEl(img, j, styles.anatomyCaption)}
-                                        </div>
-                                    ))}
-                                </div>
-                            </React.Fragment>
-                        );
-                    })}
-                    {renderBlockLinks()}
-                </React.Fragment>
+                <>
+                    {introElements.map((elHtml, i) => (
+                        <React.Fragment key={`intro-${i}`}>{renderRichText(elHtml)}</React.Fragment>
+                    ))}
+                    {sections.map((section, i) => (
+                        <div key={i} className={section.blocks.length === 0 ? `${styles.normalFunctionSection} ${styles.sectionTitleOnly}` : styles.normalFunctionSection}>
+                            {section.mainHeadingText ? React.createElement(section.mainHeadingTag, { className: styles.normalFunctionTitle }, section.mainHeadingText) : null}
+                            {section.blocks.map((block, j) => (
+                                <React.Fragment key={j}>
+                                    {renderBlock(block, j)}
+                                    {/* Inject after block whose heading is Bekkenbunnstrening, or after first block when section title is Bekkenbunnstrening (CMS uses H3 as section title, so paragraph is in a block with no headingText) */}
+                                    {(matchBekkenbunnstrening(block.headingText || '') || (j === 0 && matchBekkenbunnstrening(section.mainHeadingText || ''))) ? exerciseSectionNode : null}
+                                </React.Fragment>
+                            ))}
+                        </div>
+                    ))}
+                </>
             );
-        };
-
-        return (
-            <>
-                {introElements.map((elHtml, i) => (
-                    <React.Fragment key={`intro-${i}`}>{renderRichText(elHtml)}</React.Fragment>
-                ))}
-                {sections.map((section, i) => (
-                    <div key={i} className={section.blocks.length === 0 ? `${styles.normalFunctionSection} ${styles.sectionTitleOnly}` : styles.normalFunctionSection}>
-                        {section.mainHeadingText ? React.createElement(section.mainHeadingTag, { className: styles.normalFunctionTitle }, section.mainHeadingText) : null}
-                        {section.blocks.map((block, j) => (
-                            <React.Fragment key={j}>
-                                {renderBlock(block, j)}
-                                {/* Inject after block whose heading is Bekkenbunnstrening, or after first block when section title is Bekkenbunnstrening (CMS uses H3 as section title, so paragraph is in a block with no headingText) */}
-                                {(matchBekkenbunnstrening(block.headingText || '') || (j === 0 && matchBekkenbunnstrening(section.mainHeadingText || ''))) ? exerciseSectionNode : null}
-                            </React.Fragment>
-                        ))}
-                    </div>
-                ))}
-            </>
-        );
         } catch (e) {
             console.error('renderContentWithImageCards error:', e);
             return html ? <div className={styles.enhancedParagraph} dangerouslySetInnerHTML={{ __html: html }} /> : null;
@@ -1138,6 +1138,16 @@ export const TilstandDynamicSection = ({ tilstand, activeSection }: TilstandDyna
                         exerciseSectionNode: exerciseSectionNodeForInject
                     } : undefined;
 
+                    // Support for centered group headers in accordions
+                    if (itemTitleNo.startsWith("GROUP_HEADER:")) {
+                        const headerText = language === 'en' ? (item.tittel_en || itemTitleNo).replace("GROUP_HEADER:", "") : itemTitleNo.replace("GROUP_HEADER:", "");
+                        return (
+                            <div key={index} className={styles.groupHeader}>
+                                {headerText}
+                            </div>
+                        );
+                    }
+
                     return (
                         <SectionAccordion
                             key={index}
@@ -1148,165 +1158,165 @@ export const TilstandDynamicSection = ({ tilstand, activeSection }: TilstandDyna
                         >
                             <>
                                 {isResourceAccordion ? renderResourceTable(resourceItems!) : hasUnderseksjoner ? (
-                                <>
-                                    {itemContent && (
-                                        <>
-                                            {isSideBySide ? (
-                                                <div className={styles.sideBySideContainer}>
-                                                    <div className={styles.sideBySideText}>
-                                                        {renderContentWithImageCards(itemContent, injectOptions)}
-                                                        {renderLinks(item)}
-                                                    </div>
-                                                    <div className={`${styles.sideBySideImage} ${styles.anatomyItem}`}>
-                                                        <img
-                                                            src={imgSrc}
-                                                            alt={(language === 'en' && item.bilde_alt_en) ? item.bilde_alt_en : (item.bilde_alt || itemTitle)}
-                                                            className={styles.anatomyImage}
-                                                            onClick={() => setSelectedImage({ src: imgSrc!, alt: (language === 'en' && item.bilde_alt_en) ? item.bilde_alt_en! : (item.bilde_alt || itemTitle) })}
-                                                            onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setSelectedImage({ src: imgSrc!, alt: (language === 'en' && item.bilde_alt_en) ? item.bilde_alt_en! : (item.bilde_alt || itemTitle) }); } }}
-                                                            role="button" // eslint-disable-line jsx-a11y/no-noninteractive-element-to-interactive-role
-                                                            tabIndex={0}
-                                                            style={{ cursor: 'pointer' }}
-                                                        />
-                                                        {((language === 'en' && item.bilde_caption_en) || item.bilde_caption) && (
-                                                            <p className={styles.anatomyCaption}>{(language === 'en' && item.bilde_caption_en) ? item.bilde_caption_en : item.bilde_caption}</p>
-                                                        )}
-                                                    </div>
-                                                </div>
-                                            ) : (
-                                                <>
-                                                    {renderContentWithImageCards(itemContent, injectOptions)}
-                                                    {renderImage(item)}
-                                                    {renderLinks(item)}
-                                                </>
-                                            )}
-                                        </>
-                                    )}
-                                    {item.underseksjoner!.map((sub, subIndex) => {
-                                        const subTitle = (language === 'en' && sub.tittel_en) ? sub.tittel_en : sub.tittel;
-                                        const subId = slugify(sub.tittel);
-                                        return (
-                                            <SectionAccordion
-                                                key={subIndex}
-                                                title={subTitle}
-                                                id={`${itemId}-${subId}`}
-                                                isDarkMode={resolvedTheme === 'dark'}
-                                                defaultOpen={false}
-                                            >
-                                                {renderSubContent(sub)}
-                                            </SectionAccordion>
-                                        );
-                                    })}
-                                </>
-                            ) : isSideBySide ? (
-                                <div className={styles.sideBySideContainer}>
-                                    <div className={styles.sideBySideText}>
-                                        {renderContentWithImageCards(itemContent, injectOptions)}
-                                        {renderLinks(item)}
-                                    </div>
-                                    <div className={`${styles.sideBySideImage} ${styles.anatomyItem}`}>
-                                        <img
-                                            src={imgSrc}
-                                            alt={(language === 'en' && item.bilde_alt_en) ? item.bilde_alt_en : (item.bilde_alt || itemTitle)}
-                                            className={styles.anatomyImage}
-                                            onClick={() => setSelectedImage({ src: imgSrc!, alt: (language === 'en' && item.bilde_alt_en) ? item.bilde_alt_en! : (item.bilde_alt || itemTitle) })}
-                                            onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setSelectedImage({ src: imgSrc!, alt: (language === 'en' && item.bilde_alt_en) ? item.bilde_alt_en! : (item.bilde_alt || itemTitle) }); } }}
-                                            role="button" // eslint-disable-line jsx-a11y/no-noninteractive-element-to-interactive-role
-                                            tabIndex={0}
-                                            style={{ cursor: 'pointer' }}
-                                        />
-                                        {((language === 'en' && item.bilde_caption_en) || item.bilde_caption) && (
-                                            <p className={styles.anatomyCaption}>{(language === 'en' && item.bilde_caption_en) ? item.bilde_caption_en : item.bilde_caption}</p>
-                                        )}
-                                    </div>
-                                </div>
-                            ) : (() => {
-                                const isFirstTreatmentAccordion = activeSection === "treatment" && index === 0 && conditionSlug === "urinary-incontinence";
-                                const tryTitle = ((language === "en" && t.ovelse_try_yourself_title_en) || t.ovelse_try_yourself_title || "") as string;
-                                const hasExerciseData = !!(tryTitle || (t.ovelse_steps as unknown[] | null)?.length || (t.ovelse_videos as unknown[] | null)?.length);
-                                // Don't inject inside accordion when we show the full exercise section after treatment accordions
-                                const injectExerciseSection = isFirstTreatmentAccordion && hasExerciseData && !(exerciseSectionItems && exerciseSectionItems.length > 0);
-                                const exerciseMarker = "<!-- INJECT_EXERCISE_SECTION -->";
-                                const parts = injectExerciseSection && typeof itemContent === "string" && itemContent.includes(exerciseMarker)
-                                    ? itemContent.split(exerciseMarker)
-                                    : null;
-                                if (parts && parts.length >= 2) {
-                                    const videosRaw = (t.ovelse_videos as { src: string; title?: string; title_en?: string }[] | null) || [];
-                                    const stepsRaw = (t.ovelse_steps as { number: number; text?: string; text_en?: string }[] | null) || [];
-                                    const genderRaw = (t.ovelse_gender_instructions as { title?: string; title_en?: string; text?: string; text_en?: string; icon?: string; iconColor?: string }[] | null) || [];
-                                    const app = t.ovelse_smartphone_apps as Record<string, string | undefined> | null | undefined;
-                                    return (
-                                        <>
-                                            {renderContentWithImageCards(parts[0].trim())}
-                                            <CommonExerciseSection
-                                                pageTitle={language === "no" ? "Bekkenbunnstrening" : "Pelvic floor training"}
-                                                tryYourselfTitle={tryTitle || (language === "no" ? "Prøv selv" : "Try it yourself")}
-                                                step1Text={((language === "en" && t.ovelse_step1_text_en) || t.ovelse_step1_text || "") as string}
-                                                genderInstructions={(genderRaw || []).map((g) => ({
-                                                    title: (language === "en" && g.title_en) ? g.title_en : (g.title || ""),
-                                                    text: (language === "en" && g.text_en) ? g.text_en : (g.text || ""),
-                                                    icon: g.icon || "",
-                                                    iconColor: g.iconColor || "#053870"
-                                                }))}
-                                                tipsTitle={((language === "en" && t.ovelse_tips_title_en) || t.ovelse_tips_title || "") as string}
-                                                tipsText={((language === "en" && t.ovelse_tips_text_en) || t.ovelse_tips_text || "") as string}
-                                                exerciseSteps={(stepsRaw || []).sort((a, b) => a.number - b.number).map((s) => ({
-                                                    number: s.number,
-                                                    text: (language === "en" && s.text_en) ? s.text_en : (s.text || "")
-                                                }))}
-                                                videoSectionTitle={((language === "en" && t.ovelse_video_section_title_en) || t.ovelse_video_section_title || "") as string}
-                                                videoSectionDescription={((language === "en" && t.ovelse_video_section_description_en) || t.ovelse_video_section_description || "") as string}
-                                                videos={(videosRaw || []).map((v) => ({ src: v.src, title: (language === "en" && v.title_en) ? v.title_en : (v.title || "") }))}
-                                                smartphoneApps={app ? { title: (language === "en" && app.title_en) ? app.title_en : (app.title || ""), description: (language === "en" && app.description_en) ? app.description_en : (app.description || ""), linkText: (language === "en" && app.linkText_en) ? app.linkText_en : (app.linkText || ""), linkUrl: app.linkUrl || "" } : undefined}
-                                            />
-                                            {renderContentWithImageCards(parts[1].trim())}
-                                            {renderImage(item)}
-                                            {renderLinks(item)}
-                                        </>
-                                    );
-                                }
-                                if (injectExerciseSection && hasExerciseData) {
-                                    const videosRaw = (t.ovelse_videos as { src: string; title?: string; title_en?: string }[] | null) || [];
-                                    const stepsRaw = (t.ovelse_steps as { number: number; text?: string; text_en?: string }[] | null) || [];
-                                    const genderRaw = (t.ovelse_gender_instructions as { title?: string; title_en?: string; text?: string; text_en?: string; icon?: string; iconColor?: string }[] | null) || [];
-                                    const app = t.ovelse_smartphone_apps as Record<string, string | undefined> | null | undefined;
-                                    return (
-                                        <>
-                                            {renderContentWithImageCards(itemContent)}
-                                            <CommonExerciseSection
-                                                pageTitle={language === "no" ? "Bekkenbunnstrening" : "Pelvic floor training"}
-                                                tryYourselfTitle={tryTitle || (language === "no" ? "Prøv selv" : "Try it yourself")}
-                                                step1Text={((language === "en" && t.ovelse_step1_text_en) || t.ovelse_step1_text || "") as string}
-                                                genderInstructions={(genderRaw || []).map((g) => ({
-                                                    title: (language === "en" && g.title_en) ? g.title_en : (g.title || ""),
-                                                    text: (language === "en" && g.text_en) ? g.text_en : (g.text || ""),
-                                                    icon: g.icon || "",
-                                                    iconColor: g.iconColor || "#053870"
-                                                }))}
-                                                tipsTitle={((language === "en" && t.ovelse_tips_title_en) || t.ovelse_tips_title || "") as string}
-                                                tipsText={((language === "en" && t.ovelse_tips_text_en) || t.ovelse_tips_text || "") as string}
-                                                exerciseSteps={(stepsRaw || []).sort((a, b) => a.number - b.number).map((s) => ({
-                                                    number: s.number,
-                                                    text: (language === "en" && s.text_en) ? s.text_en : (s.text || "")
-                                                }))}
-                                                videoSectionTitle={((language === "en" && t.ovelse_video_section_title_en) || t.ovelse_video_section_title || "") as string}
-                                                videoSectionDescription={((language === "en" && t.ovelse_video_section_description_en) || t.ovelse_video_section_description || "") as string}
-                                                videos={(videosRaw || []).map((v) => ({ src: v.src, title: (language === "en" && v.title_en) ? v.title_en : (v.title || "") }))}
-                                                smartphoneApps={app ? { title: (language === "en" && app.title_en) ? app.title_en : (app.title || ""), description: (language === "en" && app.description_en) ? app.description_en : (app.description || ""), linkText: (language === "en" && app.linkText_en) ? app.linkText_en : (app.linkText || ""), linkUrl: app.linkUrl || "" } : undefined}
-                                            />
-                                            {renderImage(item)}
-                                            {renderLinks(item)}
-                                        </>
-                                    );
-                                }
-                                return (
                                     <>
-                                        {renderContentWithImageCards(itemContent, injectOptions)}
-                                        {renderImage(item)}
-                                        {renderLinks(item)}
+                                        {itemContent && (
+                                            <>
+                                                {isSideBySide ? (
+                                                    <div className={styles.sideBySideContainer}>
+                                                        <div className={styles.sideBySideText}>
+                                                            {renderContentWithImageCards(itemContent, injectOptions)}
+                                                            {renderLinks(item)}
+                                                        </div>
+                                                        <div className={`${styles.sideBySideImage} ${styles.anatomyItem}`}>
+                                                            <img
+                                                                src={imgSrc}
+                                                                alt={(language === 'en' && item.bilde_alt_en) ? item.bilde_alt_en : (item.bilde_alt || itemTitle)}
+                                                                className={styles.anatomyImage}
+                                                                onClick={() => setSelectedImage({ src: imgSrc!, alt: (language === 'en' && item.bilde_alt_en) ? item.bilde_alt_en! : (item.bilde_alt || itemTitle) })}
+                                                                onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setSelectedImage({ src: imgSrc!, alt: (language === 'en' && item.bilde_alt_en) ? item.bilde_alt_en! : (item.bilde_alt || itemTitle) }); } }}
+                                                                role="button" // eslint-disable-line jsx-a11y/no-noninteractive-element-to-interactive-role
+                                                                tabIndex={0}
+                                                                style={{ cursor: 'pointer' }}
+                                                            />
+                                                            {((language === 'en' && item.bilde_caption_en) || item.bilde_caption) && (
+                                                                <p className={styles.anatomyCaption}>{(language === 'en' && item.bilde_caption_en) ? item.bilde_caption_en : item.bilde_caption}</p>
+                                                            )}
+                                                        </div>
+                                                    </div>
+                                                ) : (
+                                                    <>
+                                                        {renderContentWithImageCards(itemContent, injectOptions)}
+                                                        {renderImage(item)}
+                                                        {renderLinks(item)}
+                                                    </>
+                                                )}
+                                            </>
+                                        )}
+                                        {item.underseksjoner!.map((sub, subIndex) => {
+                                            const subTitle = (language === 'en' && sub.tittel_en) ? sub.tittel_en : sub.tittel;
+                                            const subId = slugify(sub.tittel);
+                                            return (
+                                                <SectionAccordion
+                                                    key={subIndex}
+                                                    title={subTitle}
+                                                    id={`${itemId}-${subId}`}
+                                                    isDarkMode={resolvedTheme === 'dark'}
+                                                    defaultOpen={false}
+                                                >
+                                                    {renderSubContent(sub)}
+                                                </SectionAccordion>
+                                            );
+                                        })}
                                     </>
-                                );
-                            })()}
+                                ) : isSideBySide ? (
+                                    <div className={styles.sideBySideContainer}>
+                                        <div className={styles.sideBySideText}>
+                                            {renderContentWithImageCards(itemContent, injectOptions)}
+                                            {renderLinks(item)}
+                                        </div>
+                                        <div className={`${styles.sideBySideImage} ${styles.anatomyItem}`}>
+                                            <img
+                                                src={imgSrc}
+                                                alt={(language === 'en' && item.bilde_alt_en) ? item.bilde_alt_en : (item.bilde_alt || itemTitle)}
+                                                className={styles.anatomyImage}
+                                                onClick={() => setSelectedImage({ src: imgSrc!, alt: (language === 'en' && item.bilde_alt_en) ? item.bilde_alt_en! : (item.bilde_alt || itemTitle) })}
+                                                onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setSelectedImage({ src: imgSrc!, alt: (language === 'en' && item.bilde_alt_en) ? item.bilde_alt_en! : (item.bilde_alt || itemTitle) }); } }}
+                                                role="button" // eslint-disable-line jsx-a11y/no-noninteractive-element-to-interactive-role
+                                                tabIndex={0}
+                                                style={{ cursor: 'pointer' }}
+                                            />
+                                            {((language === 'en' && item.bilde_caption_en) || item.bilde_caption) && (
+                                                <p className={styles.anatomyCaption}>{(language === 'en' && item.bilde_caption_en) ? item.bilde_caption_en : item.bilde_caption}</p>
+                                            )}
+                                        </div>
+                                    </div>
+                                ) : (() => {
+                                    const isFirstTreatmentAccordion = activeSection === "treatment" && index === 0 && conditionSlug === "urinary-incontinence";
+                                    const tryTitle = ((language === "en" && t.ovelse_try_yourself_title_en) || t.ovelse_try_yourself_title || "") as string;
+                                    const hasExerciseData = !!(tryTitle || (t.ovelse_steps as unknown[] | null)?.length || (t.ovelse_videos as unknown[] | null)?.length);
+                                    // Don't inject inside accordion when we show the full exercise section after treatment accordions
+                                    const injectExerciseSection = isFirstTreatmentAccordion && hasExerciseData && !(exerciseSectionItems && exerciseSectionItems.length > 0);
+                                    const exerciseMarker = "<!-- INJECT_EXERCISE_SECTION -->";
+                                    const parts = injectExerciseSection && typeof itemContent === "string" && itemContent.includes(exerciseMarker)
+                                        ? itemContent.split(exerciseMarker)
+                                        : null;
+                                    if (parts && parts.length >= 2) {
+                                        const videosRaw = (t.ovelse_videos as { src: string; title?: string; title_en?: string }[] | null) || [];
+                                        const stepsRaw = (t.ovelse_steps as { number: number; text?: string; text_en?: string }[] | null) || [];
+                                        const genderRaw = (t.ovelse_gender_instructions as { title?: string; title_en?: string; text?: string; text_en?: string; icon?: string; iconColor?: string }[] | null) || [];
+                                        const app = t.ovelse_smartphone_apps as Record<string, string | undefined> | null | undefined;
+                                        return (
+                                            <>
+                                                {renderContentWithImageCards(parts[0].trim())}
+                                                <CommonExerciseSection
+                                                    pageTitle={language === "no" ? "Bekkenbunnstrening" : "Pelvic floor training"}
+                                                    tryYourselfTitle={tryTitle || (language === "no" ? "Prøv selv" : "Try it yourself")}
+                                                    step1Text={((language === "en" && t.ovelse_step1_text_en) || t.ovelse_step1_text || "") as string}
+                                                    genderInstructions={(genderRaw || []).map((g) => ({
+                                                        title: (language === "en" && g.title_en) ? g.title_en : (g.title || ""),
+                                                        text: (language === "en" && g.text_en) ? g.text_en : (g.text || ""),
+                                                        icon: g.icon || "",
+                                                        iconColor: g.iconColor || "#053870"
+                                                    }))}
+                                                    tipsTitle={((language === "en" && t.ovelse_tips_title_en) || t.ovelse_tips_title || "") as string}
+                                                    tipsText={((language === "en" && t.ovelse_tips_text_en) || t.ovelse_tips_text || "") as string}
+                                                    exerciseSteps={(stepsRaw || []).sort((a, b) => a.number - b.number).map((s) => ({
+                                                        number: s.number,
+                                                        text: (language === "en" && s.text_en) ? s.text_en : (s.text || "")
+                                                    }))}
+                                                    videoSectionTitle={((language === "en" && t.ovelse_video_section_title_en) || t.ovelse_video_section_title || "") as string}
+                                                    videoSectionDescription={((language === "en" && t.ovelse_video_section_description_en) || t.ovelse_video_section_description || "") as string}
+                                                    videos={(videosRaw || []).map((v) => ({ src: v.src, title: (language === "en" && v.title_en) ? v.title_en : (v.title || "") }))}
+                                                    smartphoneApps={app ? { title: (language === "en" && app.title_en) ? app.title_en : (app.title || ""), description: (language === "en" && app.description_en) ? app.description_en : (app.description || ""), linkText: (language === "en" && app.linkText_en) ? app.linkText_en : (app.linkText || ""), linkUrl: app.linkUrl || "" } : undefined}
+                                                />
+                                                {renderContentWithImageCards(parts[1].trim())}
+                                                {renderImage(item)}
+                                                {renderLinks(item)}
+                                            </>
+                                        );
+                                    }
+                                    if (injectExerciseSection && hasExerciseData) {
+                                        const videosRaw = (t.ovelse_videos as { src: string; title?: string; title_en?: string }[] | null) || [];
+                                        const stepsRaw = (t.ovelse_steps as { number: number; text?: string; text_en?: string }[] | null) || [];
+                                        const genderRaw = (t.ovelse_gender_instructions as { title?: string; title_en?: string; text?: string; text_en?: string; icon?: string; iconColor?: string }[] | null) || [];
+                                        const app = t.ovelse_smartphone_apps as Record<string, string | undefined> | null | undefined;
+                                        return (
+                                            <>
+                                                {renderContentWithImageCards(itemContent)}
+                                                <CommonExerciseSection
+                                                    pageTitle={language === "no" ? "Bekkenbunnstrening" : "Pelvic floor training"}
+                                                    tryYourselfTitle={tryTitle || (language === "no" ? "Prøv selv" : "Try it yourself")}
+                                                    step1Text={((language === "en" && t.ovelse_step1_text_en) || t.ovelse_step1_text || "") as string}
+                                                    genderInstructions={(genderRaw || []).map((g) => ({
+                                                        title: (language === "en" && g.title_en) ? g.title_en : (g.title || ""),
+                                                        text: (language === "en" && g.text_en) ? g.text_en : (g.text || ""),
+                                                        icon: g.icon || "",
+                                                        iconColor: g.iconColor || "#053870"
+                                                    }))}
+                                                    tipsTitle={((language === "en" && t.ovelse_tips_title_en) || t.ovelse_tips_title || "") as string}
+                                                    tipsText={((language === "en" && t.ovelse_tips_text_en) || t.ovelse_tips_text || "") as string}
+                                                    exerciseSteps={(stepsRaw || []).sort((a, b) => a.number - b.number).map((s) => ({
+                                                        number: s.number,
+                                                        text: (language === "en" && s.text_en) ? s.text_en : (s.text || "")
+                                                    }))}
+                                                    videoSectionTitle={((language === "en" && t.ovelse_video_section_title_en) || t.ovelse_video_section_title || "") as string}
+                                                    videoSectionDescription={((language === "en" && t.ovelse_video_section_description_en) || t.ovelse_video_section_description || "") as string}
+                                                    videos={(videosRaw || []).map((v) => ({ src: v.src, title: (language === "en" && v.title_en) ? v.title_en : (v.title || "") }))}
+                                                    smartphoneApps={app ? { title: (language === "en" && app.title_en) ? app.title_en : (app.title || ""), description: (language === "en" && app.description_en) ? app.description_en : (app.description || ""), linkText: (language === "en" && app.linkText_en) ? app.linkText_en : (app.linkText || ""), linkUrl: app.linkUrl || "" } : undefined}
+                                                />
+                                                {renderImage(item)}
+                                                {renderLinks(item)}
+                                            </>
+                                        );
+                                    }
+                                    return (
+                                        <>
+                                            {renderContentWithImageCards(itemContent, injectOptions)}
+                                            {renderImage(item)}
+                                            {renderLinks(item)}
+                                        </>
+                                    );
+                                })()}
                             </>
                         </SectionAccordion>
                     );
