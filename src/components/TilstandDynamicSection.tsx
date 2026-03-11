@@ -502,6 +502,134 @@ export const TilstandDynamicSection = ({ tilstand, activeSection }: TilstandDyna
         );
     };
 
+    const renderPatientStoryCards = (html: string) => {
+        if (!html) return null;
+        try {
+            const doc = new DOMParser().parseFromString(`<div>${html}</div>`, 'text/html');
+            const root = doc.body.firstChild as HTMLElement;
+            if (!root) return null;
+
+            type StoryCard = {
+                name: string;
+                imageSrc: string;
+                imageAlt: string;
+                description: string;
+                linkUrl: string;
+                linkText: string;
+            };
+
+            const stories: StoryCard[] = [];
+            let current: StoryCard | null = null;
+
+            // Walk all elements depth-first — each H4/H3 starts a new card.
+            // img (at any nesting depth), a, and p text are harvested into the current card.
+            const walk = (el: Element): void => {
+                const tag = el.tagName;
+
+                if (tag === 'H4' || tag === 'H3') {
+                    if (current) stories.push(current);
+                    current = { name: el.textContent?.trim() || '', imageSrc: '', imageAlt: '', description: '', linkUrl: '', linkText: '' };
+                    return;
+                }
+
+                if (!current) {
+                    // Recurse into wrapper divs before first card heading
+                    Array.from(el.children).forEach(walk);
+                    return;
+                }
+
+                if (tag === 'IMG') {
+                    if (!current.imageSrc) {
+                        current.imageSrc = (el as HTMLImageElement).getAttribute('src') || '';
+                        current.imageAlt = (el as HTMLImageElement).getAttribute('alt') || current.name;
+                    }
+                    return;
+                }
+
+                if (tag === 'FIGURE') {
+                    const img = el.querySelector('img');
+                    if (img && !current.imageSrc) {
+                        current.imageSrc = img.getAttribute('src') || '';
+                        current.imageAlt = img.getAttribute('alt') || current.name;
+                    }
+                    // Ignore figcaption as description — it's a photo credit
+                    return;
+                }
+
+                if (tag === 'A') {
+                    if (!current.linkUrl) {
+                        current.linkUrl = (el as HTMLAnchorElement).getAttribute('href') || '#';
+                        current.linkText = el.textContent?.trim() || (language === 'en' ? 'Read the story' : 'Les historien');
+                    }
+                    return;
+                }
+
+                if (tag === 'P') {
+                    // A <p> may contain an img — extract it
+                    const img = el.querySelector('img');
+                    const anchor = el.querySelector('a');
+                    if (img && !current.imageSrc) {
+                        current.imageSrc = img.getAttribute('src') || '';
+                        current.imageAlt = img.getAttribute('alt') || current.name;
+                        // Also get text outside the img as description
+                        const textWithoutImg = el.textContent?.replace(img.alt || '', '').trim() || '';
+                        if (textWithoutImg && !current.description) current.description = textWithoutImg;
+                    } else if (anchor && !current.linkUrl) {
+                        current.linkUrl = anchor.getAttribute('href') || '#';
+                        current.linkText = anchor.textContent?.trim() || (language === 'en' ? 'Read the story' : 'Les historien');
+                    } else {
+                        const text = el.textContent?.trim();
+                        if (text && !current.description) current.description = text;
+                    }
+                    return;
+                }
+
+                if (tag === 'DIV') {
+                    Array.from(el.children).forEach(walk);
+                }
+            };
+
+            Array.from(root.children).forEach(walk);
+            if (current) stories.push(current);
+
+            if (stories.length === 0) return null;
+
+            return (
+                <div className={styles.patientStoryGrid}>
+                    {stories.map((story, i) => (
+                        <div key={i} className={styles.patientStoryCard}>
+                            <h4 className={styles.patientStoryName}>{story.name}</h4>
+                            {story.imageSrc && (
+                                <div className={styles.patientStoryImageWrapper}>
+                                    <img
+                                        src={story.imageSrc}
+                                        alt={story.imageAlt}
+                                        className={styles.patientStoryImage}
+                                    />
+                                </div>
+                            )}
+                            {story.description && (
+                                <p className={styles.patientStoryDescription}>{story.description}</p>
+                            )}
+                            {(story.linkUrl && story.linkUrl !== '#') && (
+                                <a
+                                    href={story.linkUrl}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className={styles.patientStoryLink}
+                                >
+                                    {story.linkText || (language === 'en' ? 'Read the story' : 'Les historien')}
+                                </a>
+                            )}
+                        </div>
+                    ))}
+                </div>
+            );
+        } catch {
+            return null;
+        }
+    };
+
     const renderContentWithImageCards = (html: string, options?: {
         isIntro?: boolean;
         /** Inject this node after the block whose heading matches (e.g. "Bekkenbunnstrening"), so it appears above the next block (e.g. Biofeedback). */
@@ -1014,6 +1142,7 @@ export const TilstandDynamicSection = ({ tilstand, activeSection }: TilstandDyna
                         ? parseResourceItems(itemContent)
                         : null;
                     const isResourceAccordion = !!(resourceItems && resourceItems.length > 0);
+                    const isPatientStories = /pasienthistori/i.test(itemTitleNo) || /patient\s*stor/i.test(itemTitle);
 
                     // Render image for underseksjon (sub.bilde_url)
                     const renderUnderseksjonImage = (sub: TilstandUnderseksjon) => {
@@ -1157,7 +1286,13 @@ export const TilstandDynamicSection = ({ tilstand, activeSection }: TilstandDyna
                             defaultOpen={false}
                         >
                             <>
-                                {isResourceAccordion ? renderResourceTable(resourceItems!) : hasUnderseksjoner ? (
+                                {isResourceAccordion ? renderResourceTable(resourceItems!) : isPatientStories && itemContent ? (
+                                    <>
+                                        {renderPatientStoryCards(itemContent)}
+                                        {renderImage(item)}
+                                        {renderLinks(item)}
+                                    </>
+                                ) : hasUnderseksjoner ? (
                                     <>
                                         {itemContent && (
                                             <>
