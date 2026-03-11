@@ -436,13 +436,8 @@ export const TilstandDynamicSection = ({ tilstand, activeSection }: TilstandDyna
         if (!html) return null;
         try {
             const doc = new DOMParser().parseFromString(`<div>${html}</div>`, 'text/html');
-            let root = doc.body.firstChild as HTMLElement;
+            const root = doc.body.firstChild as HTMLElement;
             if (!root) return null;
-
-            // Unwrap if content is wrapped in a single <div>
-            if (root.children.length === 1 && root.children[0].tagName === 'DIV') {
-                root = root.children[0] as HTMLElement;
-            }
 
             type StoryCard = {
                 name: string;
@@ -456,34 +451,78 @@ export const TilstandDynamicSection = ({ tilstand, activeSection }: TilstandDyna
             const stories: StoryCard[] = [];
             let current: StoryCard | null = null;
 
-            Array.from(root.childNodes).forEach((node) => {
-                const el = node as HTMLElement;
-                if (el.nodeType !== 1) return;
+            // Walk all elements depth-first — each H4/H3 starts a new card.
+            // img (at any nesting depth), a, and p text are harvested into the current card.
+            const walk = (el: Element): void => {
+                const tag = el.tagName;
 
-                if (el.tagName === 'H4' || el.tagName === 'H3') {
+                if (tag === 'H4' || tag === 'H3') {
                     if (current) stories.push(current);
                     current = { name: el.textContent?.trim() || '', imageSrc: '', imageAlt: '', description: '', linkUrl: '', linkText: '' };
-                } else if (current) {
-                    const img = el.tagName === 'IMG' ? el as HTMLImageElement : el.querySelector('img');
-                    const anchor = el.tagName === 'A' ? el as HTMLAnchorElement : el.querySelector('a');
+                    return;
+                }
 
+                if (!current) {
+                    // Recurse into wrapper divs before first card heading
+                    Array.from(el.children).forEach(walk);
+                    return;
+                }
+
+                if (tag === 'IMG') {
+                    if (!current.imageSrc) {
+                        current.imageSrc = (el as HTMLImageElement).getAttribute('src') || '';
+                        current.imageAlt = (el as HTMLImageElement).getAttribute('alt') || current.name;
+                    }
+                    return;
+                }
+
+                if (tag === 'FIGURE') {
+                    const img = el.querySelector('img');
                     if (img && !current.imageSrc) {
                         current.imageSrc = img.getAttribute('src') || '';
                         current.imageAlt = img.getAttribute('alt') || current.name;
+                    }
+                    // Ignore figcaption as description — it's a photo credit
+                    return;
+                }
+
+                if (tag === 'A') {
+                    if (!current.linkUrl) {
+                        current.linkUrl = (el as HTMLAnchorElement).getAttribute('href') || '#';
+                        current.linkText = el.textContent?.trim() || (language === 'en' ? 'Read the story' : 'Les historien');
+                    }
+                    return;
+                }
+
+                if (tag === 'P') {
+                    // A <p> may contain an img — extract it
+                    const img = el.querySelector('img');
+                    const anchor = el.querySelector('a');
+                    if (img && !current.imageSrc) {
+                        current.imageSrc = img.getAttribute('src') || '';
+                        current.imageAlt = img.getAttribute('alt') || current.name;
+                        // Also get text outside the img as description
+                        const textWithoutImg = el.textContent?.replace(img.alt || '', '').trim() || '';
+                        if (textWithoutImg && !current.description) current.description = textWithoutImg;
                     } else if (anchor && !current.linkUrl) {
                         current.linkUrl = anchor.getAttribute('href') || '#';
                         current.linkText = anchor.textContent?.trim() || (language === 'en' ? 'Read the story' : 'Les historien');
                     } else {
                         const text = el.textContent?.trim();
-                        if (text && !current.description) {
-                            current.description = text;
-                        }
+                        if (text && !current.description) current.description = text;
                     }
+                    return;
                 }
-            });
+
+                if (tag === 'DIV') {
+                    Array.from(el.children).forEach(walk);
+                }
+            };
+
+            Array.from(root.children).forEach(walk);
             if (current) stories.push(current);
 
-            if (stories.length === 0) return renderContentWithImageCards(html);
+            if (stories.length === 0) return null;
 
             return (
                 <div className={styles.patientStoryGrid}>
@@ -502,14 +541,14 @@ export const TilstandDynamicSection = ({ tilstand, activeSection }: TilstandDyna
                             {story.description && (
                                 <p className={styles.patientStoryDescription}>{story.description}</p>
                             )}
-                            {story.linkUrl && (
+                            {(story.linkUrl && story.linkUrl !== '#') && (
                                 <a
                                     href={story.linkUrl}
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     className={styles.patientStoryLink}
                                 >
-                                    {story.linkText}
+                                    {story.linkText || (language === 'en' ? 'Read the story' : 'Les historien')}
                                 </a>
                             )}
                         </div>
@@ -517,7 +556,7 @@ export const TilstandDynamicSection = ({ tilstand, activeSection }: TilstandDyna
                 </div>
             );
         } catch {
-            return renderContentWithImageCards(html);
+            return null;
         }
     };
 
