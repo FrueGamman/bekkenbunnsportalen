@@ -69,6 +69,24 @@ export const HeroSection = ({ cmsData }: HeroSectionProps) => {
   const description = cmsData?.description || staticData.description
   const subtitle = cmsData?.subtitle || staticData.subtitle
 
+  // Keep "Velkommen til"/"Welcome to the" as the first line (same row as logo on larger screens)
+  // even when CMS provides a full title string.
+  const defaultLine1 = language === "no" ? "Velkommen til" : "Welcome to the"
+  const defaultLine2 = language === "no" ? "Bekkenbunnsportalen.no" : "Pelvic Floor Portal"
+
+  const normalizedTitle = (title || "").replace(/\s+/g, " ").trim()
+  const lower = normalizedTitle.toLowerCase()
+  const lowerPrefix = defaultLine1.toLowerCase()
+  const prefixIdx = lower.indexOf(lowerPrefix)
+
+  const heroTitleLine1 = defaultLine1
+  const heroTitleLine2 =
+    normalizedTitle.length === 0
+      ? defaultLine2
+      : prefixIdx >= 0
+        ? (normalizedTitle.slice(prefixIdx + defaultLine1.length).trim() || defaultLine2)
+        : normalizedTitle
+
   const hardcodedIcons: Record<string, string> = {
     "urinary-incontinence": "/image-7.svg",
     "urinary-retention": "/vector.svg",
@@ -226,18 +244,8 @@ export const HeroSection = ({ cmsData }: HeroSectionProps) => {
             />
             <div className={styles.heroTitleRow}>
               <h1 className={styles.heroTitle}>
-                {title && title !== staticData.title ? (
-                  <span className={styles.heroTitleLine2}>{title}</span>
-                ) : (
-                  <>
-                    <span className={styles.heroTitleLine1}>
-                      {language === 'no' ? 'Velkommen til' : 'Welcome to the'}
-                    </span>
-                    <span className={styles.heroTitleLine2}>
-                      {language === 'no' ? 'Bekkenbunnsportalen.no' : 'Pelvic Floor Portal'}
-                    </span>
-                  </>
-                )}
+                <span className={styles.heroTitleLine1}>{heroTitleLine1}</span>
+                <span className={styles.heroTitleLine2}>{heroTitleLine2}</span>
               </h1>
             </div>
           </div>

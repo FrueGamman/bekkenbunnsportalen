@@ -311,6 +311,127 @@ export const TilstandDynamicSection = ({ tilstand, activeSection }: TilstandDyna
         );
     };
 
+    const isBlankHtml = (html: string): boolean => {
+        const text = html.replace(/&nbsp;/gi, ' ').replace(/<[^>]*>/g, '').trim();
+        return text.length === 0;
+    };
+
+    type ResourceTableItem = { title: string; description: string; type: string; links: { text: string; url: string }[] };
+
+    const parseResourceItems = (html: string): ResourceTableItem[] | null => {
+        if (!html?.trim()) return null;
+        try {
+            const doc = new DOMParser().parseFromString(`<div>${html}</div>`, 'text/html');
+            const root = doc.body.firstChild as HTMLElement;
+            if (!root) return null;
+
+            const items: ResourceTableItem[] = [];
+
+            // Format A: div.resource-item with h4, p, em, a
+            const resourceItemDivs = root.querySelectorAll('.resource-item, div.resource-item');
+            if (resourceItemDivs.length > 0) {
+                resourceItemDivs.forEach((div) => {
+                    const h4 = div.querySelector('h4');
+                    const title = h4?.textContent?.trim() || '';
+                    const paragraphs = div.querySelectorAll('p');
+                    let description = '';
+                    let type = '';
+                    const links: { text: string; url: string }[] = [];
+                    paragraphs.forEach((p) => {
+                        const hasEm = p.querySelector('em');
+                        const anchors = p.querySelectorAll('a');
+                        if (anchors.length > 0) {
+                            anchors.forEach((a) => {
+                                links.push({
+                                    text: a.textContent?.trim() || '',
+                                    url: a.getAttribute('href') || '#'
+                                });
+                            });
+                        } else if (hasEm) {
+                            type = hasEm.textContent?.trim() || '';
+                        } else if (!description && p.textContent?.trim()) {
+                            description = p.textContent?.trim() || '';
+                        }
+                    });
+                    if (title || description || links.length > 0) {
+                        items.push({ title, description, type, links });
+                    }
+                });
+                return items.length > 0 ? items : null;
+            }
+
+            // Format B: h4 + ul > li with strong, – description, a
+            const h4s = root.querySelectorAll('h4');
+            if (h4s.length > 0) {
+                h4s.forEach((h4) => {
+                    const sectionType = h4.textContent?.trim() || '';
+                    let next: Element | null = h4.nextElementSibling;
+                    while (next && next.tagName !== 'UL') next = next.nextElementSibling;
+                    const ul = next;
+                    if (!ul) return;
+                    ul.querySelectorAll('li').forEach((li) => {
+                        const strong = li.querySelector('strong');
+                        const title = strong?.textContent?.trim() || '';
+                        let description = '';
+                        const text = li.innerHTML || '';
+                        const dashMatch = text.match(/[–\-]\s*([^<]*?)(?:<br\s*\/?>|<a)/i);
+                        if (dashMatch) description = dashMatch[1].replace(/<[^>]*>/g, '').trim();
+                        const links: { text: string; url: string }[] = [];
+                        li.querySelectorAll('a').forEach((a) => {
+                            links.push({
+                                text: a.textContent?.trim() || '',
+                                url: a.getAttribute('href') || '#'
+                            });
+                        });
+                        if (title || description || links.length > 0) {
+                            items.push({ title, description, type: sectionType, links });
+                        }
+                    });
+                });
+                return items.length > 0 ? items : null;
+            }
+
+            return null;
+        } catch {
+            return null;
+        }
+    };
+
+    const renderResourceTable = (items: ResourceTableItem[]) => {
+        const headerRessurs = language === 'en' ? 'RESOURCE' : 'RESSURS';
+        const headerLenke = language === 'en' ? 'LINK' : 'LENKE';
+        return (
+            <div className={styles.resourceTable}>
+                <div className={styles.resourceHeader}>
+                    <div className={styles.resourceColumn}>{headerRessurs}</div>
+                    <div className={styles.resourceColumn}>{headerLenke}</div>
+                </div>
+                {items.map((item, i) => (
+                    <div key={i} className={styles.resourceRow}>
+                        <div className={styles.resourceDescription}>
+                            <h4 className={styles.resourceName}>{item.title}</h4>
+                            {item.description ? <p className={styles.resourceDesc}>{item.description}</p> : null}
+                            {item.type ? <span className={styles.resourceType}>{item.type}</span> : null}
+                        </div>
+                        <div className={styles.resourceLinks}>
+                            {item.links.map((link, j) => (
+                                <a
+                                    key={j}
+                                    href={link.url}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className={styles.resourceLink}
+                                >
+                                    {link.text}
+                                </a>
+                            ))}
+                        </div>
+                    </div>
+                ))}
+            </div>
+        );
+    };
+
     const renderPatientStoryCards = (html: string) => {
         if (!html) return null;
         try {
@@ -1314,6 +1435,19 @@ export const TilstandDynamicSection = ({ tilstand, activeSection }: TilstandDyna
                                     </div>
                                 </div>
                             ) : (() => {
+                                // Resource table: if in "resources" section and content has structured resource items, render as table
+                                if (activeSection === "resources" && typeof itemContent === "string" && !isBlankHtml(itemContent)) {
+                                    const resourceItems = parseResourceItems(itemContent);
+                                    if (resourceItems && resourceItems.length > 0) {
+                                        return (
+                                            <>
+                                                {renderResourceTable(resourceItems)}
+                                                {renderImage(item)}
+                                                {renderLinks(item)}
+                                            </>
+                                        );
+                                    }
+                                }
                                 const isPatientStories = /pasienthistori/i.test(itemTitleNo) || /patient\s*stor/i.test(itemTitle);
                                 if (isPatientStories && itemContent) {
                                     return (
