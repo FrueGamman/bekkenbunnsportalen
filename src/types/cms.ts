@@ -355,6 +355,17 @@ export interface Tilstand {
   utredning_intro: string;
   utredning_intro_en?: string | null;
   utredning_trekkspill: TilstandAccordionItem[] | null;
+  /** Testimonial quote for diagnosis section (e.g. utredning av avføringslekkasje) */
+  utredning_sitat?: string | null;
+  utredning_sitat_en?: string | null;
+  utredning_sitat_kilde?: string | null;
+  utredning_sitat_kilde_en?: string | null;
+  /** Hero image for diagnosis intro (Directus files UUID) */
+  utredning_bilde_id?: string | null;
+  utredning_bilde_alt?: string | null;
+  utredning_bilde_alt_en?: string | null;
+  utredning_bilde_caption?: string | null;
+  utredning_bilde_caption_en?: string | null;
 
   // Treatment (Directus: behandling_*)
   behandling_tittel: string;
