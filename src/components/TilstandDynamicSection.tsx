@@ -1568,12 +1568,25 @@ export const TilstandDynamicSection = ({ tilstand, activeSection }: TilstandDyna
             {/* Smartphone apps card — shown below the video section on exercises pages */}
             {activeSection === "exercises" && (() => {
                 const appsData = t.ovelse_smartphone_apps as Record<string, string | undefined> | null | undefined;
-                if (!appsData) return null;
-                const appTitle = (language === 'en' && appsData.title_en) ? appsData.title_en : (appsData.title || '');
-                const appDesc = (language === 'en' && appsData.description_en) ? appsData.description_en : (appsData.description || '');
-                const appLinkText = (language === 'en' && appsData.linkText_en) ? appsData.linkText_en : (appsData.linkText || '');
-                const appLinkUrl = appsData.linkUrl || '';
-                if (!appTitle && !appDesc) return null;
+                // Fallback: show Tät app info for all conditions even without Directus data
+                const fallback = {
+                    title: language === 'en' ? 'Smartphone applications' : 'Smarttelefon applikasjoner',
+                    description: language === 'en'
+                        ? 'Several smartphone apps have been developed to help with pelvic floor training. An example is the Tät® app. The app is Swedish and available in multiple languages, free of charge.'
+                        : 'Det er utviklet flere applikasjoner til smarttelefoner for hjelp med bekkenbunnstrening. Et eksempel er appen Tät®. Appen er svensk og tilgjengelig på flere språk, kostnadsfritt.',
+                    linkText: language === 'en' ? 'Read more about these programs at tät.nu' : 'Les mer om disse programmene på tät.nu',
+                    linkUrl: 'https://econtinence.app/en/'
+                };
+                const appTitle = appsData
+                    ? ((language === 'en' && appsData.title_en) ? appsData.title_en : (appsData.title || fallback.title))
+                    : fallback.title;
+                const appDesc = appsData
+                    ? ((language === 'en' && appsData.description_en) ? appsData.description_en : (appsData.description || fallback.description))
+                    : fallback.description;
+                const appLinkText = appsData
+                    ? ((language === 'en' && appsData.linkText_en) ? appsData.linkText_en : (appsData.linkText || fallback.linkText))
+                    : fallback.linkText;
+                const appLinkUrl = appsData ? (appsData.linkUrl || fallback.linkUrl) : fallback.linkUrl;
                 return (
                     <div className={styles.highlightBox} style={{ marginTop: '1rem', display: 'flex', gap: '0.75rem', alignItems: 'flex-start' }}>
                         <span style={{ fontSize: '1.25rem' }}>💡</span>
