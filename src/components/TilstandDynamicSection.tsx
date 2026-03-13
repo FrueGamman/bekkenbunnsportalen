@@ -198,73 +198,49 @@ export const TilstandDynamicSection = ({ tilstand, activeSection }: TilstandDyna
         }
     }
 
-    // On treatment (urinary-incontinence), compute exercise section items to show after treatment accordions (same as exercises page)
-    let exerciseSectionItems: TilstandAccordionItem[] | null = null;
+    // On treatment (urinary-incontinence), compute whether we have exercise data to inject after Konservativ behandling
+    let exerciseSectionNode: React.ReactNode | null = null;
     if (activeSection === "treatment" && conditionSlug === "urinary-incontinence") {
-        let ovelseTrekkspill = t.ovelse_trekkspill as TilstandAccordionItem[] | string | undefined;
-        if (typeof ovelseTrekkspill === "string" && ovelseTrekkspill.trim()) {
-            try {
-                ovelseTrekkspill = JSON.parse(ovelseTrekkspill) as TilstandAccordionItem[];
-            } catch {
-                ovelseTrekkspill = undefined;
+        const tryTitle = ((language === "en" && t.ovelse_try_yourself_title_en) || t.ovelse_try_yourself_title || "") as string;
+        const step1 = ((language === "en" && t.ovelse_step1_text_en) || t.ovelse_step1_text || "") as string;
+        const tipsTitle = ((language === "en" && t.ovelse_tips_title_en) || t.ovelse_tips_title || "") as string;
+        const tipsText = ((language === "en" && t.ovelse_tips_text_en) || t.ovelse_tips_text || "") as string;
+        const videoSectionTitle = ((language === "en" && t.ovelse_video_section_title_en) || t.ovelse_video_section_title || "") as string;
+        const videoSectionDesc = ((language === "en" && t.ovelse_video_section_description_en) || t.ovelse_video_section_description || "") as string;
+        const videosRaw = (t.ovelse_videos as { src: string; title?: string; title_en?: string }[] | null) || [];
+        const stepsRaw = (t.ovelse_steps as { number: number; text?: string; text_en?: string }[] | null) || [];
+        const genderRaw = (t.ovelse_gender_instructions as { title?: string; title_en?: string; text?: string; text_en?: string; icon?: string; iconColor?: string }[] | null) || [];
+        const appsRaw = t.ovelse_smartphone_apps as SmartphoneApps | null | undefined;
+        const hasExData = tryTitle || step1 || videoSectionTitle || videosRaw.length > 0;
+        if (hasExData) {
+            let descHeadings: string[] = [];
+            if (videoSectionDesc) {
+                try {
+                    const descDoc = new DOMParser().parseFromString(`<div>${videoSectionDesc}</div>`, 'text/html');
+                    descHeadings = Array.from(descDoc.querySelectorAll('h4, h5')).map(el => el.textContent?.trim() || '').filter(Boolean);
+                } catch { /* ignore */ }
             }
-        }
-        if (Array.isArray(ovelseTrekkspill) && ovelseTrekkspill.length > 0) {
-            exerciseSectionItems = ovelseTrekkspill;
-        } else {
-            const esc = (s: string) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-            const tryTitle = ((language === "en" && t.ovelse_try_yourself_title_en) || t.ovelse_try_yourself_title || "") as string;
-            const step1 = ((language === "en" && t.ovelse_step1_text_en) || t.ovelse_step1_text || "") as string;
-            const tipsTitle = ((language === "en" && t.ovelse_tips_title_en) || t.ovelse_tips_title || "") as string;
-            const tipsText = ((language === "en" && t.ovelse_tips_text_en) || t.ovelse_tips_text || "") as string;
-            const videoSectionTitle = ((language === "en" && t.ovelse_video_section_title_en) || t.ovelse_video_section_title || "") as string;
-            const videoSectionDesc = ((language === "en" && t.ovelse_video_section_description_en) || t.ovelse_video_section_description || "") as string;
-            const videosRaw = (t.ovelse_videos as { src: string; title?: string; title_en?: string }[] | null) || [];
-            const stepsRaw = (t.ovelse_steps as { number: number; text?: string; text_en?: string }[] | null) || [];
-            const genderRaw = (t.ovelse_gender_instructions as { title?: string; title_en?: string; text?: string; text_en?: string; icon?: string; iconColor?: string }[] | null) || [];
-            const app = t.ovelse_smartphone_apps as Record<string, string | undefined> | null | undefined;
-            const hasStructured = tryTitle || step1 || videoSectionTitle || videosRaw.length > 0;
-            if (hasStructured) {
-                const syntheticItems: TilstandAccordionItem[] = [];
-                let tryHtml = '';
-                if (step1) tryHtml += `<p><strong>1.</strong> ${esc(step1)}</p>`;
-                genderRaw.forEach((g) => {
-                    const gTitle = (language === 'en' && g.title_en) ? g.title_en : (g.title || '');
-                    const gText = (language === 'en' && g.text_en) ? g.text_en : (g.text || '');
-                    const gIcon = g.icon || '';
-                    tryHtml += `<p><strong>${esc(gIcon)} ${esc(gTitle)}</strong></p><p>${esc(gText)}</p>`;
-                });
-                if (tipsTitle || tipsText) {
-                    tryHtml += `<blockquote><p><strong>${esc(tipsTitle)}</strong></p><p>${esc(tipsText)}</p></blockquote>`;
-                }
-                stepsRaw.sort((a, b) => a.number - b.number).forEach((s) => {
-                    const sText = (language === 'en' && s.text_en) ? s.text_en : (s.text || '');
-                    tryHtml += `<p><strong>${s.number}.</strong> ${esc(sText)}</p>`;
-                });
-                if (tryTitle && tryHtml) {
-                    syntheticItems.push({ tittel: tryTitle, innhold: tryHtml });
-                }
-                let videoHtml = '';
-                if (videoSectionDesc) videoHtml += `<p>${esc(videoSectionDesc)}</p>`;
-                videosRaw.forEach((v) => {
-                    const vTitle = (language === 'en' && v.title_en) ? v.title_en : (v.title || '');
-                    if (vTitle) videoHtml += `<p><strong>${esc(vTitle)}</strong></p>`;
-                    videoHtml += `<div style="position:relative;padding-bottom:56.25%;height:0;margin:1rem 0"><iframe src="${v.src}" title="${esc(vTitle)}" style="position:absolute;top:0;left:0;width:100%;height:100%;border:none;border-radius:8px" allowfullscreen loading="lazy"></iframe></div>`;
-                });
-                if (app) {
-                    const appTitle = (language === 'en' && app.title_en) ? app.title_en : (app.title || '');
-                    const appDesc = (language === 'en' && app.description_en) ? app.description_en : (app.description || '');
-                    const appLinkText = (language === 'en' && app.linkText_en) ? app.linkText_en : (app.linkText || '');
-                    const appLinkUrl = app.linkUrl || '';
-                    videoHtml += `<blockquote><p><strong>${esc(appTitle)}</strong></p><p>${esc(appDesc)}</p><p><a href="${appLinkUrl}" target="_blank" rel="noopener noreferrer">${esc(appLinkText)}</a></p></blockquote>`;
-                }
-                if (videoSectionTitle && videoHtml) {
-                    syntheticItems.push({ tittel: videoSectionTitle, innhold: videoHtml });
-                }
-                if (syntheticItems.length > 0) {
-                    exerciseSectionItems = syntheticItems;
-                }
-            }
+            const videos: Video[] = videosRaw.map((v, i) => ({ src: v.src, title: (language === "en" && v.title_en) ? v.title_en : (v.title || descHeadings[i] || "") }));
+            const exerciseSteps: ExerciseStep[] = stepsRaw.sort((a, b) => a.number - b.number).map((s) => ({ number: s.number, text: (language === "en" && s.text_en) ? s.text_en : (s.text || "") }));
+            const genderInstructions: GenderInstruction[] = genderRaw.map((g) => ({ title: (language === "en" && g.title_en) ? g.title_en : (g.title || ""), text: (language === "en" && g.text_en) ? g.text_en : (g.text || ""), icon: g.icon || "", iconColor: g.iconColor || "#053870" }));
+            const app = appsRaw as Record<string, string | undefined> | null | undefined;
+            const smartphoneApps: SmartphoneApps | undefined = app ? { title: (language === "en" && app.title_en) ? app.title_en : (app.title || ""), description: (language === "en" && app.description_en) ? app.description_en : (app.description || ""), linkText: (language === "en" && app.linkText_en) ? app.linkText_en : (app.linkText || ""), linkUrl: app.linkUrl || "" } : undefined;
+            const finalDesc = descHeadings.length > 0 ? undefined : (videoSectionDesc || undefined);
+            exerciseSectionNode = (
+                <CommonExerciseSection
+                    pageTitle={language === "no" ? "Bekkenbunnstrening" : "Pelvic floor training"}
+                    tryYourselfTitle={tryTitle}
+                    step1Text={step1}
+                    genderInstructions={genderInstructions}
+                    tipsTitle={tipsTitle}
+                    tipsText={tipsText}
+                    exerciseSteps={exerciseSteps}
+                    videoSectionTitle={videoSectionTitle}
+                    videoSectionDescription={finalDesc}
+                    videos={videos}
+                    smartphoneApps={smartphoneApps}
+                />
+            );
         }
     }
 
@@ -1218,39 +1194,10 @@ export const TilstandDynamicSection = ({ tilstand, activeSection }: TilstandDyna
                     const isKonservativBehandling =
                         itemId === 'konservativ-behandling' || itemId === 'conservative-treatment' ||
                         /konservativ|conservative/i.test(String(itemTitleNo ?? itemTitle));
-                    const showExerciseSectionHere = isKonservativBehandling && exerciseSectionItems && exerciseSectionItems.length > 0;
-                    const exerciseSectionNodeForInject = showExerciseSectionHere ? (
-                        <>
-                            <div className={styles.sectionHeader} style={{ marginTop: '2rem' }}>
-                                <div className={styles.sectionIcon}>
-                                    <img src="/exercises.png" alt={language === 'no' ? 'Øvelser' : 'Exercises'} width="24" height="24" />
-                                </div>
-                                <h2 className={styles.sectionTitle}>{language === 'no' ? 'Øvelser' : 'Exercises'}</h2>
-                            </div>
-                            <div className={styles.sectionContent}>
-                                {exerciseSectionItems!.map((exItem: TilstandAccordionItem, exIndex: number) => {
-                                    const exTitle = getField(exItem, 'tittel');
-                                    const exTitleNo = exItem.tittel;
-                                    const exContent = getField(exItem, 'innhold');
-                                    const exId = slugify(exTitleNo);
-                                    return (
-                                        <SectionAccordion
-                                            key={exIndex}
-                                            title={exTitle}
-                                            id={exId}
-                                            isDarkMode={resolvedTheme === 'dark'}
-                                            defaultOpen={false}
-                                        >
-                                            {renderContentWithImageCards(exContent)}
-                                        </SectionAccordion>
-                                    );
-                                })}
-                            </div>
-                        </>
-                    ) : null;
+                    const showExerciseSectionHere = isKonservativBehandling && !!exerciseSectionNode;
                     const injectOptions = showExerciseSectionHere ? {
                         injectExerciseAfterHeading: /bekkenbunnstrening|pelvic floor training/i,
-                        exerciseSectionNode: exerciseSectionNodeForInject
+                        exerciseSectionNode: exerciseSectionNode
                     } : undefined;
 
                     // Support for centered group headers in accordions
@@ -1350,7 +1297,7 @@ export const TilstandDynamicSection = ({ tilstand, activeSection }: TilstandDyna
                                     const tryTitle = ((language === "en" && t.ovelse_try_yourself_title_en) || t.ovelse_try_yourself_title || "") as string;
                                     const hasExerciseData = !!(tryTitle || (t.ovelse_steps as unknown[] | null)?.length || (t.ovelse_videos as unknown[] | null)?.length);
                                     // Don't inject inside accordion when we show the full exercise section after treatment accordions
-                                    const injectExerciseSection = isFirstTreatmentAccordion && hasExerciseData && !(exerciseSectionItems && exerciseSectionItems.length > 0);
+                                    const injectExerciseSection = isFirstTreatmentAccordion && hasExerciseData && !exerciseSectionNode;
                                     const exerciseMarker = "<!-- INJECT_EXERCISE_SECTION -->";
                                     const parts = injectExerciseSection && typeof itemContent === "string" && itemContent.includes(exerciseMarker)
                                         ? itemContent.split(exerciseMarker)
