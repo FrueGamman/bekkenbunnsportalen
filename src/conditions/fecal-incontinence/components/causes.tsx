@@ -413,47 +413,38 @@ export const Causes = () => {
         return (
           <div key={group.id} className={styles.sectionContent}>
             {hasQuote && group.quote && (
-              <div className={styles.highlightBox}>
-                <p>{group.quote.text}</p>
-                <p className={styles.quoteAuthor}>{group.quote.author}</p>
+              <div className={styles.causesIntroQuoteBlock}>
+                <blockquote className={styles.causesIntroQuoteText}>
+                  {group.quote.text}
+                </blockquote>
+                <cite className={styles.causesIntroQuoteAuthor}>— {group.quote.author}</cite>
               </div>
             )}
 
             {hasIntro && group.introduction && (
-              <div className={styles.sectionContainer} style={{marginBottom: '20px', padding: '20px'}}>
-                
+              <div className={styles.causesIntroContent}>
                 {group.hasSideBySide && group.sideBySideImage ? (
-                  <div style={{ display: 'flex', flexDirection: 'column' }}>
-                    {/* First paragraph with image side by side */}
-                    <div className={styles.anatomyGrid}>
-                      <div>
-                        <p className={styles.enhancedParagraph}>
-                          {group.introduction.split('\n\n')[0]}
+                  <>
+                    <div className={styles.causesIntroText}>
+                      {group.introduction.split('\n\n').map((paragraph, i) => (
+                        <p key={i} className={styles.enhancedParagraph}>
+                          {paragraph}
                         </p>
-                      </div>
-                      <div className={styles.anatomyItem}>
-                        <img 
-                          src={group.sideBySideImage.src} 
-                          alt={group.sideBySideImage.alt} 
-                          className={styles.anatomyImage}
-                        />
-                        {group.sideBySideImage.caption && (
-                          <p className={styles.anatomyCaption}>
-                            {group.sideBySideImage.caption}
-                          </p>
-                        )}
-                      </div>
+                      ))}
                     </div>
-                    
-                    {/* Remaining paragraphs below */}
-                    {group.introduction.split('\n\n').length > 1 && (
-                      <div>
-                        <p className={styles.enhancedParagraph}>
-                          {group.introduction.split('\n\n').slice(1).join('\n\n')}
-                        </p>
-                      </div>
-                    )}
-                  </div>
+                    <figure className={styles.causesIntroImageBlock}>
+                      <img
+                        src={group.sideBySideImage.src}
+                        alt={group.sideBySideImage.alt}
+                        className={styles.causesIntroImage}
+                      />
+                      {group.sideBySideImage.caption && (
+                        <figcaption className={styles.causesIntroImageCaption}>
+                          {group.sideBySideImage.caption}
+                        </figcaption>
+                      )}
+                    </figure>
+                  </>
                 ) : (
                   <p className={styles.enhancedParagraph}>{group.introduction}</p>
                 )}

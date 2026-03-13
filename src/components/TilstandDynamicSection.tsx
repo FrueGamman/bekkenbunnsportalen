@@ -516,6 +516,7 @@ export const TilstandDynamicSection = ({ tilstand, activeSection }: TilstandDyna
                 description: string;
                 linkUrl: string;
                 linkText: string;
+                photoCredit?: string;
             };
 
             const stories: StoryCard[] = [];
@@ -528,7 +529,7 @@ export const TilstandDynamicSection = ({ tilstand, activeSection }: TilstandDyna
 
                 if (tag === 'H4' || tag === 'H3') {
                     if (current) stories.push(current);
-                    current = { name: el.textContent?.trim() || '', imageSrc: '', imageAlt: '', description: '', linkUrl: '', linkText: '' };
+                    current = { name: el.textContent?.trim() || '', imageSrc: '', imageAlt: '', description: '', linkUrl: '', linkText: '', photoCredit: '' };
                     return;
                 }
 
@@ -552,7 +553,10 @@ export const TilstandDynamicSection = ({ tilstand, activeSection }: TilstandDyna
                         current.imageSrc = img.getAttribute('src') || '';
                         current.imageAlt = img.getAttribute('alt') || current.name;
                     }
-                    // Ignore figcaption as description — it's a photo credit
+                    const figcap = el.querySelector('figcaption');
+                    if (figcap && !current.photoCredit) {
+                        current.photoCredit = figcap.textContent?.trim() || '';
+                    }
                     return;
                 }
 
@@ -568,18 +572,19 @@ export const TilstandDynamicSection = ({ tilstand, activeSection }: TilstandDyna
                     // A <p> may contain an img — extract it
                     const img = el.querySelector('img');
                     const anchor = el.querySelector('a');
+                    const text = el.textContent?.trim() || '';
                     if (img && !current.imageSrc) {
                         current.imageSrc = img.getAttribute('src') || '';
                         current.imageAlt = img.getAttribute('alt') || current.name;
-                        // Also get text outside the img as description
-                        const textWithoutImg = el.textContent?.replace(img.alt || '', '').trim() || '';
+                        const textWithoutImg = text.replace(img.alt || '', '').trim() || '';
                         if (textWithoutImg && !current.description) current.description = textWithoutImg;
+                    } else if (/^(Foto|Photo):/i.test(text) && !current.photoCredit) {
+                        current.photoCredit = text;
                     } else if (anchor && !current.linkUrl) {
                         current.linkUrl = anchor.getAttribute('href') || '#';
                         current.linkText = anchor.textContent?.trim() || (language === 'en' ? 'Read the story' : 'Les historien');
-                    } else {
-                        const text = el.textContent?.trim();
-                        if (text && !current.description) current.description = text;
+                    } else if (text && !current.description) {
+                        current.description = text;
                     }
                     return;
                 }
@@ -594,35 +599,47 @@ export const TilstandDynamicSection = ({ tilstand, activeSection }: TilstandDyna
 
             if (stories.length === 0) return null;
 
+            const linkLabel = language === 'en' ? 'Read the story' : 'Les historien';
+
             return (
-                <div className={styles.patientStoryGrid}>
-                    {stories.map((story, i) => (
-                        <div key={i} className={styles.patientStoryCard}>
-                            <h4 className={styles.patientStoryName}>{story.name}</h4>
-                            {story.imageSrc && (
-                                <div className={styles.patientStoryImageWrapper}>
-                                    <img
-                                        src={story.imageSrc}
-                                        alt={story.imageAlt}
-                                        className={styles.patientStoryImage}
-                                    />
-                                </div>
-                            )}
-                            {story.description && (
-                                <p className={styles.patientStoryDescription}>{story.description}</p>
-                            )}
-                            {(story.linkUrl && story.linkUrl !== '#') && (
-                                <a
-                                    href={story.linkUrl}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className={styles.patientStoryLink}
-                                >
-                                    {story.linkText || (language === 'en' ? 'Read the story' : 'Les historien')}
-                                </a>
-                            )}
-                        </div>
-                    ))}
+                <div className={styles.patientStorySection}>
+                    <div className={styles.patientStoryGrid}>
+                        {stories.map((story, i) => (
+                            <div key={i} className={styles.patientStoryCard}>
+                                <h4 className={styles.patientStoryName}>{story.name}</h4>
+                                {story.imageSrc && (
+                                    <div className={styles.patientStoryImageWrapper}>
+                                        <img
+                                            src={story.imageSrc}
+                                            alt={story.imageAlt}
+                                            className={styles.patientStoryImage}
+                                        />
+                                        {story.photoCredit && (
+                                            <p className={styles.patientStoryPhotoCredit}>{story.photoCredit}</p>
+                                        )}
+                                    </div>
+                                )}
+                                {story.description && (
+                                    <p className={styles.patientStoryDescription}>{story.description}</p>
+                                )}
+                                {(story.linkUrl && story.linkUrl !== '#') && (
+                                    <a
+                                        href={story.linkUrl}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className={styles.patientStoryLink}
+                                    >
+                                        <span className={styles.patientStoryLinkIcon} aria-hidden>
+                                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                                            </svg>
+                                        </span>
+                                        {story.linkText || linkLabel}
+                                    </a>
+                                )}
+                            </div>
+                        ))}
+                    </div>
                 </div>
             );
         } catch {
