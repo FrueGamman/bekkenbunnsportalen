@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useLanguage } from "../context/LanguageContext";
 import { useTheme } from "../context/ThemeContext";
 import { SectionAccordion } from "./SectionAccordion";
-import { CommonExerciseSection } from "./CommonExerciseSection";
+import { CommonExerciseSection, type ExerciseStep, type GenderInstruction, type Video, type SmartphoneApps } from "./CommonExerciseSection";
 import { ImageModal } from "./ui/ImageModal";
 import type { Tilstand, TilstandAccordionItem, TilstandUnderseksjon } from "../types/cms";
 import { getImageUrl } from "../lib/directus";
@@ -124,8 +124,7 @@ export const TilstandDynamicSection = ({ tilstand, activeSection }: TilstandDyna
     const sitat = ((language === 'en' && t[`${prefix}_sitat_en`]) || t[`${prefix}_sitat`]) as string | undefined;
     const sitatKilde = ((language === 'en' && t[`${prefix}_sitat_kilde_en`]) || t[`${prefix}_sitat_kilde`]) as string | undefined;
 
-    if (activeSection === "exercises" && !(Array.isArray(trekkspill) && trekkspill.length > 0)) {
-        const esc = (s: string) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    if (activeSection === "exercises") {
         const tryTitle = ((language === "en" && t.ovelse_try_yourself_title_en) || t.ovelse_try_yourself_title || "") as string;
         const step1 = ((language === "en" && t.ovelse_step1_text_en) || t.ovelse_step1_text || "") as string;
         const tipsTitle = ((language === "en" && t.ovelse_tips_title_en) || t.ovelse_tips_title || "") as string;
@@ -135,52 +134,67 @@ export const TilstandDynamicSection = ({ tilstand, activeSection }: TilstandDyna
         const videosRaw = (t.ovelse_videos as { src: string; title?: string; title_en?: string }[] | null) || [];
         const stepsRaw = (t.ovelse_steps as { number: number; text?: string; text_en?: string }[] | null) || [];
         const genderRaw = (t.ovelse_gender_instructions as { title?: string; title_en?: string; text?: string; text_en?: string; icon?: string; iconColor?: string }[] | null) || [];
-        const app = t.ovelse_smartphone_apps as Record<string, string | undefined> | null | undefined;
+        const appsRaw = t.ovelse_smartphone_apps as SmartphoneApps | null | undefined;
 
         const hasStructured = tryTitle || step1 || videoSectionTitle || videosRaw.length > 0;
         if (hasStructured) {
-            const syntheticItems: TilstandAccordionItem[] = [];
-
-            let tryHtml = '';
-            if (step1) tryHtml += `<p><strong>1.</strong> ${esc(step1)}</p>`;
-            genderRaw.forEach((g) => {
-                const gTitle = (language === 'en' && g.title_en) ? g.title_en : (g.title || '');
-                const gText = (language === 'en' && g.text_en) ? g.text_en : (g.text || '');
-                const gIcon = g.icon || '';
-                tryHtml += `<p><strong>${esc(gIcon)} ${esc(gTitle)}</strong></p><p>${esc(gText)}</p>`;
-            });
-            if (tipsTitle || tipsText) {
-                tryHtml += `<blockquote><p><strong>${esc(tipsTitle)}</strong></p><p>${esc(tipsText)}</p></blockquote>`;
-            }
-            stepsRaw.sort((a, b) => a.number - b.number).forEach((s) => {
-                const sText = (language === 'en' && s.text_en) ? s.text_en : (s.text || '');
-                tryHtml += `<p><strong>${s.number}.</strong> ${esc(sText)}</p>`;
-            });
-            if (tryTitle && tryHtml) {
-                syntheticItems.push({ tittel: tryTitle, innhold: tryHtml });
+            // Extract h4/h5 headings from videoSectionDesc to use as per-video titles
+            let descHeadings: string[] = [];
+            if (videoSectionDesc) {
+                try {
+                    const descDoc = new DOMParser().parseFromString(`<div>${videoSectionDesc}</div>`, 'text/html');
+                    const headingEls = descDoc.querySelectorAll('h4, h5');
+                    descHeadings = Array.from(headingEls).map(el => el.textContent?.trim() || '').filter(Boolean);
+                } catch { /* ignore */ }
             }
 
-            let videoHtml = '';
-            if (videoSectionDesc) videoHtml += `<p>${esc(videoSectionDesc)}</p>`;
-            videosRaw.forEach((v) => {
-                const vTitle = (language === 'en' && v.title_en) ? v.title_en : (v.title || '');
-                if (vTitle) videoHtml += `<p><strong>${esc(vTitle)}</strong></p>`;
-                videoHtml += `<div style="position:relative;padding-bottom:56.25%;height:0;margin:1rem 0"><iframe src="${v.src}" title="${esc(vTitle)}" style="position:absolute;top:0;left:0;width:100%;height:100%;border:none;border-radius:8px" allowfullscreen loading="lazy"></iframe></div>`;
-            });
-            if (app) {
-                const appTitle = (language === 'en' && app.title_en) ? app.title_en : (app.title || '');
-                const appDesc = (language === 'en' && app.description_en) ? app.description_en : (app.description || '');
-                const appLinkText = (language === 'en' && app.linkText_en) ? app.linkText_en : (app.linkText || '');
-                const appLinkUrl = app.linkUrl || '';
-                videoHtml += `<blockquote><p><strong>${esc(appTitle)}</strong></p><p>${esc(appDesc)}</p><p><a href="${appLinkUrl}" target="_blank" rel="noopener noreferrer">${esc(appLinkText)}</a></p></blockquote>`;
-            }
-            if (videoSectionTitle && videoHtml) {
-                syntheticItems.push({ tittel: videoSectionTitle, innhold: videoHtml });
-            }
+            const videos: Video[] = videosRaw.map((v, i) => ({
+                src: v.src,
+                title: (language === "en" && v.title_en)
+                    ? v.title_en
+                    : (v.title || descHeadings[i] || "")
+            }));
+            const exerciseSteps: ExerciseStep[] = stepsRaw
+                .sort((a, b) => a.number - b.number)
+                .map((s) => ({
+                    number: s.number,
+                    text: (language === "en" && s.text_en) ? s.text_en : (s.text || "")
+                }));
+            const genderInstructions: GenderInstruction[] = genderRaw.map((g) => ({
+                title: (language === "en" && g.title_en) ? g.title_en : (g.title || ""),
+                text: (language === "en" && g.text_en) ? g.text_en : (g.text || ""),
+                icon: g.icon || "",
+                iconColor: g.iconColor || "#053870"
+            }));
+            const app = appsRaw as Record<string, string | undefined> | null | undefined;
+            const smartphoneApps: SmartphoneApps | undefined = app
+                ? {
+                    title: (language === "en" && app.title_en) ? app.title_en : (app.title || ""),
+                    description: (language === "en" && app.description_en) ? app.description_en : (app.description || ""),
+                    linkText: (language === "en" && app.linkText_en) ? app.linkText_en : (app.linkText || ""),
+                    linkUrl: app.linkUrl || ""
+                }
+                : undefined;
 
-            if (syntheticItems.length > 0) {
-                trekkspill = syntheticItems;
-            }
+            // If we extracted titles from the description headings, don't pass the description
+            // (to avoid rendering the h4 list as cards below the video grid)
+            const finalDesc = descHeadings.length > 0 ? undefined : (videoSectionDesc || undefined);
+
+            return (
+                <CommonExerciseSection
+                    pageTitle={title || (language === "no" ? "Øvelser" : "Exercises")}
+                    tryYourselfTitle={tryTitle}
+                    step1Text={step1}
+                    genderInstructions={genderInstructions}
+                    tipsTitle={tipsTitle}
+                    tipsText={tipsText}
+                    exerciseSteps={exerciseSteps}
+                    videoSectionTitle={videoSectionTitle}
+                    videoSectionDescription={finalDesc}
+                    videos={videos}
+                    smartphoneApps={smartphoneApps}
+                />
+            );
         }
     }
 
