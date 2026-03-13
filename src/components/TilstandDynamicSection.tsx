@@ -1371,6 +1371,186 @@ export const TilstandDynamicSection = ({ tilstand, activeSection }: TilstandDyna
                                             </>
                                         );
                                     }
+
+                                    // For Prøv selv accordion items: parse the HTML structure that Directus creates
+                                    // (step numbers + gender columns + tips box + remaining steps)
+                                    if (activeSection === 'exercises' && itemContent && /pr[øo]v\s*selv/i.test(itemTitleNo)) {
+                                        try {
+                                            const exDoc = new DOMParser().parseFromString(`<div>${itemContent}</div>`, 'text/html');
+                                            const exRoot = exDoc.body.firstChild as HTMLElement;
+                                            // Find the gender wrapper: a div with display:flex that contains two column divs with h4/h5
+                                            const allDivs = Array.from(exRoot.querySelectorAll('div'));
+                                            const genderWrapper = allDivs.find(d => {
+                                                const st = d.getAttribute('style') || '';
+                                                const hasFlexChildren = Array.from(d.children).filter(c => c.tagName === 'DIV' && c.querySelector('h4, h5')).length >= 2;
+                                                return (st.includes('flex') || st.includes('display')) && hasFlexChildren;
+                                            });
+                                            if (genderWrapper) {
+                                                const GENDER_ICONS: Record<string, { icon: string; color: string }> = {
+                                                    kvinner: { icon: '♀', color: '#08488a' }, women: { icon: '♀', color: '#08488a' },
+                                                    menn: { icon: '♂', color: '#053870' }, men: { icon: '♂', color: '#053870' },
+                                                };
+                                                const step1Paragraphs: { num: string; text: string }[] = [];
+                                                let prevEl: Element | null = genderWrapper.previousElementSibling;
+                                                while (prevEl) {
+                                                    if (prevEl.tagName === 'P') {
+                                                        const raw = prevEl.textContent?.trim() || '';
+                                                        const m = raw.match(/^(\d+)\.\s+(.+)$/s);
+                                                        if (m) step1Paragraphs.unshift({ num: m[1], text: m[2] });
+                                                    }
+                                                    prevEl = prevEl.previousElementSibling;
+                                                }
+                                                const columnDivs = Array.from(genderWrapper.children).filter(c => c.tagName === 'DIV' && c.querySelector('h4, h5')) as HTMLElement[];
+                                                const genderCards = columnDivs.map(col => {
+                                                    const heading = col.querySelector('h4, h5');
+                                                    const colTitle = heading?.textContent?.trim() || '';
+                                                    const key = colTitle.toLowerCase();
+                                                    const iconInfo = Object.entries(GENDER_ICONS).find(([k]) => key.includes(k));
+                                                    const { icon = '♀', color = '#08488a' } = iconInfo?.[1] ?? {};
+                                                    const iconChar = col.querySelector('span')?.textContent?.trim() || icon;
+                                                    const bodyHtml = Array.from(col.querySelectorAll('p')).map(p => p.outerHTML).join('');
+                                                    return { title: colTitle, icon: iconChar, color, bodyHtml };
+                                                });
+                                                let tipsTitle = '', tipsText = '';
+                                                const tipsDiv = genderWrapper.nextElementSibling as HTMLElement | null;
+                                                if (tipsDiv?.tagName === 'DIV') {
+                                                    const tipsStyle = tipsDiv.getAttribute('style') || '';
+                                                    if (tipsStyle.includes('#fff8e1') || tipsStyle.includes('#fef3c7') || tipsStyle.includes('#ffc107') || tipsStyle.includes('#f59e0b') || tipsStyle.includes('#856404')) {
+                                                        const titleEl = tipsDiv.querySelector('p:first-child, strong');
+                                                        tipsTitle = titleEl?.textContent?.trim() || '';
+                                                        const textEl = tipsDiv.querySelectorAll('p');
+                                                        tipsText = Array.from(textEl).slice(1).map(p => p.textContent?.trim() || '').join(' ');
+                                                        if (!tipsText) {
+                                                            tipsText = Array.from(textEl).map(p => p.textContent?.trim() || '').join(' ');
+                                                            tipsTitle = 'Tips:';
+                                                        }
+                                                    }
+                                                }
+                                                const afterEl = (tipsTitle && tipsDiv) ? tipsDiv.nextElementSibling : genderWrapper.nextElementSibling;
+                                                const remainingSteps: { num: number; text: string }[] = [];
+                                                let cur: Element | null = afterEl;
+                                                while (cur) {
+                                                    if (cur.tagName === 'OL') {
+                                                        const startAttr = parseInt(cur.getAttribute('start') || '1', 10);
+                                                        Array.from(cur.querySelectorAll('li')).forEach((li, idx) => {
+                                                            remainingSteps.push({ num: startAttr + idx, text: li.textContent?.trim() || '' });
+                                                        });
+                                                    } else if (cur.tagName === 'P') {
+                                                        const raw = cur.textContent?.trim() || '';
+                                                        const m = raw.match(/^(\d+)\.\s+(.+)$/s);
+                                                        if (m) remainingSteps.push({ num: parseInt(m[1], 10), text: m[2] });
+                                                    }
+                                                    cur = cur.nextElementSibling;
+                                                }
+                                                if (genderCards.length >= 1) {
+                                                    return (
+                                                        <div className={styles.normalFunctionContent}>
+                                                            <div className={styles.pelvicFloorExerciseSection}>
+                                                                {step1Paragraphs.map((s, si) => (
+                                                                    <div key={si} className={styles.exerciseStep}>
+                                                                        <div className={styles.stepNumber}>{s.num}</div>
+                                                                        <p className={styles.enhancedParagraph}>{s.text}</p>
+                                                                    </div>
+                                                                ))}
+                                                                <div className={styles.genderInstructions}>
+                                                                    {genderCards.map((card, ci) => (
+                                                                        <div key={ci} className={styles.genderCard}>
+                                                                            <div className={styles.genderIcon}>
+                                                                                <span style={{ fontSize: '1.5rem', fontWeight: 'bold', color: card.color }}>
+                                                                                    {card.icon}
+                                                                                </span>
+                                                                            </div>
+                                                                            <h6 className={styles.genderTitle}>{card.title}</h6>
+                                                                            <div
+                                                                                className={styles.genderText}
+                                                                                dangerouslySetInnerHTML={{ __html: card.bodyHtml }}
+                                                                            />
+                                                                        </div>
+                                                                    ))}
+                                                                </div>
+                                                                {tipsTitle && (
+                                                                    <div className={styles.tipsBox}>
+                                                                        <h6 className={styles.tipsTitle}>{tipsTitle}</h6>
+                                                                        <p className={styles.enhancedParagraph}>{tipsText}</p>
+                                                                    </div>
+                                                                )}
+                                                                {remainingSteps.length > 0 && (
+                                                                    <div className={styles.exerciseSteps}>
+                                                                        {remainingSteps.map((s) => (
+                                                                            <div key={s.num} className={styles.exerciseStep}>
+                                                                                <div className={styles.stepNumber}>{s.num}</div>
+                                                                                <p className={styles.enhancedParagraph}>{s.text}</p>
+                                                                            </div>
+                                                                        ))}
+                                                                    </div>
+                                                                )}
+                                                            </div>
+                                                            {renderLinks(item)}
+                                                        </div>
+                                                    );
+                                                }
+                                            }
+                                        } catch { /* fall through */ }
+                                    }
+
+                                    // For accordion items with embedded iframes, extract them as a video grid
+                                    // with h4/h5 headings as per-video titles
+                                    if (activeSection === 'exercises' && itemContent) {
+                                        try {
+                                            const vDoc = new DOMParser().parseFromString(`<div>${itemContent}</div>`, 'text/html');
+                                            const vRoot = vDoc.body.firstChild as HTMLElement;
+                                            const vIframes = Array.from(vRoot.querySelectorAll('iframe, [data-oembed-url]'));
+                                            const vHeadings = Array.from(vRoot.querySelectorAll('h4, h5')).map(h => h.textContent?.trim() || '');
+                                            if (vIframes.length > 0) {
+                                                return (
+                                                    <>
+                                                        <div className={styles.videoGrid}>
+                                                            {vIframes.map((iframe, vi) => {
+                                                                const src = iframe.getAttribute('src') || iframe.getAttribute('data-oembed-url') || '';
+                                                                const videoTitle = vHeadings[vi] || '';
+                                                                return (
+                                                                    <div key={vi} className={styles.videoItem}>
+                                                                        <div className={styles.videoContainer}>
+                                                                            <iframe
+                                                                                src={src}
+                                                                                title={videoTitle || `Video ${vi + 1}`}
+                                                                                allowFullScreen
+                                                                                className={styles.videoIframe}
+                                                                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                                                                loading="lazy"
+                                                                            />
+                                                                        </div>
+                                                                        {videoTitle && (
+                                                                            <p className={styles.videoTitle}>{videoTitle}</p>
+                                                                        )}
+                                                                    </div>
+                                                                );
+                                                            })}
+                                                        </div>
+                                                        {renderLinks(item)}
+                                                    </>
+                                                );
+                                            }
+                                        } catch { /* fall through to default rendering */ }
+                                    }
+
+                                    // Fallback: strip h4/h5 to prevent them rendering as blue boxes in exercises
+                                    if (activeSection === 'exercises' && itemContent) {
+                                        try {
+                                            const sd = new DOMParser().parseFromString(`<div>${itemContent}</div>`, 'text/html');
+                                            const sr = sd.body.firstChild as HTMLElement;
+                                            sr.querySelectorAll('h4, h5').forEach(h => h.remove());
+                                            const safeContent = sr.innerHTML;
+                                            return (
+                                                <>
+                                                    {renderContentWithImageCards(safeContent, injectOptions)}
+                                                    {renderImage(item)}
+                                                    {renderLinks(item)}
+                                                </>
+                                            );
+                                        } catch { /* fall through */ }
+                                    }
+
                                     return (
                                         <>
                                             {renderContentWithImageCards(itemContent, injectOptions)}
@@ -1384,6 +1564,29 @@ export const TilstandDynamicSection = ({ tilstand, activeSection }: TilstandDyna
                     );
                 })}
             </div>
+
+            {/* Smartphone apps card — shown below the video section on exercises pages */}
+            {activeSection === "exercises" && (() => {
+                const appsData = t.ovelse_smartphone_apps as Record<string, string | undefined> | null | undefined;
+                if (!appsData) return null;
+                const appTitle = (language === 'en' && appsData.title_en) ? appsData.title_en : (appsData.title || '');
+                const appDesc = (language === 'en' && appsData.description_en) ? appsData.description_en : (appsData.description || '');
+                const appLinkText = (language === 'en' && appsData.linkText_en) ? appsData.linkText_en : (appsData.linkText || '');
+                const appLinkUrl = appsData.linkUrl || '';
+                if (!appTitle && !appDesc) return null;
+                return (
+                    <div className={styles.highlightBox} style={{ marginTop: '1rem', display: 'flex', gap: '0.75rem', alignItems: 'flex-start' }}>
+                        <span style={{ fontSize: '1.25rem' }}>💡</span>
+                        <div>
+                            {appTitle && <p><strong>{appTitle}</strong></p>}
+                            {appDesc && <p>{appDesc}</p>}
+                            {appLinkText && appLinkUrl && (
+                                <p><a href={appLinkUrl} target="_blank" rel="noopener noreferrer">{appLinkText}</a></p>
+                            )}
+                        </div>
+                    </div>
+                );
+            })()}
 
             {selectedImage && (
                 <ImageModal
