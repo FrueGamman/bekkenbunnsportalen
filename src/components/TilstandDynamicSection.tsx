@@ -1086,7 +1086,126 @@ export const TilstandDynamicSection = ({ tilstand, activeSection }: TilstandDyna
                                 </blockquote>
                             </div>
                         )}
-                        {intro && renderContentWithImageCards(intro, { isIntro: true })}
+                        {intro && (() => {
+                            // For exercises section, parse gender cards, steps, tips from intro HTML
+                            if (activeSection === 'exercises' && typeof intro === 'string') {
+                                try {
+                                    const exDoc = new DOMParser().parseFromString(`<div>${intro}</div>`, 'text/html');
+                                    const exRoot = exDoc.body.firstChild as HTMLElement;
+                                    const allDivs = Array.from(exRoot.querySelectorAll('div'));
+                                    const genderWrapper = allDivs.find(d => {
+                                        const st = d.getAttribute('style') || '';
+                                        const hasFlexChildren = Array.from(d.children).filter(c => c.tagName === 'DIV' && c.querySelector('h4, h5')).length >= 2;
+                                        return (st.includes('flex') || st.includes('display')) && hasFlexChildren;
+                                    });
+                                    if (genderWrapper) {
+                                        const GENDER_ICONS: Record<string, { icon: string; color: string }> = {
+                                            kvinner: { icon: '♀', color: '#08488a' }, women: { icon: '♀', color: '#08488a' },
+                                            menn: { icon: '♂', color: '#053870' }, men: { icon: '♂', color: '#053870' },
+                                        };
+                                        const step1Paragraphs: { num: string; text: string }[] = [];
+                                        let prevEl: Element | null = genderWrapper.previousElementSibling;
+                                        while (prevEl) {
+                                            if (prevEl.tagName === 'P') {
+                                                const raw = prevEl.textContent?.trim() || '';
+                                                const m = raw.match(/^(\d+)\.\s+(.+)$/s);
+                                                if (m) step1Paragraphs.unshift({ num: m[1], text: m[2] });
+                                            }
+                                            prevEl = prevEl.previousElementSibling;
+                                        }
+                                        const columnDivs = Array.from(genderWrapper.children).filter(c => c.tagName === 'DIV' && c.querySelector('h4, h5')) as HTMLElement[];
+                                        const genderCards = columnDivs.map(col => {
+                                            const heading = col.querySelector('h4, h5');
+                                            const colTitle = heading?.textContent?.trim() || '';
+                                            const key = colTitle.toLowerCase();
+                                            const iconInfo = Object.entries(GENDER_ICONS).find(([k]) => key.includes(k));
+                                            const { icon = '♀', color = '#08488a' } = iconInfo?.[1] ?? {};
+                                            const iconChar = col.querySelector('span')?.textContent?.trim() || icon;
+                                            const bodyHtml = Array.from(col.querySelectorAll('p')).map(p => p.outerHTML).join('');
+                                            return { title: colTitle, icon: iconChar, color, bodyHtml };
+                                        });
+                                        let tipsTitle = '', tipsText = '';
+                                        const tipsDiv = genderWrapper.nextElementSibling as HTMLElement | null;
+                                        if (tipsDiv?.tagName === 'DIV') {
+                                            const tipsStyle = tipsDiv.getAttribute('style') || '';
+                                            if (tipsStyle.includes('#fff8e1') || tipsStyle.includes('#fef3c7') || tipsStyle.includes('#ffc107') || tipsStyle.includes('#f59e0b') || tipsStyle.includes('#856404')) {
+                                                const titleEl = tipsDiv.querySelector('p:first-child, strong');
+                                                tipsTitle = titleEl?.textContent?.trim() || '';
+                                                const textEl = tipsDiv.querySelectorAll('p');
+                                                tipsText = Array.from(textEl).slice(1).map(p => p.textContent?.trim() || '').join(' ');
+                                                if (!tipsText) {
+                                                    tipsText = Array.from(textEl).map(p => p.textContent?.trim() || '').join(' ');
+                                                    tipsTitle = 'Tips:';
+                                                }
+                                            }
+                                        }
+                                        const afterEl = (tipsTitle && tipsDiv) ? tipsDiv.nextElementSibling : genderWrapper.nextElementSibling;
+                                        const remainingSteps: { num: number; text: string }[] = [];
+                                        let cur: Element | null = afterEl;
+                                        while (cur) {
+                                            if (cur.tagName === 'OL') {
+                                                const startAttr = parseInt(cur.getAttribute('start') || '1', 10);
+                                                Array.from(cur.querySelectorAll('li')).forEach((li, idx) => {
+                                                    remainingSteps.push({ num: startAttr + idx, text: li.textContent?.trim() || '' });
+                                                });
+                                            } else if (cur.tagName === 'P') {
+                                                const raw = cur.textContent?.trim() || '';
+                                                const m = raw.match(/^(\d+)\.\s+(.+)$/s);
+                                                if (m) remainingSteps.push({ num: parseInt(m[1], 10), text: m[2] });
+                                            }
+                                            cur = cur.nextElementSibling;
+                                        }
+                                        if (genderCards.length >= 1) {
+                                            return (
+                                                <div className={styles.normalFunctionContent}>
+                                                    <div className={styles.pelvicFloorExerciseSection}>
+                                                        {step1Paragraphs.map((s, si) => (
+                                                            <div key={si} className={styles.exerciseStep}>
+                                                                <div className={styles.stepNumber}>{s.num}</div>
+                                                                <p className={styles.enhancedParagraph}>{s.text}</p>
+                                                            </div>
+                                                        ))}
+                                                        <div className={styles.genderInstructions}>
+                                                            {genderCards.map((card, ci) => (
+                                                                <div key={ci} className={styles.genderCard}>
+                                                                    <div className={styles.genderIcon}>
+                                                                        <span style={{ fontSize: '1.5rem', fontWeight: 'bold', color: card.color }}>
+                                                                            {card.icon}
+                                                                        </span>
+                                                                    </div>
+                                                                    <h6 className={styles.genderTitle}>{card.title}</h6>
+                                                                    <div
+                                                                        className={styles.genderText}
+                                                                        dangerouslySetInnerHTML={{ __html: card.bodyHtml }}
+                                                                    />
+                                                                </div>
+                                                            ))}
+                                                        </div>
+                                                        {tipsTitle && (
+                                                            <div className={styles.tipsBox}>
+                                                                <h6 className={styles.tipsTitle}>{tipsTitle}</h6>
+                                                                <p className={styles.enhancedParagraph}>{tipsText}</p>
+                                                            </div>
+                                                        )}
+                                                        {remainingSteps.length > 0 && (
+                                                            <div className={styles.exerciseSteps}>
+                                                                {remainingSteps.map((s) => (
+                                                                    <div key={s.num} className={styles.exerciseStep}>
+                                                                        <div className={styles.stepNumber}>{s.num}</div>
+                                                                        <p className={styles.enhancedParagraph}>{s.text}</p>
+                                                                    </div>
+                                                                ))}
+                                                            </div>
+                                                        )}
+                                                    </div>
+                                                </div>
+                                            );
+                                        }
+                                    }
+                                } catch { /* fall through to default rendering */ }
+                            }
+                            return renderContentWithImageCards(intro, { isIntro: true });
+                        })()}
                     </div>
                 )}
 
