@@ -2,17 +2,13 @@ import React, { useState } from "react";
 import { useLanguage } from "../context/LanguageContext";
 import { useTheme } from "../context/ThemeContext";
 import { SectionAccordion } from "./SectionAccordion";
-import { CommonExerciseSection } from "./CommonExerciseSection";
-import type { ExerciseStep, GenderInstruction, Video, SmartphoneApps } from "./CommonExerciseSection";
+import { CommonExerciseSection, type ExerciseStep, type GenderInstruction, type Video, type SmartphoneApps } from "./CommonExerciseSection";
 import { ImageModal } from "./ui/ImageModal";
 import type { Tilstand, TilstandAccordionItem, TilstandUnderseksjon } from "../types/cms";
 import { getImageUrl } from "../lib/directus";
 import styles from "../conditions/urinary-incontinence/components/section-content.module.css";
 
-// ---------------------------------------------------------------------------
-// ParagraphWithImageContainer — intro only; detects landscape images and
-// switches to a stacked (block) layout automatically.
-// ---------------------------------------------------------------------------
+/** One container for paragraph + single image; for intro only, uses block layout when image is horizontal. */
 function ParagraphWithImageContainer({
     content,
     image,
@@ -25,17 +21,14 @@ function ParagraphWithImageContainer({
     setSelectedImage: (x: { src: string; alt: string }) => void;
 }) {
     const [useBlockLayout, setUseBlockLayout] = useState(false);
-
     const onImageLoad = (e: React.SyntheticEvent<HTMLImageElement>) => {
         if (!isIntro) return;
         const img = e.currentTarget;
         if (img.naturalWidth >= img.naturalHeight) setUseBlockLayout(true);
     };
-
     const containerClass = useBlockLayout
         ? `${styles.sideBySideContainer} ${styles.sideBySideContainerBlock}`
         : styles.sideBySideContainer;
-
     return (
         <div className={containerClass}>
             <div className={styles.sideBySideText}>{content}</div>
@@ -66,9 +59,6 @@ function ParagraphWithImageContainer({
     );
 }
 
-// ---------------------------------------------------------------------------
-// Props
-// ---------------------------------------------------------------------------
 interface TilstandDynamicSectionProps {
     tilstand: Tilstand;
     activeSection: string;
@@ -231,26 +221,36 @@ export const TilstandDynamicSection = ({
     };
 
     // -----------------------------------------------------------------------
-    // Exercises section — render CommonExerciseSection directly when
-    // structured Directus fields are present (early return).
+    // Exercises section — when structured Directus fields are present, render
+    // quote (if any) then CommonExerciseSection so quote is visible.
     // -----------------------------------------------------------------------
     if (activeSection === "exercises") {
         const exProps = buildExerciseComponentProps();
         if (exProps.hasStructured) {
             return (
-                <CommonExerciseSection
-                    pageTitle={title || (language === "no" ? "Øvelser" : "Exercises")}
-                    tryYourselfTitle={exProps.tryTitle}
-                    step1Text={exProps.step1Text}
-                    genderInstructions={exProps.genderInstructions}
-                    tipsTitle={exProps.tipsTitle}
-                    tipsText={exProps.tipsText}
-                    exerciseSteps={exProps.exerciseSteps}
-                    videoSectionTitle={exProps.videoSectionTitle}
-                    videoSectionDescription={exProps.videoSectionDesc}
-                    videos={exProps.videos}
-                    smartphoneApps={exProps.smartphoneApps}
-                />
+                <>
+                    {sitat && (
+                        <div className={styles.highlightBox}>
+                            <blockquote className={styles.patientQuote}>
+                                <p className={styles.quoteText}>"{sitat}"</p>
+                                {sitatKilde && <cite className={styles.quoteAuthor}>— {sitatKilde}</cite>}
+                            </blockquote>
+                        </div>
+                    )}
+                    <CommonExerciseSection
+                        pageTitle={title || (language === "no" ? "Øvelser" : "Exercises")}
+                        tryYourselfTitle={exProps.tryTitle}
+                        step1Text={exProps.step1Text}
+                        genderInstructions={exProps.genderInstructions}
+                        tipsTitle={exProps.tipsTitle}
+                        tipsText={exProps.tipsText}
+                        exerciseSteps={exProps.exerciseSteps}
+                        videoSectionTitle={exProps.videoSectionTitle}
+                        videoSectionDescription={exProps.videoSectionDesc}
+                        videos={exProps.videos}
+                        smartphoneApps={exProps.smartphoneApps}
+                    />
+                </>
             );
         }
     }
@@ -387,6 +387,37 @@ export const TilstandDynamicSection = ({
     const hasTrekkspill = Array.isArray(trekkspill) && trekkspill.length > 0;
     if (!title && !intro && !hasTrekkspill && !sitat) return null;
 
+    // Exercises: skip accordion items that duplicate the quote or intro blockquote (e.g. smartphone apps shown in intro + accordion)
+    const trekkspillToRender = ((): TilstandAccordionItem[] | undefined => {
+        if (!Array.isArray(trekkspill)) return undefined;
+        if (activeSection !== "exercises") return trekkspill;
+        const norm = (s: string) => s.replace(/<[^>]*>/g, "").replace(/\s+/g, " ").trim();
+        const alreadyShown: string[] = [];
+        if (sitat) alreadyShown.push(norm(sitat));
+        if (intro) {
+            try {
+                const doc = new DOMParser().parseFromString(`<div>${intro}</div>`, "text/html");
+                doc.querySelectorAll("blockquote").forEach((bq) => {
+                    const t = norm(bq.textContent || "");
+                    if (t.length > 15) alreadyShown.push(t);
+                });
+            } catch { /* ignore */ }
+        }
+        if (alreadyShown.length === 0) return trekkspill;
+        return trekkspill.filter((item) => {
+            const content = (language === "en" && item.innhold_en) ? item.innhold_en : item.innhold;
+            if (typeof content !== "string" || !content.trim()) return true;
+            const text = norm(content);
+            if (text.length < 5) return true;
+            for (const shown of alreadyShown) {
+                if (text === shown) return false;
+                if (shown.length > 20 && text.includes(shown) && text.length < shown.length + 120) return false;
+                if (text.length > 20 && shown.includes(text) && shown.length < text.length + 120) return false;
+            }
+            return true;
+        });
+    })();
+
     // -----------------------------------------------------------------------
     // Utility helpers
     // -----------------------------------------------------------------------
@@ -412,7 +443,7 @@ export const TilstandDynamicSection = ({
     };
 
     const isBlankHtml = (html: string) =>
-        html.replace(/&nbsp;/gi, " ").replace(/<[^>]*>/g, "").trim().length === 0;
+        html.replace(/&nbsp;/gi, " ").replace(/\u00a0/g, " ").replace(/<[^>]*>/g, "").trim().length === 0;
 
     // -----------------------------------------------------------------------
     // parseContentAndImages — extracts images/captions from Directus HTML
@@ -430,7 +461,7 @@ export const TilstandDynamicSection = ({
 
         root.querySelectorAll("img").forEach((img) => {
             const src = img.getAttribute("src") || "";
-            const alt = img.getAttribute("alt") || "";
+            const alt = (img.getAttribute("alt") || "").trim();
             let caption = "";
             const figure = img.closest("figure");
             if (figure) {
@@ -885,11 +916,17 @@ export const TilstandDynamicSection = ({
             reverseImages?: boolean;
             injectExerciseAfterHeading?: RegExp | string;
             exerciseSectionNode?: React.ReactNode;
+            /** Causes (urinary-incontinence): one image per segment so each image is right-aligned beside text (pre-merge layout) */
+            singleImagePerSegment?: boolean;
+            /** Causes (constipation): image on left, text on right in single-image side-by-side block */
+            imageOnLeft?: boolean;
         },
     ): React.ReactNode => {
         if (!html) return null;
         const isIntro = options?.isIntro === true;
         const reverseImages = options?.reverseImages === true;
+        const singleImagePerSegment = options?.singleImagePerSegment === true;
+        const imageOnLeft = options?.imageOnLeft === true;
         const injectExerciseAfterHeading = options?.injectExerciseAfterHeading;
         const exerciseSectionNode = options?.exerciseSectionNode;
 
@@ -934,7 +971,8 @@ export const TilstandDynamicSection = ({
                 if (node.nodeType === 3) {
                     const text = node.textContent?.trim();
                     if (text) {
-                        const p = doc.createElement("p");
+                        const docForNode = node.ownerDocument || doc;
+                        const p = docForNode.createElement("p");
                         p.textContent = text;
                         flatNodes.push(p);
                     }
@@ -943,7 +981,6 @@ export const TilstandDynamicSection = ({
                 if (node.nodeType !== 1) return;
                 const el = node as HTMLElement;
                 const tag = el.tagName.toUpperCase();
-
                 if (isHeadingTag(tag) || tag === "UL" || tag === "OL" || tag === "BLOCKQUOTE") { flatNodes.push(el); return; }
                 if (tag === "IMG") { flatNodes.push(el); return; }
                 if (tag === "P") {
@@ -981,24 +1018,81 @@ export const TilstandDynamicSection = ({
                         block.items.push({ type: "image", src, alt: alt || caption, caption: caption || alt });
                     }
                 } else if (isMixedContainer) {
-                    const clone = el.cloneNode(true) as HTMLElement;
-                    Array.from(clone.querySelectorAll("figure, img")).forEach((imgEl) => {
-                        const p = imgEl.parentElement;
-                        imgEl.remove();
-                        if (p && p !== clone && !p.textContent?.trim()) p.remove();
-                    });
-                    if (clone.textContent?.trim()) {
-                        clone.querySelectorAll("a").forEach((a) =>
-                            block.links.push({ text: a.textContent?.trim() || "", url: a.getAttribute("href") || "#" }),
-                        );
-                        block.items.push({ type: "paragraph", html: clone.innerHTML.trim() });
-                    }
-                    el.querySelectorAll("img").forEach((img: HTMLImageElement) => {
-                        const src = img.getAttribute("src") || "";
-                        const alt = img.getAttribute("alt") || "";
-                        const caption = img.closest("figure")?.querySelector("figcaption")?.textContent?.trim() || "";
-                        block.items.push({ type: "image", src, alt, caption: caption || alt });
-                    });
+                    // Walk content in document order to preserve picture position and avoid duplicating content
+                    const mixedItems: ContentItem[] = [];
+                    const mixedLinks: { text: string; url: string }[] = [];
+                    const ownerDoc = el.ownerDocument || doc;
+                    const buffer: HTMLElement[] = [];
+
+                    const flushParagraph = () => {
+                        if (buffer.length === 0) return;
+                        const wrapper = ownerDoc.createElement("div");
+                        buffer.forEach((n) => wrapper.appendChild(n.cloneNode(true)));
+                        const html = wrapper.innerHTML.trim();
+                        if (html && !isBlankHtml(html)) {
+                            wrapper.querySelectorAll("a").forEach((a) => {
+                                mixedLinks.push({
+                                    text: a.textContent?.trim() || "",
+                                    url: a.getAttribute("href") || "#",
+                                });
+                            });
+                            mixedItems.push({ type: "paragraph", html });
+                        }
+                        buffer.length = 0;
+                    };
+
+                    const getCaption = (imgEl: HTMLImageElement) => {
+                        const figure = imgEl.closest("figure");
+                        if (figure) {
+                            const fc = figure.querySelector("figcaption");
+                            return fc?.textContent?.trim() || "";
+                        }
+                        return "";
+                    };
+
+                    const walk = (node: ChildNode) => {
+                        if (node.nodeType === 3) {
+                            const t = node.textContent?.trim();
+                            if (t) {
+                                const p = ownerDoc.createElement("p");
+                                p.textContent = t;
+                                buffer.push(p);
+                            }
+                            return;
+                        }
+                        if (node.nodeType !== 1) return;
+                        const e = node as HTMLElement;
+                        const tag = e.tagName.toUpperCase();
+                        if (tag === "IMG") {
+                            flushParagraph();
+                            const src = e.getAttribute("src") || "";
+                            const alt = (e.getAttribute("alt") || "").trim();
+                            const caption = getCaption(e as HTMLImageElement);
+                            mixedItems.push({ type: "image", src, alt, caption: caption || alt });
+                            return;
+                        }
+                        if (tag === "FIGURE" && e.querySelector("img")) {
+                            flushParagraph();
+                            const img = e.querySelector("img") as HTMLImageElement;
+                            if (img) {
+                                const src = img.getAttribute("src") || "";
+                                const alt = (img.getAttribute("alt") || "").trim();
+                                const caption = getCaption(img);
+                                mixedItems.push({ type: "image", src, alt, caption: caption || alt });
+                            }
+                            return;
+                        }
+                        if (e.querySelector("img, figure")) {
+                            Array.from(e.childNodes).forEach(walk);
+                            return;
+                        }
+                        buffer.push(e);
+                    };
+
+                    Array.from(el.childNodes).forEach(walk);
+                    flushParagraph();
+                    mixedItems.forEach((item) => block.items.push(item));
+                    mixedLinks.forEach((link) => block.links.push(link));
                 } else if (el.nodeType === 1 && el.tagName === "BLOCKQUOTE") {
                     block.items.push({ type: "paragraph", html: el.outerHTML });
                 } else if (el.nodeType === 1 && (el.tagName === "IFRAME" || el.tagName === "VIDEO" || el.querySelector?.("iframe, video"))) {
@@ -1006,15 +1100,17 @@ export const TilstandDynamicSection = ({
                 } else if (el.nodeType === 1) {
                     const preserveWrapper = el.tagName !== "P" || el.hasAttribute("style");
                     const anchors = el.querySelectorAll("a");
+                    const html = preserveWrapper ? el.outerHTML : el.innerHTML;
                     if (anchors.length > 0) {
                         const textWithoutLinks = el.textContent?.trim() || "";
                         anchors.forEach((a) => block.links.push({ text: a.textContent?.trim() || "", url: a.getAttribute("href") || "#" }));
-                        if (textWithoutLinks !== anchors[0].textContent?.trim()) {
-                            block.items.push({ type: "paragraph", html: preserveWrapper ? el.outerHTML : el.innerHTML });
+                        if (textWithoutLinks !== anchors[0].textContent?.trim() && !isBlankHtml(html)) {
+                            block.items.push({ type: "paragraph", html });
                         }
                     } else {
                         const text = el.textContent?.trim();
-                        if (text) block.items.push({ type: "paragraph", html: preserveWrapper ? el.outerHTML : (el.innerHTML || text) });
+                        const toPush = html || text;
+                        if (toPush && !isBlankHtml(toPush)) block.items.push({ type: "paragraph", html: toPush });
                     }
                 }
             };
@@ -1052,7 +1148,7 @@ export const TilstandDynamicSection = ({
                 } else if (currentSection) {
                     pushContentToBlock(ensureBlock(), el);
                 } else {
-                    introElements.push(el.outerHTML);
+                    if (!isBlankHtml(el.outerHTML)) introElements.push(el.outerHTML);
                 }
             });
 
@@ -1101,8 +1197,9 @@ export const TilstandDynamicSection = ({
                                 ? el : (el.querySelector("iframe, video") as HTMLElement | null);
                             const figure = el.tagName === "FIGURE" ? el : el.closest("figure");
                             const caption = figure?.querySelector("figcaption")?.textContent?.trim() || "";
+                            const imgAlt = (img?.getAttribute("alt") || "").trim();
                             if (img) {
-                                medias.push({ type: "img", src: img.getAttribute("src") || "", alt: img.getAttribute("alt") || caption, caption });
+                                medias.push({ type: "img", src: img.getAttribute("src") || "", alt: imgAlt || caption, caption: caption || imgAlt });
                             } else if (iframeOrVideo) {
                                 medias.push({ type: "media", src: "", alt: caption, caption, html: iframeOrVideo.outerHTML });
                             }
@@ -1112,7 +1209,8 @@ export const TilstandDynamicSection = ({
                                 const caption = mediaEl.closest("figure")?.querySelector("figcaption")?.textContent?.trim() || "";
                                 if (isImg) {
                                     const img = mediaEl as HTMLImageElement;
-                                    medias.push({ type: "img", src: img.getAttribute("src") || "", alt: img.getAttribute("alt") || caption, caption });
+                                    const imgAlt = (img.getAttribute("alt") || "").trim();
+                                    medias.push({ type: "img", src: img.getAttribute("src") || "", alt: imgAlt || caption, caption: caption || imgAlt });
                                 } else {
                                     medias.push({ type: "media", src: "", alt: caption, caption, html: mediaEl.outerHTML });
                                 }
@@ -1124,11 +1222,11 @@ export const TilstandDynamicSection = ({
                                 if (p && p !== clone && !p.textContent?.trim()) p.remove();
                             });
                             const remaining = clone.innerHTML.trim();
-                            if (remaining) textAfter.push(remaining);
+                            if (remaining && !isBlankHtml(remaining)) textAfter.push(remaining);
                         }
                     } else {
                         const content = el.nodeType === 1 ? el.outerHTML : (el.textContent || "");
-                        if (content.trim()) {
+                        if (content.trim() && !isBlankHtml(content)) {
                             if (foundMedia) textAfter.push(content);
                             else textBefore.push(content);
                         }
@@ -1137,8 +1235,8 @@ export const TilstandDynamicSection = ({
 
                 if (medias.length > 0) {
                     if (reverseImages) medias.reverse();
-                    textBefore = textBefore.filter((p) => p.replace(/<[^>]*>/g, "").trim() !== "");
-                    textAfter = textAfter.filter((p) => p.replace(/<[^>]*>/g, "").trim() !== "");
+                    textBefore = textBefore.filter((p) => !isBlankHtml(p));
+                    textAfter = textAfter.filter((p) => !isBlankHtml(p));
 
                     const videoMedias = medias.filter((m) => m.type === "media");
                     const imageMedias = medias.filter((m) => m.type === "img");
@@ -1168,19 +1266,55 @@ export const TilstandDynamicSection = ({
                         );
                     }
 
-                    // Single image + preceding text → side-by-side (not symptoms)
-                    if (imageMedias.length === 1 && textBefore.length > 0 && activeSection !== "symptoms") {
+                    // Single image + any text (before and/or after) → side-by-side horizontal (not symptoms)
+                    const hasAnyText = textBefore.length > 0 || textAfter.length > 0;
+                    if (imageMedias.length === 1 && hasAnyText && activeSection !== "symptoms") {
                         const allText = [...textBefore, ...textAfter].join("");
+                        const m0 = imageMedias[0];
+                        const label = m0.caption || m0.alt;
                         return (
-                            <div className={styles.sideBySideContainer}>
+                            <div className={`${styles.sideBySideContainer} ${imageOnLeft ? styles.sideBySideImageLeft : ""}`}>
                                 <div className={styles.sideBySideText}>
                                     {allText && <div className={styles.enhancedParagraph} dangerouslySetInnerHTML={{ __html: allText }} />}
                                 </div>
                                 <div className={styles.sideBySideImage}>
-                                    <img src={imageMedias[0].src} alt={imageMedias[0].alt}
+                                    <img src={m0.src} alt={m0.alt}
                                         className={styles.introImage} style={{ borderRadius: "0.75rem" }} />
+                                    {label && <p className={styles.sideBySideImageCaption}>{label}</p>}
                                 </div>
                             </div>
+                        );
+                    }
+
+                    // Two or more images — singleImagePerSegment (causes): one image per row, right-aligned (pre-merge layout)
+                    if (imageMedias.length >= 2 && singleImagePerSegment) {
+                        return (
+                            <>
+                                {imageMedias.map((media, j) => {
+                                    const label = media.caption || media.alt;
+                                    const textLeft = j === 0 && textBefore.length > 0
+                                        ? textBefore.map((p, k) => <React.Fragment key={k}>{renderRichText(p)}</React.Fragment>)
+                                        : null;
+                                    return (
+                                        <div key={j} className={styles.sideBySideContainer}>
+                                            <div className={styles.sideBySideText}>{textLeft}</div>
+                                            <div className={styles.sideBySideImage}>
+                                                <img src={media.src} alt={media.alt} className={styles.anatomyImage}
+                                                    onClick={() => setSelectedImage({ src: media.src, alt: media.alt })}
+                                                    onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); setSelectedImage({ src: media.src, alt: media.alt }); } }}
+                                                    role="button" tabIndex={0}
+                                                    style={{ cursor: "pointer", borderRadius: "0.75rem", objectFit: "contain" }} />
+                                                {label && <p className={styles.sideBySideImageCaption}>{label}</p>}
+                                            </div>
+                                        </div>
+                                    );
+                                })}
+                                {textAfter.length > 0 && (
+                                    <div style={{ marginTop: "1rem" }}>
+                                        {textAfter.map((p, j) => <React.Fragment key={j}>{renderRichText(p)}</React.Fragment>)}
+                                    </div>
+                                )}
+                            </>
                         );
                     }
 
@@ -1190,16 +1324,19 @@ export const TilstandDynamicSection = ({
                             <>
                                 {textBefore.map((p, j) => <React.Fragment key={j}>{renderRichText(p)}</React.Fragment>)}
                                 <div style={{ display: "flex", gap: "1rem", flexWrap: "wrap", alignItems: "flex-start" }}>
-                                    {imageMedias.map((media, j) => (
-                                        <div key={j} style={{ flex: "1 1 calc(50% - 0.5rem)", minWidth: 0 }}>
-                                            <img src={media.src} alt={media.alt} className={styles.anatomyImage}
-                                                onClick={() => setSelectedImage({ src: media.src, alt: media.alt })}
-                                                onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); setSelectedImage({ src: media.src, alt: media.alt }); } }}
-                                                role="button" tabIndex={0}
-                                                style={{ cursor: "pointer", width: "100%", height: "340px", objectFit: "contain", display: "block" }} />
-                                            {media.caption && <p className={styles.anatomyCaption}>{media.caption}</p>}
-                                        </div>
-                                    ))}
+                                    {imageMedias.map((media, j) => {
+                                        const label = media.caption || media.alt;
+                                        return (
+                                            <div key={j} style={{ flex: "1 1 calc(50% - 0.5rem)", minWidth: 0 }}>
+                                                <img src={media.src} alt={media.alt} className={styles.anatomyImage}
+                                                    onClick={() => setSelectedImage({ src: media.src, alt: media.alt })}
+                                                    onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); setSelectedImage({ src: media.src, alt: media.alt }); } }}
+                                                    role="button" tabIndex={0}
+                                                    style={{ cursor: "pointer", width: "100%", height: "340px", objectFit: "contain", display: "block" }} />
+                                                {label && <p className={styles.anatomyCaption}>{label}</p>}
+                                            </div>
+                                        );
+                                    })}
                                 </div>
                                 {textAfter.map((p, j) => <React.Fragment key={j}>{renderRichText(p)}</React.Fragment>)}
                             </>
@@ -1210,20 +1347,23 @@ export const TilstandDynamicSection = ({
                     return (
                         <>
                             {textBefore.map((p, j) => <React.Fragment key={j}>{renderRichText(p)}</React.Fragment>)}
-                            {medias.map((media, j) => (
-                                <div key={j} style={{ margin: "1rem 0", textAlign: "center" }}>
-                                    {media.type === "img" ? (
-                                        <img src={media.src} alt={media.alt}
-                                            onClick={() => setSelectedImage({ src: media.src, alt: media.alt })}
-                                            onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); setSelectedImage({ src: media.src, alt: media.alt }); } }}
-                                            role="button" tabIndex={0}
-                                            style={{ cursor: "pointer", width: "100%", maxWidth: "900px", height: "auto", display: "inline-block", borderRadius: "0.75rem", objectFit: "contain" }} />
-                                    ) : (
-                                        <div dangerouslySetInnerHTML={{ __html: media.html || "" }} />
-                                    )}
-                                    {media.caption && <p className={styles.anatomyCaption}>{media.caption}</p>}
-                                </div>
-                            ))}
+                            {medias.map((media, j) => {
+                                const label = media.caption || media.alt;
+                                return (
+                                    <div key={j} style={{ margin: "1rem 0", textAlign: "center" }}>
+                                        {media.type === "img" ? (
+                                            <img src={media.src} alt={media.alt}
+                                                onClick={() => setSelectedImage({ src: media.src, alt: media.alt })}
+                                                onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); setSelectedImage({ src: media.src, alt: media.alt }); } }}
+                                                role="button" tabIndex={0}
+                                                style={{ cursor: "pointer", width: "100%", maxWidth: "900px", height: "auto", display: "inline-block", borderRadius: "0.75rem", objectFit: "contain" }} />
+                                        ) : (
+                                            <div dangerouslySetInnerHTML={{ __html: media.html || "" }} />
+                                        )}
+                                        {label && <p className={styles.anatomyCaption}>{label}</p>}
+                                    </div>
+                                );
+                            })}
                             {textAfter.map((p, j) => <React.Fragment key={j}>{renderRichText(p)}</React.Fragment>)}
                         </>
                     );
@@ -1245,9 +1385,26 @@ export const TilstandDynamicSection = ({
 
                 for (const item of block.items) {
                     if (item.type === "paragraph") {
-                        if (segImgs.length > 0) { segs.push({ paragraphs: segParas, images: segImgs }); segParas = []; segImgs = []; }
+                        if (segImgs.length > 0) {
+                            if (singleImagePerSegment && segImgs.length > 1) {
+                                // One segment per image: paragraph(s) only beside the first image (photo beside paragraph before it)
+                                segs.push({ paragraphs: [...segParas], images: [segImgs[0]] });
+                                segImgs.slice(1).forEach((img) => segs.push({ paragraphs: [], images: [img] }));
+                                segParas = [];
+                                segImgs = [];
+                            } else {
+                                segs.push({ paragraphs: segParas, images: segImgs });
+                                segParas = [];
+                                segImgs = [];
+                            }
+                        }
                         segParas.push(item.html);
                     } else {
+                        if (singleImagePerSegment && segImgs.length >= 1) {
+                            segs.push({ paragraphs: segParas, images: segImgs });
+                            segParas = [];
+                            segImgs = [];
+                        }
                         segImgs.push({ src: item.src, alt: item.alt, caption: item.caption });
                     }
                 }
@@ -1273,18 +1430,21 @@ export const TilstandDynamicSection = ({
                     : headingEl;
 
                 const renderParas = (paras: string[]) =>
-                    paras.map((p, j) => <React.Fragment key={j}>{renderRichText(p)}</React.Fragment>);
+                    paras.filter((p) => !isBlankHtml(p)).map((p, j) => <React.Fragment key={j}>{renderRichText(p)}</React.Fragment>);
 
-                const renderImgEl = (img: { src: string; alt: string; caption: string }, j: number, captionClass: string) => (
-                    <div key={j}>
-                        <img src={img.src} alt={img.alt} className={styles.anatomyImage}
-                            onClick={() => setSelectedImage({ src: img.src, alt: img.alt })}
-                            onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); setSelectedImage({ src: img.src, alt: img.alt }); } }}
-                            role="button" // eslint-disable-line jsx-a11y/no-noninteractive-element-to-interactive-role
-                            tabIndex={0} style={{ cursor: "pointer" }} />
-                        {img.caption && <p className={captionClass}>{img.caption}</p>}
-                    </div>
-                );
+                const renderImgEl = (img: { src: string; alt: string; caption: string }, j: number, captionClass: string) => {
+                    const label = img.caption || img.alt;
+                    return (
+                        <div key={j}>
+                            <img src={img.src} alt={img.alt} className={styles.anatomyImage}
+                                onClick={() => setSelectedImage({ src: img.src, alt: img.alt })}
+                                onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); setSelectedImage({ src: img.src, alt: img.alt }); } }}
+                                role="button" // eslint-disable-line jsx-a11y/no-noninteractive-element-to-interactive-role
+                                tabIndex={0} style={{ cursor: "pointer" }} />
+                            {label && <p className={captionClass}>{label}</p>}
+                        </div>
+                    );
+                };
 
                 const hasLinksInParas = block.items.some((it) => it.type === "paragraph" && it.html.includes("<a "));
                 const renderBlockLinks = () => {
@@ -1317,7 +1477,7 @@ export const TilstandDynamicSection = ({
                             if (seg.images.length === 0) return <React.Fragment key={si}>{renderParas(seg.paragraphs)}</React.Fragment>;
                             if (seg.images.length === 1) {
                                 return (
-                                    <div key={si} className={styles.sideBySideContainer}>
+                                    <div key={si} className={`${styles.sideBySideContainer} ${imageOnLeft ? styles.sideBySideImageLeft : ""}`}>
                                         <div className={styles.sideBySideText}>{renderParas(seg.paragraphs)}</div>
                                         <div className={styles.sideBySideImage}>{renderImgEl(seg.images[0], 0, styles.sideBySideImageCaption)}</div>
                                     </div>
@@ -1489,6 +1649,8 @@ export const TilstandDynamicSection = ({
         const imgAlt = (language === "en" && item.bilde_alt_en) ? item.bilde_alt_en : (item.bilde_alt || itemTitle);
         const imgCaption = (language === "en" && item.bilde_caption_en) ? item.bilde_caption_en : item.bilde_caption;
 
+        const isCausesUrinary = activeSection === "causes" && conditionSlug === "urinary-incontinence";
+
         // Exercise injection options for "Konservativ behandling" in treatment
         const isKonservativBehandling =
             itemId === "konservativ-behandling" || itemId === "conservative-treatment" ||
@@ -1523,10 +1685,16 @@ export const TilstandDynamicSection = ({
             injectExerciseAfterHeading: /bekkenbunnstrening|pelvic floor training/i,
             exerciseSectionNode: exerciseSectionNodeForInject,
         } : undefined;
+        const isConstipationImageLeft = (activeSection === "causes" || activeSection === "treatment") && conditionSlug === "constipation";
+        const contentOptions = {
+            ...injectOptions,
+            ...(isCausesUrinary ? { singleImagePerSegment: true } : {}),
+            ...(isConstipationImageLeft ? { imageOnLeft: true } : {}),
+        };
 
-        // Side-by-side wrapper for items with an image
+        // Side-by-side wrapper: same DOM order everywhere (text then image). Image-on-left for constipation causes/treatment via CSS only.
         const wrapSideBySide = (contentNode: React.ReactNode) => (
-            <div className={styles.sideBySideContainer}>
+            <div className={`${styles.sideBySideContainer} ${isConstipationImageLeft ? styles.sideBySideImageLeft : ""}`}>
                 <div className={styles.sideBySideText}>{contentNode}{renderLinks(item)}</div>
                 <div className={`${styles.sideBySideImage} ${styles.anatomyItem}`}>
                     <img src={imgSrc!} alt={imgAlt} className={styles.anatomyImage}
@@ -1559,8 +1727,8 @@ export const TilstandDynamicSection = ({
                 <>
                     {itemContent && (
                         isSideBySide
-                            ? wrapSideBySide(renderContentWithImageCards(itemContent, injectOptions))
-                            : <>{renderContentWithImageCards(itemContent, injectOptions)}{renderImage(item)}{renderLinks(item)}</>
+                            ? wrapSideBySide(renderContentWithImageCards(itemContent, contentOptions))
+                            : <>{renderContentWithImageCards(itemContent, contentOptions)}{renderImage(item)}{renderLinks(item)}</>
                     )}
                     {item.underseksjoner!.map((sub, subIndex) => {
                         const subTitle = (language === "en" && sub.tittel_en) ? sub.tittel_en : sub.tittel;
@@ -1577,7 +1745,7 @@ export const TilstandDynamicSection = ({
         }
 
         // -- Side-by-side (no sub-accordions) --------------------------------
-        if (isSideBySide) return wrapSideBySide(renderContentWithImageCards(itemContent, injectOptions));
+        if (isSideBySide) return wrapSideBySide(renderContentWithImageCards(itemContent, contentOptions));
 
         // -- Treatment: inject CommonExerciseSection via marker or append ----
         const isFirstTreatmentAccordion = activeSection === "treatment" && index === 0 && conditionSlug === "urinary-incontinence";
@@ -1612,34 +1780,126 @@ export const TilstandDynamicSection = ({
         const genderCardResult = renderGenderCardSection(itemContent, renderLinks(item));
         if (genderCardResult) return genderCardResult;
 
-        // -- Embedded iframes → video grid -----------------------------------
+        // -- Embedded iframes → video grid (each video with its title) + content after (e.g. blockquote with lamp)
         try {
             const vDoc = new DOMParser().parseFromString(`<div>${itemContent}</div>`, "text/html");
             const vRoot = vDoc.body.firstChild as HTMLElement;
             const vIframes = Array.from(vRoot.querySelectorAll("iframe, [data-oembed-url]"));
             if (vIframes.length > 0) {
+                const videoCards: { src: string; title: string }[] = vIframes.map((iframe) => {
+                    const card = iframe.parentElement;
+                    const titleEl = card?.querySelector("h4, h3, h5");
+                    const title = (titleEl?.textContent?.trim() || "").trim();
+                    const src = iframe.getAttribute("src") || iframe.getAttribute("data-oembed-url") || "";
+                    return { src, title };
+                });
+                const clone = vRoot.cloneNode(true) as HTMLElement;
+                clone.querySelectorAll("iframe, [data-oembed-url]").forEach((el) => {
+                    const card = el.parentElement;
+                    if (card && card !== clone) card.remove();
+                });
+                const contentAfterVideos = clone.innerHTML.trim();
                 return (
                     <>
                         <div className={styles.videoGrid}>
-                            {vIframes.map((iframe, vi) => {
-                                const src = iframe.getAttribute("src") || iframe.getAttribute("data-oembed-url") || "";
-                                return (
-                                    <div key={vi} className={styles.videoItem}>
-                                        <div className={styles.videoContainer}>
-                                            <iframe src={src} title={`Video ${vi + 1}`} allowFullScreen
-                                                className={styles.videoIframe}
-                                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                                loading="lazy" />
-                                        </div>
+                            {videoCards.map((card, vi) => (
+                                <div key={vi} className={styles.videoItem}>
+                                    <div className={styles.videoContainer}>
+                                        <iframe src={card.src} title={card.title || `Video ${vi + 1}`} allowFullScreen
+                                            className={styles.videoIframe}
+                                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                            loading="lazy" />
                                     </div>
-                                );
-                            })}
+                                    {card.title && (
+                                        <p className={styles.videoTitle}>{card.title}</p>
+                                    )}
+                                </div>
+                            ))}
                         </div>
+                        {contentAfterVideos && !isBlankHtml(contentAfterVideos) && (
+                            <div style={{ marginTop: "1.5rem" }}>
+                                {renderContentWithImageCards(contentAfterVideos, contentOptions)}
+                            </div>
+                        )}
                         {renderLinks(item)}
                     </>
                 );
             }
         } catch { /* fall through */ }
+
+        // -- Treatment (pelvic-pain): quote first, then image aligned with first non-quote paragraph, then rest ----
+        if (activeSection === "treatment" && conditionSlug === "pelvic-pain" && typeof itemContent === "string") {
+            try {
+                const doc = new DOMParser().parseFromString(`<div>${itemContent}</div>`, "text/html");
+                const root = doc.body.firstChild as HTMLElement;
+                if (root) {
+                    let quoteHtml = "";
+                    const bq = root.querySelector("blockquote");
+                    if (bq) {
+                        quoteHtml = bq.outerHTML;
+                        bq.remove();
+                    }
+                    let imgSrc = "", imgAlt = "", imgCaption = "";
+                    const img = root.querySelector("img");
+                    if (img) {
+                        imgSrc = img.getAttribute("src") || "";
+                        imgAlt = img.getAttribute("alt") || "";
+                        const figure = img.closest("figure");
+                        if (figure) {
+                            const cap = figure.querySelector("figcaption");
+                            imgCaption = (cap?.textContent?.trim() || "").replace(/\s+/g, " ").trim();
+                            figure.remove();
+                        } else {
+                            const parent = img.parentElement;
+                            img.remove();
+                            if (parent && parent !== root && !parent.textContent?.trim()) parent.remove();
+                        }
+                    }
+                    let firstParagraphHtml = "";
+                    const firstP = root.querySelector("p");
+                    if (firstP && firstP.textContent?.trim()) {
+                        firstParagraphHtml = firstP.outerHTML;
+                        firstP.remove();
+                    }
+                    const restHtml = root.innerHTML.trim();
+                    const hasStructured = quoteHtml || imgSrc || firstParagraphHtml || (!isBlankHtml(restHtml));
+                    if (hasStructured) {
+                        return (
+                            <>
+                                {quoteHtml && (
+                                    <div className={styles.diagnosisTestimonialBox}>
+                                        {renderRichText(quoteHtml)}
+                                    </div>
+                                )}
+                                {imgSrc && firstParagraphHtml ? (
+                                    <div className={styles.sideBySideContainer}>
+                                        <div className={styles.sideBySideText}>{renderRichText(firstParagraphHtml)}</div>
+                                        <div className={styles.sideBySideImage}>
+                                            <img src={imgSrc} alt={imgAlt} className={styles.introImage} style={{ borderRadius: "0.75rem" }} />
+                                            {imgCaption && <p className={styles.sideBySideImageCaption}>{imgCaption}</p>}
+                                        </div>
+                                    </div>
+                                ) : imgSrc ? (
+                                    <div className={styles.sideBySideContainer}>
+                                        <div className={styles.sideBySideText} />
+                                        <div className={styles.sideBySideImage}>
+                                            <img src={imgSrc} alt={imgAlt} className={styles.introImage} style={{ borderRadius: "0.75rem" }} />
+                                            {imgCaption && <p className={styles.sideBySideImageCaption}>{imgCaption}</p>}
+                                        </div>
+                                    </div>
+                                ) : firstParagraphHtml ? renderRichText(firstParagraphHtml) : null}
+                                {restHtml && !isBlankHtml(restHtml) && (
+                                    <div className={styles.enhancedParagraph} style={{ marginTop: "1rem" }}>
+                                        {renderRichText(restHtml)}
+                                    </div>
+                                )}
+                                {renderLinks(item)}
+                            </>
+                        );
+                    }
+                }
+            } catch { /* fall through to default */ }
+        }
 
         // -- Default: strip orphan h4/h5 and render --------------------------
         const isUrinveienes = activeSection === "normal-functions" && slugify(itemTitleNo) === "urinveienes-oppbygging";
@@ -1647,14 +1907,17 @@ export const TilstandDynamicSection = ({
         try {
             const sd = new DOMParser().parseFromString(`<div>${itemContent}</div>`, "text/html");
             const sr = sd.body.firstChild as HTMLElement;
-            // Only strip headings if there are no h1/h2 headings (i.e. no section structure)
-            if (!sr.querySelector("h1, h2")) sr.querySelectorAll("h4, h5").forEach((h) => h.remove());
+            // Only strip headings if there are no h1/h2; do NOT strip for causes (urinary/pelvic-pain) or treatment (constipation) so subsection titles and image positions stay
+            const keepSubheadings = isCausesUrinary
+                || (activeSection === "treatment" && conditionSlug === "constipation")
+                || (activeSection === "causes" && conditionSlug === "pelvic-pain");
+            if (!sr.querySelector("h1, h2") && !keepSubheadings) sr.querySelectorAll("h4, h5").forEach((h) => h.remove());
             safeContent = sr.innerHTML;
         } catch { /* use original */ }
 
         return (
             <>
-                {renderContentWithImageCards(safeContent, { reverseImages: isUrinveienes, ...injectOptions })}
+                {renderContentWithImageCards(safeContent, { reverseImages: isUrinveienes, ...contentOptions })}
                 {renderImage(item)}{renderLinks(item)}
             </>
         );
@@ -1678,9 +1941,10 @@ export const TilstandDynamicSection = ({
             </div>
 
             {/* Quote — shown above content for most sections except causes/diagnosis
-                (those sections embed the quote inside their own card layout) */}
+                Exercises: lamp icon (highlightBox); others: quoteContainer.
+                Other sections show quote only when CMS has sitat for that section (e.g. symptomer_sitat, behandling_sitat). */}
             {sitat && activeSection !== "causes" && activeSection !== "diagnosis" && (
-                <div className={styles.quoteContainer}>
+                <div className={activeSection === "exercises" ? styles.highlightBox : styles.quoteContainer}>
                     <blockquote className={styles.patientQuote}>
                         <p className={styles.quoteText}>"{sitat}"</p>
                         {sitatKilde && <cite className={styles.quoteAuthor}>— {sitatKilde}</cite>}
@@ -1694,12 +1958,10 @@ export const TilstandDynamicSection = ({
                     <div className={styles.diagnosisContentCard}>
                         {diagnosisParsed.testimonial && (
                             <div className={styles.diagnosisTestimonialBox}>
-                                <blockquote className={styles.patientQuote}>
-                                    <p className={styles.quoteText}>{diagnosisParsed.testimonial}</p>
-                                    {diagnosisParsed.attribution && (
-                                        <cite className={styles.quoteAuthor}>{diagnosisParsed.attribution}</cite>
-                                    )}
-                                </blockquote>
+                                <p className={styles.quoteText}>"{diagnosisParsed.testimonial}"</p>
+                                {diagnosisParsed.attribution && (
+                                    <cite className={styles.quoteAuthor}>— {diagnosisParsed.attribution}</cite>
+                                )}
                             </div>
                         )}
                         {diagnosisParsed.imageSrc ? (
@@ -1725,47 +1987,102 @@ export const TilstandDynamicSection = ({
                     </div>
                 )}
 
-                {/* ── Diagnosis (other conditions) ──────────────────────────── */}
+                {/* ── Diagnosis (other conditions) ────────────────────────────
+                    Layout: quote first, then image aligned only with first non-quote paragraph, then rest below. */}
                 {intro && isDiagnosisSection && !diagnosisParsed && (() => {
-                    let diagTextHtml = intro;
+                    let quoteHtml = "";
+                    let firstParagraphHtml = "";
+                    let restHtml = "";
                     let diagImgSrc = "";
                     let diagImgAlt = "";
                     let diagImgCaption = "";
                     try {
                         const doc = new DOMParser().parseFromString(`<div>${intro}</div>`, "text/html");
                         const root = doc.body.firstChild as HTMLElement;
-                        if (root) {
-                            const img = root.querySelector("img");
-                            if (img) {
-                                diagImgSrc = img.getAttribute("src") || "";
-                                diagImgAlt = img.getAttribute("alt") || "";
-                                const figure = img.closest("figure");
-                                if (figure) {
-                                    diagImgCaption = figure.querySelector("figcaption")?.textContent?.trim() || "";
-                                    figure.remove();
-                                } else {
-                                    const parent = img.parentElement;
-                                    img.remove();
-                                    if (parent && parent !== root && !parent.textContent?.trim()) parent.remove();
-                                }
-                                diagTextHtml = root.innerHTML;
+                        if (!root) return renderContentWithImageCards(intro);
+
+                        const bq = root.querySelector("blockquote");
+                        if (bq) {
+                            quoteHtml = bq.outerHTML;
+                            bq.remove();
+                        }
+
+                        const img = root.querySelector("img");
+                        if (img) {
+                            diagImgSrc = img.getAttribute("src") || "";
+                            diagImgAlt = img.getAttribute("alt") || "";
+                            const figure = img.closest("figure");
+                            if (figure) {
+                                diagImgCaption = figure.querySelector("figcaption")?.textContent?.trim() || "";
+                                figure.remove();
+                            } else {
+                                const parent = img.parentElement;
+                                img.remove();
+                                if (parent && parent !== root && !parent.textContent?.trim()) parent.remove();
                             }
                         }
-                    } catch { /* use raw intro */ }
 
-                    if (diagImgSrc) {
+                        const firstP = root.querySelector("p");
+                        if (firstP && firstP.textContent?.trim()) {
+                            firstParagraphHtml = firstP.outerHTML;
+                            firstP.remove();
+                        }
+                        restHtml = root.innerHTML.trim();
+                    } catch { /* fallback below */ }
+
+                    if (!quoteHtml && !firstParagraphHtml && !restHtml && !diagImgSrc) return renderContentWithImageCards(intro);
+
+                    // Intro is only a quote (blockquote or single paragraph with no image/rest): show as testimonial only, not as sections
+                    const onlyQuote = quoteHtml && !diagImgSrc && !firstParagraphHtml && isBlankHtml(restHtml);
+                    const onlySingleParagraphAsQuote = !quoteHtml && firstParagraphHtml && !diagImgSrc && isBlankHtml(restHtml);
+                    if (onlyQuote || onlySingleParagraphAsQuote) {
+                        const toShow = onlyQuote ? quoteHtml : firstParagraphHtml;
                         return (
-                            <div className={styles.sideBySideContainer}>
-                                <div className={styles.sideBySideText}>{renderRichText(diagTextHtml)}</div>
-                                <div className={styles.sideBySideImage}>
-                                    <img src={diagImgSrc} alt={diagImgAlt} className={styles.introImage}
-                                        style={{ borderRadius: "0.75rem" }} />
-                                    {diagImgCaption && <p className={styles.sideBySideImageCaption}>{diagImgCaption}</p>}
-                                </div>
+                            <div className={styles.diagnosisTestimonialBox}>
+                                {onlySingleParagraphAsQuote ? (
+                                    <blockquote className={styles.patientQuote}>
+                                        {renderRichText(firstParagraphHtml)}
+                                    </blockquote>
+                                ) : (
+                                    renderRichText(toShow)
+                                )}
                             </div>
                         );
                     }
-                    return renderContentWithImageCards(intro);
+
+                    return (
+                        <>
+                            {quoteHtml && (
+                                <div className={styles.diagnosisTestimonialBox}>
+                                    {renderRichText(quoteHtml)}
+                                </div>
+                            )}
+                            {diagImgSrc && firstParagraphHtml ? (
+                                <div className={styles.sideBySideContainer}>
+                                    <div className={styles.sideBySideText}>{renderRichText(firstParagraphHtml)}</div>
+                                    <div className={styles.sideBySideImage}>
+                                        <img src={diagImgSrc} alt={diagImgAlt} className={styles.introImage}
+                                            style={{ borderRadius: "0.75rem" }} />
+                                        {diagImgCaption && <p className={styles.sideBySideImageCaption}>{diagImgCaption}</p>}
+                                    </div>
+                                </div>
+                            ) : diagImgSrc ? (
+                                <div className={styles.sideBySideContainer}>
+                                    <div className={styles.sideBySideText} />
+                                    <div className={styles.sideBySideImage}>
+                                        <img src={diagImgSrc} alt={diagImgAlt} className={styles.introImage}
+                                            style={{ borderRadius: "0.75rem" }} />
+                                        {diagImgCaption && <p className={styles.sideBySideImageCaption}>{diagImgCaption}</p>}
+                                    </div>
+                                </div>
+                            ) : firstParagraphHtml ? renderRichText(firstParagraphHtml) : null}
+                            {restHtml && !isBlankHtml(restHtml) && (
+                                <div className={styles.enhancedParagraph} style={{ marginTop: "1rem" }}>
+                                    {renderRichText(restHtml)}
+                                </div>
+                            )}
+                        </>
+                    );
                 })()}
 
                 {/* ── Causes ───────────────────────────────────────────────── */}
@@ -1815,8 +2132,9 @@ export const TilstandDynamicSection = ({
                     );
                 })()}
 
-                {/* ── All other sections: intro rendering ───────────────────── */}
-                {intro && !isDiagnosisSection && activeSection !== "causes" && (() => {
+                {/* ── All other sections: intro rendering ─────────────────────
+                    Skip symptoms: TilstandIntroduction already renders symptomer_intro above (ConditionPage). */}
+                {intro && !isDiagnosisSection && activeSection !== "causes" && activeSection !== "symptoms" && (() => {
                     // Exercises intro: try gender-card parser first
                     if (activeSection === "exercises") {
                         const genderResult = renderGenderCardSection(intro);
@@ -1826,9 +2144,15 @@ export const TilstandDynamicSection = ({
                 })()}
 
                 {/* ── Accordion items ──────────────────────────────────────── */}
-                {Array.isArray(trekkspill) && trekkspill.map((item: TilstandAccordionItem, index: number) => {
+                {Array.isArray(trekkspillToRender) && trekkspillToRender.map((item: TilstandAccordionItem, index: number) => {
                     const itemTitle = getField(item, "tittel");
                     const itemTitleNo = item.tittel;
+                    const itemContent = getField(item, "innhold");
+                    const imgSrc = item.bilde_id ? getImageUrl(item.bilde_id) : item.bilde_url;
+                    const bildePosisjon = item.bilde_posisjon ?? (imgSrc ? "side" : "none");
+                    // Urinary-incontinence causes: keep pre-merge picture alignment (side-by-side) without affecting other sections
+                    const isCausesUrinary = activeSection === "causes" && conditionSlug === "urinary-incontinence";
+                    const isSideBySide = (bildePosisjon === "side" && !!imgSrc) || (isCausesUrinary && !!imgSrc);
                     const itemId = slugify(itemTitleNo);
 
                     // GROUP_HEADER: centered dividers between accordion groups
@@ -1839,6 +2163,129 @@ export const TilstandDynamicSection = ({
                         ).replace("GROUP_HEADER:", "");
                         return <div key={index} className={styles.groupHeader}>{headerText}</div>;
                     }
+
+                    const resourceItems = activeSection === "resources" && typeof itemContent === "string"
+                        ? parseResourceItems(itemContent)
+                        : null;
+                    const isResourceAccordion = !!(resourceItems && resourceItems.length > 0);
+                    const isPatientStoryAccordion = /pasienthistorier|patient\s*stories/i.test(itemTitleNo);
+
+                    // Render image for underseksjon (sub.bilde_url)
+                    const renderUnderseksjonImage = (sub: TilstandUnderseksjon) => {
+                        const src = sub.bilde_url;
+                        if (!src) return null;
+                        const alt = sub.bilde_alt || sub.tittel;
+                        const caption = sub.bilde_caption;
+                        return (
+                            <div className={`${styles.anatomyItem} ${styles.anatomyItemStandalone}`}>
+                                <img
+                                    src={src}
+                                    alt={alt}
+                                    className={styles.anatomyImage}
+                                    onClick={() => setSelectedImage({ src, alt })}
+                                    onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setSelectedImage({ src, alt }); } }}
+                                    role="button" // eslint-disable-line jsx-a11y/no-noninteractive-element-to-interactive-role
+                                    tabIndex={0}
+                                    style={{ cursor: 'pointer' }}
+                                />
+                                {caption && <p className={styles.anatomyCaption}>{caption}</p>}
+                            </div>
+                        );
+                    };
+
+                    const renderSubContent = (sub: TilstandUnderseksjon) => {
+                        const subContent = (language === 'en' && sub.innhold_en) ? sub.innhold_en : sub.innhold;
+                        const subImgSrc = sub.bilde_url;
+                        const subAlt = sub.bilde_alt || sub.tittel;
+                        const subCaption = sub.bilde_caption;
+
+                        if (subImgSrc) {
+                            return (
+                                <div className={styles.sideBySideContainer}>
+                                    <div className={styles.sideBySideText}>
+                                        {renderContentWithImageCards(subContent)}
+                                        {sub.lenke_url && (
+                                            <p className={styles.enhancedParagraph}>
+                                                <a
+                                                    href={sub.lenke_url}
+                                                    target={sub.lenke_ekstern ? '_blank' : undefined}
+                                                    rel={sub.lenke_ekstern ? 'noopener noreferrer' : undefined}
+                                                    className={styles.resourceLink}
+                                                >
+                                                    {(language === 'en' && sub.lenke_tekst_en) ? sub.lenke_tekst_en : (sub.lenke_tekst || sub.lenke_url)}
+                                                </a>
+                                            </p>
+                                        )}
+                                    </div>
+                                    <div className={`${styles.sideBySideImage} ${styles.anatomyItem}`}>
+                                        <img
+                                            src={subImgSrc}
+                                            alt={subAlt}
+                                            className={styles.anatomyImage}
+                                            onClick={() => setSelectedImage({ src: subImgSrc, alt: subAlt })}
+                                            onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setSelectedImage({ src: subImgSrc, alt: subAlt }); } }}
+                                            role="button" // eslint-disable-line jsx-a11y/no-noninteractive-element-to-interactive-role
+                                            tabIndex={0}
+                                            style={{ cursor: 'pointer' }}
+                                        />
+                                        {subCaption && <p className={styles.anatomyCaption}>{subCaption}</p>}
+                                    </div>
+                                </div>
+                            );
+                        }
+
+                        return (
+                            <>
+                                {renderContentWithImageCards(subContent)}
+                                {renderUnderseksjonImage(sub)}
+                                {sub.lenke_url && (
+                                    <p className={styles.enhancedParagraph}>
+                                        <a
+                                            href={sub.lenke_url}
+                                            target={sub.lenke_ekstern ? '_blank' : undefined}
+                                            rel={sub.lenke_ekstern ? 'noopener noreferrer' : undefined}
+                                            className={styles.resourceLink}
+                                        >
+                                            {(language === 'en' && sub.lenke_tekst_en) ? sub.lenke_tekst_en : (sub.lenke_tekst || sub.lenke_url)}
+                                        </a>
+                                    </p>
+                                )}
+                            </>
+                        );
+                    };
+
+                    // Exercise section: under Bekkenbunnstrening paragraph, above Biofeedback/Elektrostimulering (injected inside content).
+                    const isKonservativBehandling =
+                        itemId === "konservativ-behandling" || itemId === "conservative-treatment" ||
+                        /konservativ|conservative/i.test(String(itemTitleNo ?? itemTitle));
+                    const showExerciseSectionHere = isKonservativBehandling && exerciseSectionItems && exerciseSectionItems.length > 0;
+                    const exerciseSectionNodeForInject = showExerciseSectionHere ? (
+                        <>
+                            <div className={styles.sectionHeader} style={{ marginTop: "2rem" }}>
+                                <div className={styles.sectionIcon}>
+                                    <img src="/exercises.png" alt={language === "no" ? "Øvelser" : "Exercises"} width="24" height="24" />
+                                </div>
+                                <h2 className={styles.sectionTitle}>{language === "no" ? "Øvelser" : "Exercises"}</h2>
+                            </div>
+                            <div className={styles.sectionContent}>
+                                {exerciseSectionItems!.map((exItem: TilstandAccordionItem, exIndex: number) => {
+                                    const exTitle = getField(exItem, "tittel");
+                                    const exContent = getField(exItem, "innhold");
+                                    const exId = slugify(exItem.tittel);
+                                    return (
+                                        <SectionAccordion key={exIndex} title={exTitle} id={exId}
+                                            isDarkMode={resolvedTheme === "dark"} defaultOpen={false}>
+                                            {renderContentWithImageCards(exContent)}
+                                        </SectionAccordion>
+                                    );
+                                })}
+                            </div>
+                        </>
+                    ) : null;
+                    const injectOptions = showExerciseSectionHere ? {
+                        injectExerciseAfterHeading: /bekkenbunnstrening|pelvic floor training/i,
+                        exerciseSectionNode: exerciseSectionNodeForInject,
+                    } : undefined;
 
                     return (
                         <SectionAccordion key={index} title={itemTitle} id={itemId}

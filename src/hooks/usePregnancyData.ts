@@ -94,7 +94,6 @@ export const usePregnancyData = (language: string) => {
     useEffect(() => {
         const cacheKey = `directus:pregnancy:${language}`;
 
-
         const fetcher = async (): Promise<ConditionPregnancy | null> => {
             const query = [
                 "fields=*",
@@ -106,7 +105,7 @@ export const usePregnancyData = (language: string) => {
                 "fields=ressurser_intro",
                 "fields=ressurser_intro_en",
                 "fields=ressurser_trekkspill",
-            ].join("&");1
+            ].join("&");
 
             const response = await directusFetch<ConditionPregnancy>(
                 `/items/Condition_Pregnancy/1?${query}`
