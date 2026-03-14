@@ -11,8 +11,6 @@ import { useConditionList } from "../../hooks/useConditionList";
 import { TilstandDynamicSection } from "../../components/TilstandDynamicSection";
 import { TilstandIntroduction } from "../../components/TilstandIntroduction";
 
-// Import pregnancy components (pregnancy has unique UI not in standard CMS pattern)
-import { NormalFunctions as PregnancyNormalFunctions } from "../../conditions/pregnancy/components/normal-functions";
 import { UpgradedPregnancyContent } from "../../conditions/pregnancy/components/UpgradedPregnancyContent";
 // Pelvic-pain has its own intro layout (image top, video + text below)
 import { PelvicPainIntroduction } from "../../conditions/pelvic-pain/components/shared-introduction";
@@ -227,112 +225,6 @@ const ALL_CONDITIONS_DATA = {
 
 // Define condition-specific sections based on sitemap - bilingual
 const CONDITION_SECTIONS_MAP = {
-  "urinary-incontinence": {
-    no: [
-      { id: "normal-functions", title: "Funksjon", icon: "/normal.png" },
-      { id: "symptoms", title: "Symptomer", icon: "/symptoms.png" },
-      { id: "causes", title: "Årsaker", icon: "/couse.png", },
-      { id: "diagnosis", title: "Utredning", icon: "/solae.png", },
-      { id: "treatment", title: "Behandling", icon: "/treat.png", },
-      { id: "exercises", title: "Øvelser", icon: "/exercises.png" },
-      { id: "resources", title: "Ressurser", icon: "/resource.png" },
-      { id: "references", title: "Referanser", icon: "/resource.png" },
-    ],
-    en: [
-      { id: "normal-functions", title: "Normal Functions", icon: "/normal.png" },
-      { id: "symptoms", title: "Symptoms", icon: "/symptoms.png" },
-      { id: "causes", title: "Causes", icon: "/couse.png" },
-      { id: "diagnosis", title: "Diagnosis", icon: "/solae.png", },
-      { id: "treatment", title: "Treatment", icon: "/treat.png", },
-      { id: "exercises", title: "Exercises", icon: "/exercises.png" },
-      { id: "resources", title: "Resources", icon: "/resource.png" },
-      { id: "references", title: "References", icon: "/resource.png" },
-    ]
-  },
-  "urinary-retention": {
-    no: [
-      { id: "normal-functions", title: "Funksjon", icon: "/normal.png" },
-      { id: "symptoms", title: "Symptomer", icon: "/symptoms.png" },
-      { id: "causes", title: "Årsaker", icon: "/couse.png" },
-      { id: "diagnosis", title: "Utredning", icon: "/solae.png" },
-      { id: "treatment", title: "Behandling", icon: "/treat.png", },
-      { id: "exercises", title: "Øvelser", icon: "/exercises.png" },
-      { id: "resources", title: "Ressurser", icon: "/resource.png" },
-      { id: "references", title: "Referanser", icon: "/resource.png" },
-    ],
-    en: [
-      { id: "normal-functions", title: "Normal Functions", icon: "/normal.png" },
-      { id: "symptoms", title: "Symptoms", icon: "/symptoms.png" },
-      { id: "causes", title: "Causes", icon: "/couse.png" },
-      { id: "diagnosis", title: "Diagnosis", icon: "/solae.png" },
-      { id: "treatment", title: "Treatment", icon: "/treat.png", },
-      { id: "exercises", title: "Exercises", icon: "/exercises.png" },
-      { id: "resources", title: "Resources", icon: "/resource.png" },
-      { id: "references", title: "References", icon: "/resource.png" },
-    ]
-  },
-  "fecal-incontinence": {
-    no: [
-      { id: "normal-functions", title: "Funksjon", icon: "/normal.png" },
-      { id: "symptoms", title: "Symptomer", icon: "/symptoms.png", },
-      { id: "causes", title: "Årsaker", icon: "/couse.png" },
-      { id: "diagnosis", title: "Utredning", icon: "/solae.png", },
-      { id: "treatment", title: "Behandling", icon: "/treat.png", },
-      { id: "exercises", title: "Øvelser", icon: "/exercises.png" },
-      { id: "resources", title: "Ressurser", icon: "/resource.png" },
-      { id: "references", title: "Referanser", icon: "/resource.png" },
-    ],
-    en: [
-      { id: "normal-functions", title: "Normal Functions", icon: "/normal.png" },
-      { id: "symptoms", title: "Symptoms", icon: "/symptoms.png", },
-      { id: "causes", title: "Causes", icon: "/couse.png", },
-      { id: "diagnosis", title: "Diagnosis", icon: "/solae.png", },
-      { id: "treatment", title: "Treatment", icon: "/treat.png", },
-      { id: "exercises", title: "Exercises", icon: "/exercises.png" },
-      { id: "resources", title: "Resources", icon: "/resource.png" },
-      { id: "references", title: "References", icon: "/resource.png" },
-    ]
-  },
-  "constipation": {
-    no: [
-      { id: "symptoms", title: "Symptomer", icon: "/symptoms.png" },
-      { id: "causes", title: "Årsaker", icon: "/couse.png" },
-      { id: "diagnosis", title: "Utredning", icon: "/solae.png" },
-      { id: "treatment", title: "Behandling", icon: "/treat.png", },
-      { id: "exercises", title: "Øvelser", icon: "/exercises.png" },
-      { id: "resources", title: "Ressurser", icon: "/resource.png" },
-      { id: "references", title: "Referanser", icon: "/resource.png" },
-    ],
-    en: [
-      { id: "symptoms", title: "Symptoms", icon: "/symptoms.png" },
-      { id: "causes", title: "Causes", icon: "/couse.png" },
-      { id: "diagnosis", title: "Diagnosis", icon: "/solae.png" },
-      { id: "treatment", title: "Treatment", icon: "/treat.png" },
-      { id: "exercises", title: "Exercises", icon: "/exercises.png" },
-      { id: "resources", title: "Resources", icon: "/resource.png" },
-      { id: "references", title: "References", icon: "/resource.png" },
-    ]
-  },
-  "pelvic-pain": {
-    no: [
-      { id: "symptoms", title: "Symptomer", icon: "/symptoms.png" },
-      { id: "causes", title: "Årsaker", icon: "/couse.png" },
-      { id: "diagnosis", title: "Utredning", icon: "/solae.png" },
-      { id: "treatment", title: "Behandling", icon: "/treat.png" },
-      { id: "exercises", title: "Øvelser", icon: "/exercises.png" },
-      { id: "resources", title: "Ressurser", icon: "/resource.png" },
-      { id: "references", title: "Referanser", icon: "/resource.png" },
-    ],
-    en: [
-      { id: "symptoms", title: "Symptoms", icon: "/symptoms.png" },
-      { id: "causes", title: "Causes", icon: "/couse.png" },
-      { id: "diagnosis", title: "Diagnosis", icon: "/solae.png" },
-      { id: "treatment", title: "Treatment", icon: "/treat.png" },
-      { id: "exercises", title: "Exercises", icon: "/exercises.png" },
-      { id: "resources", title: "Resources", icon: "/resource.png" },
-      { id: "references", title: "References", icon: "/resource.png" },
-    ]
-  },
   "pregnancy": {
     no: [
       { id: "overview", title: "Oversikt", icon: "/normal.png" },
@@ -371,6 +263,11 @@ function buildSectionsFromTilstand(
   const slug = (tilstand as { slug?: string }).slug;
   const sections: { id: string; title: string; icon: string }[] = [];
   for (const { id: sectionId, prefix, icon } of SECTION_CONFIG_FROM_TILSTAND) {
+    // Constipation and pelvic-pain have no Funksjon tab — they open directly on Symptomer
+    const noFunksjonConditions = ["constipation", "pelvic-pain"];
+    if (sectionId === "normal-functions" && noFunksjonConditions.includes(slug || "")) {
+      continue;
+    }
     const title = (language === "en" && t[`${prefix}_tittel_en`]) ? String(t[`${prefix}_tittel_en`]) : (t[`${prefix}_tittel`] ? String(t[`${prefix}_tittel`]) : "");
     let trekkspill = t[`${prefix}_trekkspill`] as unknown[] | string | null | undefined;
     if (typeof trekkspill === "string" && trekkspill.trim()) {
@@ -478,7 +375,8 @@ export default function ConditionPage() {
 
     // Section aliases: old/removed section IDs mapped to their replacement for specific conditions
     const SECTION_ALIASES: Record<string, Record<string, string>> = {
-      "pelvic-pain": { "normal-functions": "symptoms" }
+      "pelvic-pain": { "normal-functions": "symptoms" },
+      "constipation": { "normal-functions": "symptoms" },
     };
     const resolvedSectionParam = (sectionParam && SECTION_ALIASES[activeCondition]?.[sectionParam])
       ? SECTION_ALIASES[activeCondition][sectionParam]
@@ -565,42 +463,6 @@ export default function ConditionPage() {
       if (["exercises", "resources", "references"].includes(activeSection)) {
         return <TilstandDynamicSection tilstand={pregnancyData as unknown as Tilstand} activeSection={activeSection} />;
       }
-      if (activeSection === "normal-functions") {
-        return (
-          <>
-            <PregnancyNormalFunctions />
-            {pregnancyCards.length > 0 && (
-              <div
-                className={`${styles.pregnancyCardGrid} ${resolvedTheme === "dark" ? styles.darkMode : styles.lightMode}`}
-                role="navigation"
-                aria-label={language === "no" ? "Utforsk flere temasider for graviditet" : "Explore additional pregnancy topics"}
-              >
-                {pregnancyCards.map((card) => {
-                  const isActive = activeSection === card.id;
-                  return (
-                    <button
-                      key={card.id}
-                      type="button"
-                      onClick={() => handleSectionChange(card.id)}
-                      className={`${styles.pregnancyCard} ${isActive ? styles.pregnancyCardActive : ""}`}
-                      aria-pressed={isActive}
-                      aria-label={`${card.title} - ${card.description}`}
-                    >
-                      <div className={styles.pregnancyCardHeader}>
-                        <div className={styles.pregnancyCardIconWrapper}>
-                          <img src={card.icon} alt="" role="presentation" className={styles.pregnancyCardIcon} />
-                        </div>
-                        <h3 className={styles.pregnancyCardTitle}>{card.title}</h3>
-                      </div>
-                      <p className={styles.pregnancyCardDescription}>{card.description}</p>
-                    </button>
-                  );
-                })}
-              </div>
-            )}
-          </>
-        );
-      }
 
       return null;
     }
@@ -639,7 +501,14 @@ export default function ConditionPage() {
     return (
       <>
         {showIntro && (
-          <TilstandIntroduction tilstand={cmsTilstand} />
+          <TilstandIntroduction tilstand={cmsTilstand} activeSection="normal-functions" />
+        )}
+        {activeSection === "symptoms" && (
+          <TilstandIntroduction
+            tilstand={cmsTilstand}
+            activeSection="symptoms"
+            stacked={["fecal-incontinence", "constipation", "pelvic-pain", "urinary-retention"].includes(activeCondition)}
+          />
         )}
         <TilstandDynamicSection tilstand={cmsTilstand} activeSection={activeSection} />
       </>

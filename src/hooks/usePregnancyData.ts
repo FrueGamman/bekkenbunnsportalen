@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import type { ConditionPregnancy, PregnancyChapter, PregnancyProblem, PregnancySection } from "../types/cms";
 import { directusFetch } from "../lib/directus";
+import { fetchWithCache } from "../lib/directusCache";
 
 const normalizeProblemSlug = (slug: string) => {
     if (!slug) return slug;
@@ -91,80 +92,73 @@ export const usePregnancyData = (language: string) => {
     const [error, setError] = useState<Error | null>(null);
 
     useEffect(() => {
-        const fetchPregnancyData = async () => {
-            try {
-                setLoading(true);
+        const cacheKey = `directus:pregnancy:${language}`;
 
-                // Fetch Condition_Pregnancy (ID 1) with all nested relations
-                // We include problems.* to get all fields like name, about, symptoms, icons
-                // We include chapters.* and chapters.sections.* for the textbook
-                const query = [
-                    "fields=*",
-                    "fields=problems.*",
-                    "fields=chapters.*",
-                    "fields=chapters.sections.*",
-                    "fields=ressurser_tittel",
-                    "fields=ressurser_tittel_en",
-                    "fields=ressurser_intro",
-                    "fields=ressurser_intro_en",
-                    "fields=ressurser_trekkspill",
-                ].join("&");
 
-                const response = await directusFetch<ConditionPregnancy>(
-                    `/items/Condition_Pregnancy/1?${query}`
-                );
+        const fetcher = async (): Promise<ConditionPregnancy | null> => {
+            const query = [
+                "fields=*",
+                "fields=problems.*",
+                "fields=chapters.*",
+                "fields=chapters.sections.*",
+                "fields=ressurser_tittel",
+                "fields=ressurser_tittel_en",
+                "fields=ressurser_intro",
+                "fields=ressurser_intro_en",
+                "fields=ressurser_trekkspill",
+            ].join("&");1
 
-                if (response) {
-                    // Sort problems and chapters by the 'sort' field
-                    if (response.problems && Array.isArray(response.problems)) {
-                        const normalizedProblems = response.problems
-                            .filter(isPregnancyProblem)
-                            .sort((a, b) => (a.sort || 0) - (b.sort || 0))
-                            .map((problem) => {
-                                const normalizedSlug = normalizeProblemSlug(problem.slug || "");
+            const response = await directusFetch<ConditionPregnancy>(
+                `/items/Condition_Pregnancy/1?${query}`
+            );
 
-                                return {
-                                    ...problem,
-                                    slug: normalizedSlug || problem.slug,
-                                    link_url: normalizePregnancyProblemLink(problem.link_url, normalizedSlug || problem.slug),
-                                };
-                            });
+            if (!response) return null;
 
-                        response.problems = normalizedProblems;
-                    }
-                    if (response.chapters && Array.isArray(response.chapters)) {
-                        const normalizedChapters = response.chapters
-                            .filter(isPregnancyChapter)
-                            .sort((a, b) => (a.sort || 0) - (b.sort || 0))
-                            .map((chapter) => {
-                                const normalizedSections = Array.isArray(chapter.sections)
-                                    ? chapter.sections
-                                        .filter(isPregnancySection)
-                                        .sort((a, b) => (a.sort || 0) - (b.sort || 0))
-                                    : chapter.sections;
-
-                                return {
-                                    ...chapter,
-                                    sections: normalizedSections,
-                                };
-                            });
-
-                        response.chapters = normalizedChapters;
-                    }
-                    setData(response);
-                } else {
-                    setData(null);
-                }
-            } catch (err) {
-                console.error("Failed to fetch pregnancy condition details", err);
-                setError(err instanceof Error ? err : new Error("Unknown error"));
-            } finally {
-                setLoading(false);
+            // Sort problems and chapters by the 'sort' field
+            if (response.problems && Array.isArray(response.problems)) {
+                response.problems = response.problems
+                    .filter(isPregnancyProblem)
+                    .sort((a, b) => (a.sort || 0) - (b.sort || 0))
+                    .map((problem) => {
+                        const normalizedSlug = normalizeProblemSlug(problem.slug || "");
+                        return {
+                            ...problem,
+                            slug: normalizedSlug || problem.slug,
+                            link_url: normalizePregnancyProblemLink(problem.link_url, normalizedSlug || problem.slug),
+                        };
+                    });
             }
+            if (response.chapters && Array.isArray(response.chapters)) {
+                response.chapters = response.chapters
+                    .filter(isPregnancyChapter)
+                    .sort((a, b) => (a.sort || 0) - (b.sort || 0))
+                    .map((chapter) => ({
+                        ...chapter,
+                        sections: Array.isArray(chapter.sections)
+                            ? chapter.sections
+                                .filter(isPregnancySection)
+                                .sort((a, b) => (a.sort || 0) - (b.sort || 0))
+                            : chapter.sections,
+                    }));
+            }
+
+            return response;
         };
 
-        fetchPregnancyData();
-    }, [language]); // Depend on language to refetch if needed (though fields are included all at once)
+        const cleanup = fetchWithCache<ConditionPregnancy | null>(
+            cacheKey,
+            fetcher,
+            (result) => {
+                setData(result ?? null);
+                if (result !== null) setError(null);
+            },
+            (isLoading) => {
+                setLoading(isLoading);
+            },
+        );
+
+        return cleanup;
+    }, [language]);
 
     return { data, loading, error };
 };

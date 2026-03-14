@@ -123,29 +123,33 @@ export const CommonExerciseSection = ({
         >
           <div className={styles.normalFunctionContent}>
             {videoSectionDescription && (
-              <p className={styles.enhancedParagraph} style={{ marginBottom: '1.5rem' }}>
+              <p className={styles.enhancedParagraph} style={{ marginBottom: '1rem' }}>
                 {videoSectionDescription}
               </p>
             )}
-            
-            {videos.map((video, index) => (
-              <div 
-                key={index} 
-                className={styles.videoContainer}
-              >
-                <iframe
-                  src={video.src}
-                  title={video.title}
-                  allowFullScreen
-                  className={styles.videoIframe}
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                  loading="lazy"
-                ></iframe>
-              </div>
-            ))}
+
+            <div className={styles.videoGrid}>
+              {videos.map((video, index) => (
+                <div key={index} className={styles.videoItem}>
+                  <div className={styles.videoContainer}>
+                    <iframe
+                      src={video.src}
+                      title={video.title}
+                      allowFullScreen
+                      className={styles.videoIframe}
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      loading="lazy"
+                    ></iframe>
+                  </div>
+                  {video.title && (
+                    <p className={styles.videoTitle}>{video.title}</p>
+                  )}
+                </div>
+              ))}
+            </div>
 
             {smartphoneApps && (
-              <div className={styles.highlightBox} style={{ marginTop: '1.5rem' }}>
+              <div className={styles.highlightBox} style={{ marginTop: '1rem' }}>
                 <p><strong>{smartphoneApps.title}</strong></p>
                 <p>{smartphoneApps.description}</p>
                 <p>
