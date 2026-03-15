@@ -3976,6 +3976,11 @@
   border: 1px solid rgba(5, 56, 112, 0.08);
 }
 
+/* Constipation causes only: image on left, text on right (no change to other sections) */
+.sideBySideImageLeft {
+  flex-direction: row-reverse;
+}
+
 /* Image inside this container is part of the same card – no nested card */
 .sideBySideContainer .anatomyItem {
   background: transparent;
