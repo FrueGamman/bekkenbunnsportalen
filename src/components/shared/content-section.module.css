@@ -76,9 +76,9 @@
 .treatmentOption {
   margin-bottom: 1.5rem;
   padding: 1rem;
-  background: var(--color-bg-secondary);
-  border-radius: var(--radius-md);
-  border-left: 4px solid var(--color-primary);
+  padding-left: 1.25rem;
+  border-left: 3px solid var(--color-primary);
+  border-radius: 0;
 }
 
 .relatedLinks,

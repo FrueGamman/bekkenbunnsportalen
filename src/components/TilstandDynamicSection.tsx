@@ -1424,7 +1424,9 @@ export const TilstandDynamicSection = ({
                     ? React.createElement(block.headingTag, {
                         className: headingOnly
                             ? `${styles.enhancedSubheading} ${styles.enhancedSubheadingStandalone}`
-                            : styles.enhancedSubheading,
+                            : isUrinaryPregnancyAgeBlock
+                                ? `${styles.enhancedSubheading} ${styles.enhancedSubheadingCompact}`
+                                : styles.enhancedSubheading,
                         style: {
                             ...(blockIdx > 0 ? { marginTop: "1.5rem" } : {}),
                             ...(headingOnly ? { textAlign: "center" as const } : {}),
