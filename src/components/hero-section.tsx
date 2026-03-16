@@ -76,16 +76,39 @@ export const HeroSection = ({ cmsData }: HeroSectionProps) => {
 
   const normalizedTitle = (title || "").replace(/\s+/g, " ").trim()
   const lower = normalizedTitle.toLowerCase()
-  const lowerPrefix = defaultLine1.toLowerCase()
-  const prefixIdx = lower.indexOf(lowerPrefix)
+
+  // Try to strip a known greeting prefix from the CMS title to get just the site name.
+  // Prefixes ordered longest-first so we strip the most specific match.
+  const prefixCandidates = language === "no"
+    ? ["velkommen til"]
+    : ["welcome to the", "welcome to"]
+
+  let strippedLine2 = ""
+  for (const prefix of prefixCandidates) {
+    const idx = lower.indexOf(prefix)
+    if (idx >= 0) {
+      strippedLine2 = normalizedTitle.slice(idx + prefix.length).trim()
+      break
+    }
+  }
 
   const heroTitleLine1 = defaultLine1
   const heroTitleLine2 =
     normalizedTitle.length === 0
       ? defaultLine2
-      : prefixIdx >= 0
-        ? (normalizedTitle.slice(prefixIdx + defaultLine1.length).trim() || defaultLine2)
-        : normalizedTitle
+      : strippedLine2.length > 0
+        ? strippedLine2
+        : defaultLine2
+
+  // Canonical display order for hero condition cards
+  const CONDITION_ORDER = [
+    "urinary-incontinence",
+    "urinary-retention",
+    "fecal-incontinence",
+    "constipation",
+    "pelvic-pain",
+    "pregnancy"
+  ]
 
   const hardcodedIcons: Record<string, string> = {
     "urinary-incontinence": "/image-7.svg",
@@ -105,6 +128,15 @@ export const HeroSection = ({ cmsData }: HeroSectionProps) => {
     { id: 6, titleKey: staticData.conditions.pregnancy, icon: "/vector-2.svg", route: "pregnancy" },
   ]
 
+  // Sort helper: enforce CONDITION_ORDER for consistent display
+  const sortByOrder = (items: HealthCondition[]): HealthCondition[] => {
+    return [...items].sort((a, b) => {
+      const ai = CONDITION_ORDER.indexOf(a.route)
+      const bi = CONDITION_ORDER.indexOf(b.route)
+      return (ai === -1 ? 999 : ai) - (bi === -1 ? 999 : bi)
+    })
+  }
+
   let healthConditions: HealthCondition[]
   if (cmsData?.conditions && cmsData.conditions.length > 0) {
     healthConditions = cmsData.conditions.map((c, i) => ({
@@ -122,6 +154,8 @@ export const HeroSection = ({ cmsData }: HeroSectionProps) => {
         { id: "pregnancy-fallback", titleKey: staticData.conditions.pregnancy, icon: "/vector-2.svg", route: "pregnancy" }
       ]
     }
+    // Sort to canonical order
+    healthConditions = sortByOrder(healthConditions)
   } else {
     healthConditions = staticConditionList
   }
