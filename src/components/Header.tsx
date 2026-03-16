@@ -16,7 +16,7 @@ const HEADER_DATA = {
       conditions: "Tilstander",
       information: "Nyttig informasjon",
       about: "Om oss",
-      help: "Hjelp",
+      help: "Personvern",
       healthcare: "For helsepersonell"
     },
     search: {
@@ -31,7 +31,7 @@ const HEADER_DATA = {
       conditions: "Conditions",
       information: "Resources",
       about: "About",
-      help: "Help",
+      help: "Privacy",
       healthcare: "For Professionals"
     },
     search: {

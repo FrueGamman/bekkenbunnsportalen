@@ -317,7 +317,7 @@
   .heroSection {
     flex-direction: row; /* Back to horizontal layout */
     padding: 3rem;
-    gap: 6rem;
+    gap: 4rem;
     align-items: flex-start;
   }
   
@@ -336,8 +336,8 @@
   
   .heroCardsGrid {
     max-width: none;
-    gap: 8px;
-    padding: 8px;
+    gap: 12px;
+    padding: 12px;
   }
 }
 
@@ -1008,64 +1008,83 @@
 /* Remove extra wrapper; figcaption styles below */
 
 .heroCardTitleText {
-  font-size: 15px;
+  font-size: clamp(10px, 1vw, 12px);
   font-weight: 700;
   color: var(--brand-navy);
   text-align: center;
-  line-height: 1.35; /* improve multi‑line readability */
+  line-height: 1.35;
   margin: 0;
-  padding-top: 0.35rem; /* Add padding under title */
-  word-break: keep-all;
-  overflow-wrap: normal;
+  padding-top: 0.35rem;
+  word-break: normal;
+  overflow-wrap: break-word;
   white-space: normal;
   -webkit-hyphens: none;
   hyphens: none;
   transition: all 0.3s ease;
-  min-height: calc(1.35em * 3); /* reserve space for up to 3 lines */
-  letter-spacing: 0.01em; /* slight tracking for clarity */
-  text-wrap: balance; /* try to balance line breaks where supported */
-  max-width: 96%; /* allow more width for long words */
+  min-height: calc(1.35em * 3);
+  letter-spacing: 0.01em;
+  text-wrap: balance;
+  max-width: 100%;
+  width: 100%;
+  box-sizing: border-box;
 }
 
-/* Ensure nested spans also do not hyphenate or break inside words */
 .heroCardTitleText span {
-  word-break: keep-all;
-  overflow-wrap: normal;
+  word-break: normal;
+  overflow-wrap: break-word;
   -webkit-hyphens: none;
   hyphens: none;
 }
 
+@media (min-width: 640px) {
+  .heroCardTitleText {
+    font-size: clamp(10px, 1.1vw, 12px);
+  }
+}
+
 @media (min-width: 768px) {
   .heroCardTitleText {
-    font-size: 16px;
-    white-space: normal;
+    font-size: clamp(10px, 1.1vw, 12px);
     padding-top: 0.5rem;
-    line-height: 1.4; /* Better line height for tablet */
+    line-height: 1.4;
   }
 }
 
 @media (min-width: 1024px) {
   .heroCardTitleText {
-    font-size: 17px;
-    white-space: normal;
+    font-size: clamp(10px, 1vw, 12px);
     padding-top: 0.5rem;
-    line-height: 1.4; /* Better line height for readability */
-    font-weight: 600; /* Slightly lighter weight for better readability */
+    line-height: 1.4;
+    font-weight: 600;
+  }
+}
+
+@media (min-width: 1200px) {
+  .heroCardTitleText {
+    font-size: clamp(10px, 0.9vw, 12px);
+  }
+}
+
+@media (min-width: 1280px) {
+  .heroCardTitleText {
+    font-size: clamp(10px, 0.9vw, 12px);
   }
 }
 
 @media (min-width: 1440px) {
   .heroCardTitleText {
-    font-size: 18px;
+    font-size: clamp(12px, 1vw, 14px);
   }
 }
 
 @media (min-width: 1920px) {
   .heroCardTitleText {
-    font-size: 19px;
+    font-size: clamp(13px, 0.9vw, 16px);
     line-height: 1.45;
   }
 }
+
+
 
 .heroCard:hover .heroCardTitleText,
 .heroCard.hovered .heroCardTitleText {
