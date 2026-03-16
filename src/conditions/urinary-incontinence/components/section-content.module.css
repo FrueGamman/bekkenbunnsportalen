@@ -1230,7 +1230,7 @@
   }
 
   .enhancedSubheading {
-    font-size: 1rem;
+    font-size: 1.125rem;
   }
 
   /* Mobile responsive styles for treatment video */
@@ -1814,7 +1814,7 @@
 }
 
 .enhancedSubheading {
-  font-size: 1.375rem;
+  font-size: 1.25rem;
   font-weight: 700;
   color: #053870;
   margin: 2.5rem 0 1.75rem 0;
@@ -1979,7 +1979,7 @@
   }
 
   .enhancedSubheading {
-    font-size: 1rem;
+    font-size: 1.125rem;
   }
 }
 
@@ -4223,7 +4223,7 @@ html.dark .patientStoryLink:hover {
   .contentSubtitle,
   .contentSubheading,
   .enhancedSubheading {
-    font-size: 1.375rem;
+    font-size: 1.25rem;
   }
 
   /* Anatomy Grid - Better spacing on desktop */
@@ -4287,7 +4287,7 @@ html.dark .patientStoryLink:hover {
 
   .contentParagraph,
   .enhancedParagraph {
-    font-size: 1.15rem;
+    font-size: 1.125rem;
     line-height: 1.75;
   }
 
@@ -4298,7 +4298,7 @@ html.dark .patientStoryLink:hover {
   .contentSubtitle,
   .contentSubheading,
   .enhancedSubheading {
-    font-size: 1.5rem;
+    font-size: 1.25rem;
   }
 
   /* Anatomy Grid */
@@ -4401,7 +4401,7 @@ html.dark .patientStoryLink:hover {
 
   .contentParagraph,
   .enhancedParagraph {
-    font-size: 1.2rem;
+    font-size: 1.125rem;
     line-height: 1.8;
   }
 
@@ -4412,7 +4412,7 @@ html.dark .patientStoryLink:hover {
   .contentSubtitle,
   .contentSubheading,
   .enhancedSubheading {
-    font-size: 1.625rem;
+    font-size: 1.25rem;
   }
 
   /* Anatomy Grid */

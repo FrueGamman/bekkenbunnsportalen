@@ -129,8 +129,8 @@
   --color-card-border: #e6f2ff;
   --color-card-hover: rgba(102, 179, 255, 0.08);
 
-  /* Health section icon filter */
-  --health-icon-filter: none;
+  /* Health section icon filter – same color for all SVGs (brand navy #053870) */
+  --health-icon-filter: brightness(0) saturate(100%) invert(18%) sepia(72%) saturate(1844%) hue-rotate(199deg) brightness(95%) contrast(92%);
 
   /* Header gradient colors */
   --header-from: #5c9a9c;

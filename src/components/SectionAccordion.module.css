@@ -147,21 +147,21 @@
   }
 }
 
-/* Large Screen Optimizations */
+/* Large Screen Optimizations – keep accordion title font consistent across pages */
 @media (min-width: 1440px) {
   .accordionHeader {
     padding: 1.5rem 2rem;
   }
 
   .accordionTitle {
-    font-size: clamp(1.25rem, 1.3vw, 1.5rem);
+    font-size: 1.125rem;
   }
 
   .accordionIcon {
     width: 36px;
     height: 36px;
     min-width: 36px;
-    font-size: clamp(1.625rem, 1.7vw, 2rem);
+    font-size: 1.5rem;
     margin-left: 1.25rem;
   }
 
@@ -176,14 +176,14 @@
   }
 
   .accordionTitle {
-    font-size: clamp(1.375rem, 1.4vw, 1.75rem);
+    font-size: 1.125rem;
   }
 
   .accordionIcon {
     width: 40px;
     height: 40px;
     min-width: 40px;
-    font-size: clamp(1.75rem, 1.85vw, 2.25rem);
+    font-size: 1.5rem;
     margin-left: 1.5rem;
   }
 
@@ -198,14 +198,14 @@
   }
 
   .accordionTitle {
-    font-size: clamp(1.625rem, 1.65vw, 2.125rem);
+    font-size: 1.125rem;
   }
 
   .accordionIcon {
     width: 48px;
     height: 48px;
     min-width: 48px;
-    font-size: clamp(2rem, 2.1vw, 2.625rem);
+    font-size: 1.5rem;
     margin-left: 2rem;
   }
 
