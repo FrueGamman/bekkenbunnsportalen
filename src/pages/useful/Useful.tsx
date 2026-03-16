@@ -400,8 +400,8 @@ export const Useful = () => {
 
   const tabs = [
     { id: "pasienthistorier", label: data.tabs.pasienthistorier },
-    { id: "pasientundervisning", label: "Pasientundervisning" },
-    { id: "ovelse", label: "Øvelse" }
+    { id: "pasientundervisning", label: data.patientEducation.title },
+    { id: "ovelse", label: data.tabs.ovelse }
   ]
 
   // Featured article (top section)
@@ -563,7 +563,7 @@ export const Useful = () => {
               <div className={styles.sectionIcon}>
                 <img src="/majesticons_note-text-line.png" alt="patient education" style={{width:'24px', height:'24px'}} className={styles.sectionIconImage} />
               </div>
-              <h2 className={styles.sectionTitle}>Pasientundervisning</h2>
+              <h2 className={styles.sectionTitle}>{data.patientEducation.title}</h2>
             </div>
             
             <div className={styles.testimonialsIntro}>
@@ -583,7 +583,7 @@ export const Useful = () => {
         {activeTab === "ovelse" && (
           <div className={styles.contentSections}>
             <div className={styles.sectionHeader}>
-              <h2 className={styles.sectionTitle}>Øvelse</h2>
+              <h2 className={styles.sectionTitle}>{data.tabs.ovelse}</h2>
             </div>
 
 

@@ -154,9 +154,9 @@ const Footer = () => {
               <a href="/tilgjengelighet" className={styles.navLink}>
                 {language === 'no' ? 'Tilgjengelighet' : 'Accessibility'}
               </a>
-              <p className={styles.navLink}>
+              <a href="/personvern" className={styles.navLink}>
                 {language === 'no' ? 'Bruksvilkår' : 'Terms of use'}
-              </p>
+              </a>
             </nav>
           </div>
 
