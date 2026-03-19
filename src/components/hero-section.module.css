@@ -1034,6 +1034,9 @@
   overflow-wrap: break-word;
   -webkit-hyphens: none;
   hyphens: none;
+  font-size: inherit;
+  line-height: inherit;
+  font-weight: inherit;
 }
 
 @media (min-width: 640px) {
