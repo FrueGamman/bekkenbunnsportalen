@@ -159,6 +159,29 @@
   padding: 0;
 }
 
+/* Rich text video embeds coming from Directus */
+:global(.directus-video-embed) {
+  margin: 1rem 0 1.25rem;
+}
+
+:global(.directus-video-embed__inner) {
+  position: relative;
+  width: 100%;
+  padding-top: 56.25%; /* 16:9 */
+  background: rgba(0, 0, 0, 0.06);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(5, 56, 112, 0.08);
+}
+
+:global(.directus-video-embed__inner iframe) {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
 .contentParagraph {
   font-size: 1rem;
   line-height: 1.7;

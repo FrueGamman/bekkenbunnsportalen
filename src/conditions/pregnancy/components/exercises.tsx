@@ -30,13 +30,11 @@ const EXERCISES_DATA = {
       { number: 4, text: "Gjenta 15 ganger morgen og kveld. For noen kan 15 knip være mye i starten. Det er viktigere og få til gode og korrekte knip, enn flest mulig. Antall knip kan økes etterhvert." },
       { number: 5, text: 'Øk knipetiden litt etter litt. For eksempel kan du øke med 1-2 sekunder hver uke, til du er oppe i 10-12 sekunder. Knipene skal være kontrollerte. Dersom taket "slipper" er det bedre å redusere knipetiden slik at det blir et sterkt og godt knip.' }
     ],
-    videoSectionTitle: "Instruksjonsvideoer",
-    videoSectionDescription: "Filminstruksjoner i opptrening av bekkenbunn for menn. E-læringskurs i 4 deler utviklet av St. Olavs Hospital, Helse Midt-Norge RHF.",
+    videoSectionTitle: "Instruksjonsvideoer for bekkenbunnstrening for kvinner",
+    videoSectionDescription: "Videoer om bekkenbunnstrening for kvinner etter svangerskap og fødsel.",
     videos: [
-      { src: "https://www.youtube.com/embed/JdIGtPzNbhg?rel=0&modestbranding=1&controls=1&showinfo=0&fs=1", title: "Del 1. Introduksjon" },
-      { src: "https://www.youtube.com/embed/NraqaXqgIuk?rel=0&modestbranding=1&controls=1&showinfo=0&fs=1", title: "Del 2. I stol" },
-      { src: "https://www.youtube.com/embed/QTbpFku1pcM?rel=0&modestbranding=1&controls=1&showinfo=0&fs=1", title: "Del 3. Froskestilling" },
-      { src: "https://www.youtube.com/embed/mHwQzQGPp6U?rel=0&modestbranding=1&controls=1&showinfo=0&fs=1", title: "Del 4. Stående og liggende" }
+      { src: "https://www.youtube.com/embed/ZTMpEr6GLp8?rel=0&modestbranding=1&controls=1&showinfo=0&fs=1", title: "Bekkenbunnstrening etter fødsel" },
+      { src: "https://player.vimeo.com/video/65880144", title: "Øvelser for å styrke bekkenbunnen" }
     ],
     smartphoneApps: {
       title: "Smarttelefon applikasjoner",
@@ -71,13 +69,11 @@ const EXERCISES_DATA = {
       { number: 4, text: "Repeat 15 times morning and evening. For some, 15 squeezes may be a lot at the start. It is more important to achieve good and correct squeezes than as many as possible. The number of squeezes can be increased gradually." },
       { number: 5, text: "Increase the squeeze time little by little. For example, you can increase by 1-2 seconds each week, until you reach 10-12 seconds. The squeezes should be controlled. If the grip 'slips,' it is better to reduce the squeeze time so that it becomes a strong and good squeeze." }
     ],
-    videoSectionTitle: "Instructional Videos",
-    videoSectionDescription: "Video Instructions for Pelvic Floor Training for Men. E-learning course in 4 parts developed by St. Olavs Hospital, Central Norway Regional Health Authority.",
+    videoSectionTitle: "Instructional Videos for Women's Pelvic Floor Training",
+    videoSectionDescription: "Videos about pelvic floor training for women after pregnancy and childbirth.",
     videos: [
-      { src: "https://www.youtube.com/embed/JdIGtPzNbhg?rel=0&modestbranding=1&controls=1&showinfo=0&fs=1", title: "Part 1. Introduction" },
-      { src: "https://www.youtube.com/embed/NraqaXqgIuk?rel=0&modestbranding=1&controls=1&showinfo=0&fs=1", title: "Part 2. In chair" },
-      { src: "https://www.youtube.com/embed/QTbpFku1pcM?rel=0&modestbranding=1&controls=1&showinfo=0&fs=1", title: "Part 3. Frog position" },
-      { src: "https://www.youtube.com/embed/mHwQzQGPp6U?rel=0&modestbranding=1&controls=1&showinfo=0&fs=1", title: "Part 4. Standing and lying" }
+      { src: "https://www.youtube.com/embed/ZTMpEr6GLp8?rel=0&modestbranding=1&controls=1&showinfo=0&fs=1", title: "Pelvic Floor Training After Birth" },
+      { src: "https://player.vimeo.com/video/65880144", title: "Exercises to Strengthen the Pelvic Floor" }
     ],
     smartphoneApps: {
       title: "Smartphone Applications",

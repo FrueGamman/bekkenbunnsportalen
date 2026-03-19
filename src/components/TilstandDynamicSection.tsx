@@ -6,6 +6,7 @@ import { CommonExerciseSection, type ExerciseStep, type GenderInstruction, type 
 import { ImageModal } from "./ui/ImageModal";
 import type { Tilstand, TilstandAccordionItem, TilstandUnderseksjon } from "../types/cms";
 import { getImageUrl } from "../lib/directus";
+import { transformRichTextEmbeds } from "../lib/richTextEmbeds";
 import styles from "../conditions/urinary-incontinence/components/section-content.module.css";
 
 /** One container for paragraph + single image; for intro only, uses block layout when image is horizontal. */
@@ -505,15 +506,16 @@ export const TilstandDynamicSection = ({
     // -----------------------------------------------------------------------
     const renderRichText = (html: string, style?: React.CSSProperties): React.ReactNode => {
         if (!html) return null;
-        const doc = new DOMParser().parseFromString(`<div>${html}</div>`, "text/html");
+        const transformed = transformRichTextEmbeds(html);
+        const doc = new DOMParser().parseFromString(`<div>${transformed}</div>`, "text/html");
         const root = doc.body.firstChild as HTMLElement;
-        if (!root) return <div className={styles.enhancedParagraph} style={style} dangerouslySetInnerHTML={{ __html: html }} />;
+        if (!root) return <div className={styles.enhancedParagraph} style={style} dangerouslySetInnerHTML={{ __html: transformed }} />;
 
         const nodes = Array.from(root.childNodes);
         const hasBlockquote = nodes.some((n) => (n as HTMLElement).tagName === "BLOCKQUOTE");
 
         if (!hasBlockquote) {
-            return <div className={styles.enhancedParagraph} style={style} dangerouslySetInnerHTML={{ __html: html }} />;
+            return <div className={styles.enhancedParagraph} style={style} dangerouslySetInnerHTML={{ __html: transformed }} />;
         }
 
         return (

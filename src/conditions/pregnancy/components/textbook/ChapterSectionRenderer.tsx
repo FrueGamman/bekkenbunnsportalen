@@ -5,6 +5,7 @@ import { SectionAccordion } from "../../../../components/SectionAccordion"
 import styles from "../section-content.module.css"
 import { getImageUrl } from "../../../../lib/directus"
 import type { PregnancySection } from "../../../../types/cms"
+import { transformRichTextEmbeds } from "../../../../lib/richTextEmbeds"
 
 interface ChapterSectionRendererProps {
     chapter?: {
@@ -44,7 +45,8 @@ export const ChapterSectionRenderer = ({ chapter }: ChapterSectionRendererProps)
     }
 
     const renderContent = (section: PregnancySection) => {
-        const content = (language === "en" && section.content_en) ? section.content_en : section.content_no
+        const raw = (language === "en" && section.content_en) ? section.content_en : section.content_no
+        const content = raw ? transformRichTextEmbeds(raw) : raw
         const hasTrekkspill = Array.isArray(section.trekkspill) && section.trekkspill.length > 0
         const imageUrl = section.media_file ? getImageUrl(section.media_file) : null
 

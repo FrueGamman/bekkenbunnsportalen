@@ -615,70 +615,6 @@ export const Useful = () => {
               <div className={styles.videoCard}>
                 <div className={styles.videoContainer}>
                   <iframe
-                    src="https://www.youtube.com/embed/JdIGtPzNbhg"
-                    width="100%"
-                    height="360"
-                    frameBorder="0"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                    allowFullScreen
-                    title="Menn Del 1 – Introduksjon"
-                    className={styles.videoIframe}
-                  ></iframe>
-                </div>
-                <h4 className={styles.videoCardTitle}>Menn Del 1 – Introduksjon</h4>
-              </div>
-
-              <div className={styles.videoCard}>
-                <div className={styles.videoContainer}>
-                  <iframe
-                    src="https://www.youtube.com/embed/NraqaXqgIuk"
-                    width="100%"
-                    height="360"
-                    frameBorder="0"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                    allowFullScreen
-                    title="Menn Del 2 – I stol"
-                    className={styles.videoIframe}
-                  ></iframe>
-                </div>
-                <h4 className={styles.videoCardTitle}>Menn Del 2 – I stol</h4>
-              </div>
-
-              <div className={styles.videoCard}>
-                <div className={styles.videoContainer}>
-                  <iframe
-                    src="https://www.youtube.com/embed/QTbpFku1pcM"
-                    width="100%"
-                    height="360"
-                    frameBorder="0"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                    allowFullScreen
-                    title="Menn Del 3 – Froskestilling"
-                    className={styles.videoIframe}
-                  ></iframe>
-                </div>
-                <h4 className={styles.videoCardTitle}>Menn Del 3 – Froskestilling</h4>
-              </div>
-
-              <div className={styles.videoCard}>
-                <div className={styles.videoContainer}>
-                  <iframe
-                    src="https://www.youtube.com/embed/mHwQzQGPp6U"
-                    width="100%"
-                    height="360"
-                    frameBorder="0"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                    allowFullScreen
-                    title="Menn Del 4 – Stående og liggende"
-                    className={styles.videoIframe}
-                  ></iframe>
-                </div>
-                <h4 className={styles.videoCardTitle}>Menn Del 4 – Stående og liggende</h4>
-              </div>
-
-              <div className={styles.videoCard}>
-                <div className={styles.videoContainer}>
-                  <iframe
                     src="https://www.youtube.com/embed/ZTMpEr6GLp8"
                     width="100%"
                     height="360"
@@ -689,7 +625,9 @@ export const Useful = () => {
                     className={styles.videoIframe}
                   ></iframe>
                 </div>
-                <h4 className={styles.videoCardTitle}>Etter svangerskap og fødsel</h4>
+                <h4 className={styles.videoCardTitle}>
+                  {language === 'no' ? 'Etter svangerskap og fødsel' : 'After Pregnancy and Childbirth'}
+                </h4>
               </div>
             </div>
           </div>
