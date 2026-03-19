@@ -400,8 +400,8 @@ export const Useful = () => {
 
   const tabs = [
     { id: "pasienthistorier", label: data.tabs.pasienthistorier },
-    { id: "pasientundervisning", label: "Pasientundervisning" },
-    { id: "ovelse", label: "Øvelse" }
+    { id: "pasientundervisning", label: data.patientEducation.title },
+    { id: "ovelse", label: data.tabs.ovelse }
   ]
 
   // Featured article (top section)
@@ -563,7 +563,7 @@ export const Useful = () => {
               <div className={styles.sectionIcon}>
                 <img src="/majesticons_note-text-line.png" alt="patient education" style={{width:'24px', height:'24px'}} className={styles.sectionIconImage} />
               </div>
-              <h2 className={styles.sectionTitle}>Pasientundervisning</h2>
+              <h2 className={styles.sectionTitle}>{data.patientEducation.title}</h2>
             </div>
             
             <div className={styles.testimonialsIntro}>
@@ -583,7 +583,7 @@ export const Useful = () => {
         {activeTab === "ovelse" && (
           <div className={styles.contentSections}>
             <div className={styles.sectionHeader}>
-              <h2 className={styles.sectionTitle}>Øvelse</h2>
+              <h2 className={styles.sectionTitle}>{data.tabs.ovelse}</h2>
             </div>
 
 
@@ -615,70 +615,6 @@ export const Useful = () => {
               <div className={styles.videoCard}>
                 <div className={styles.videoContainer}>
                   <iframe
-                    src="https://www.youtube.com/embed/JdIGtPzNbhg"
-                    width="100%"
-                    height="360"
-                    frameBorder="0"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                    allowFullScreen
-                    title="Menn Del 1 – Introduksjon"
-                    className={styles.videoIframe}
-                  ></iframe>
-                </div>
-                <h4 className={styles.videoCardTitle}>Menn Del 1 – Introduksjon</h4>
-              </div>
-
-              <div className={styles.videoCard}>
-                <div className={styles.videoContainer}>
-                  <iframe
-                    src="https://www.youtube.com/embed/NraqaXqgIuk"
-                    width="100%"
-                    height="360"
-                    frameBorder="0"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                    allowFullScreen
-                    title="Menn Del 2 – I stol"
-                    className={styles.videoIframe}
-                  ></iframe>
-                </div>
-                <h4 className={styles.videoCardTitle}>Menn Del 2 – I stol</h4>
-              </div>
-
-              <div className={styles.videoCard}>
-                <div className={styles.videoContainer}>
-                  <iframe
-                    src="https://www.youtube.com/embed/QTbpFku1pcM"
-                    width="100%"
-                    height="360"
-                    frameBorder="0"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                    allowFullScreen
-                    title="Menn Del 3 – Froskestilling"
-                    className={styles.videoIframe}
-                  ></iframe>
-                </div>
-                <h4 className={styles.videoCardTitle}>Menn Del 3 – Froskestilling</h4>
-              </div>
-
-              <div className={styles.videoCard}>
-                <div className={styles.videoContainer}>
-                  <iframe
-                    src="https://www.youtube.com/embed/mHwQzQGPp6U"
-                    width="100%"
-                    height="360"
-                    frameBorder="0"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                    allowFullScreen
-                    title="Menn Del 4 – Stående og liggende"
-                    className={styles.videoIframe}
-                  ></iframe>
-                </div>
-                <h4 className={styles.videoCardTitle}>Menn Del 4 – Stående og liggende</h4>
-              </div>
-
-              <div className={styles.videoCard}>
-                <div className={styles.videoContainer}>
-                  <iframe
                     src="https://www.youtube.com/embed/ZTMpEr6GLp8"
                     width="100%"
                     height="360"
@@ -689,7 +625,9 @@ export const Useful = () => {
                     className={styles.videoIframe}
                   ></iframe>
                 </div>
-                <h4 className={styles.videoCardTitle}>Etter svangerskap og fødsel</h4>
+                <h4 className={styles.videoCardTitle}>
+                  {language === 'no' ? 'Etter svangerskap og fødsel' : 'After Pregnancy and Childbirth'}
+                </h4>
               </div>
             </div>
           </div>

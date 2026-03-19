@@ -8,9 +8,17 @@ const PATIENT_EDUCATION_DATA = {
   no: {
     videos: {
       title: "Instruksjonsvideoer",
+      womensPostpartumExercises: {
+        title: "Bekkenbunnstrening etter fødsel",
+        description: "Kvinners postpartum øvelser — St. Olavs"
+      },
+      womensPelvicFloorGeneral: {
+        title: "Øvelser for å styrke bekkenbunnen",
+        description: "Generell bekkenbunnstrening for kvinner (10:33)"
+      },
       pelvicFloorIntro: {
-        title: "Introduksjon til bekkenbunnsøvelser",
-        description: "Lær grunnleggende teknikker for bekkenbunnstrening"
+        title: "Forstå smerte på 5 minutt",
+        description: "Undervisningsvideo om smerteforståelse"
       },
       analIrrigationIntro: {
         title: "Kort introduksjon - Peristeen analirrigasjon",
@@ -96,9 +104,17 @@ const PATIENT_EDUCATION_DATA = {
   en: {
     videos: {
       title: "Instructional videos",
+      womensPostpartumExercises: {
+        title: "Pelvic Floor Training After Birth",
+        description: "Women’s postpartum exercises — St. Olavs"
+      },
+      womensPelvicFloorGeneral: {
+        title: "Exercises to Strengthen the Pelvic Floor",
+        description: "General pelvic floor training for women (10:33)"
+      },
       pelvicFloorIntro: {
-        title: "Introduction to pelvic floor exercises",
-        description: "Learn basic techniques for pelvic floor training"
+        title: "Understanding Pain in 5 Minutes",
+        description: "Educational video about pain understanding"
       },
       analIrrigationIntro: {
         title: "Brief introduction - Peristeen anal irrigation",
@@ -216,6 +232,18 @@ export const PatientEducationCards: React.FC = () => {
 
   // Video data - easy to add more videos later
   const videoData: VideoData[] = [
+    {
+      id: 'womens-postpartum-exercises',
+      url: 'https://www.youtube.com/embed/ZTMpEr6GLp8?rel=0&modestbranding=1&controls=1&showinfo=0&fs=1',
+      title: data.videos.womensPostpartumExercises.title,
+      description: data.videos.womensPostpartumExercises.description
+    },
+    {
+      id: 'womens-pelvic-floor-general',
+      url: 'https://player.vimeo.com/video/65880144',
+      title: data.videos.womensPelvicFloorGeneral.title,
+      description: data.videos.womensPelvicFloorGeneral.description
+    },
     {
       id: 'pelvic-floor-intro',
       url: 'https://www.youtube.com/watch?v=E9tVWoRhPKU',

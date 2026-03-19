@@ -9,6 +9,7 @@ import { PregnancyIconGrid } from "./PregnancyIconGrid"
 import { ConditionSection } from "./ConditionSection"
 import type { ConditionPregnancy, PregnancyProblem } from "../../../types/cms"
 import { getImageUrl } from "../../../lib/directus"
+import { transformRichTextEmbeds } from "../../../lib/richTextEmbeds"
 
 // Pregnancy content is from Directus only (usePregnancyData). No duplicate hardcoded body content.
 // Hardcoded text fallback for empty CMS values or structural labels only:
@@ -113,11 +114,12 @@ export const UpgradedPregnancyContent = ({ data }: Props) => {
   const renderRichText = (html?: string) => {
     if (!html) return undefined;
 
-    // Convert directus-links / videos etc. if required, for now just standard innerHTML
+    const transformed = transformRichTextEmbeds(html)
+
     return (
       <div
         className={styles.tabContent}
-        dangerouslySetInnerHTML={{ __html: html }}
+        dangerouslySetInnerHTML={{ __html: transformed }}
       />
     );
   }

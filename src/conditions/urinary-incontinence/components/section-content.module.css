@@ -1,4 +1,38 @@
+/* ── Uniform typography & colors (fluid, responsive, all sections) ── */
+:global(.directus-video-embed) {
+  margin: 1rem 0 1.25rem;
+}
+
+:global(.directus-video-embed__inner) {
+  position: relative;
+  width: 100%;
+  padding-top: 56.25%; /* 16:9 */
+  background: rgba(0, 0, 0, 0.06);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(5, 56, 112, 0.08);
+}
+
+:global(.directus-video-embed__inner iframe) {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
 .sectionContainer {
+  /* Fluid font scale */
+  --section-font-title: clamp(1.25rem, 2vw + 0.5rem, 1.5rem);
+  --section-font-heading: clamp(1.125rem, 1.2vw + 0.5rem, 1.25rem);
+  --section-font-body: clamp(0.9375rem, 1vw + 0.5rem, 1.125rem);
+  --section-font-small: clamp(0.8125rem, 0.9vw + 0.5rem, 0.9375rem);
+  /* Color hierarchy */
+  --section-color-heading: #053870;
+  --section-color-body: #334155;
+  --section-color-muted: #6b7280;
+  --section-color-accent: #08488a;
+
   background: white;
   border-radius: 1.5rem;
   padding: 0;
@@ -62,6 +96,57 @@
   padding: 2rem;
   /* Increased padding */
   border-radius: 1rem;
+}
+
+/* Apply uniform typography and colors to all section content (fluid, responsive) */
+.sectionContainer .sectionTitle {
+  font-size: var(--section-font-title);
+  color: var(--section-color-heading);
+}
+
+.sectionContainer .normalFunctionTitle,
+.sectionContainer .enhancedSubheading,
+.sectionContainer .subsectionTitle,
+.sectionContainer .contentSubtitle,
+.sectionContainer .contentSubheading,
+.sectionContainer .groupHeader,
+.sectionContainer .causesMainSectionTitle {
+  font-size: var(--section-font-heading);
+  color: var(--section-color-heading);
+}
+
+.sectionContainer .enhancedParagraph,
+.sectionContainer .normalFunctionSection .enhancedParagraph,
+.sectionContainer .contentParagraph,
+.sectionContainer .quoteText,
+.sectionContainer .sectionContent p,
+.sectionContainer .diagnosisContentCard p,
+.sectionContainer .diagnosisContentCard .enhancedParagraph p {
+  font-size: var(--section-font-body);
+  color: var(--section-color-body);
+}
+
+.sectionContainer .quoteAuthor,
+.sectionContainer .anatomyCaption,
+.sectionContainer .sideBySideImageCaption,
+.sectionContainer .diagnosisTestimonialBox .quoteAuthor {
+  font-size: var(--section-font-small);
+  color: var(--section-color-muted);
+}
+
+.sectionContainer .diagnosisTestimonialBox .quoteText {
+  font-size: var(--section-font-body);
+  color: var(--section-color-heading);
+}
+
+.sectionContainer .quoteText {
+  color: var(--section-color-heading);
+}
+
+.sectionContainer .resourceLink,
+.sectionContainer .causesQuote,
+.sectionContainer a[class*="resource"] {
+  color: var(--section-color-accent);
 }
 
 /* Single white container for intro + sitat (quote) so they share one card */
@@ -244,6 +329,11 @@
   gap: 2rem;
   margin: 0 0 1.25rem;
   align-items: flex-start;
+  /* Avoid nested cards: use diagnosisContentCard as the only box */
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  padding: 0;
 }
 
 .diagnosisContentCard .sideBySideText {
@@ -349,6 +439,15 @@
   margin-bottom: 2rem;
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
   border: 1px solid rgba(8, 72, 138, 0.1);
+}
+
+/* Inside causesCard, keep a single outer box and let text+image sit on that surface */
+.causesCard .sideBySideContainer {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  padding: 0;
+  margin: 0;
 }
 
 .causesQuoteWrap {
@@ -1230,7 +1329,7 @@
   }
 
   .enhancedSubheading {
-    font-size: 1rem;
+    font-size: 1.125rem;
   }
 
   /* Mobile responsive styles for treatment video */
@@ -1551,8 +1650,9 @@
   transform: translateY(-4px);
 }
 
-/* Font size follows global h1–h6 scale (semantic heading level) */
+/* Same size as block titles (enhancedSubheading) so first section title is not larger than the rest */
 .normalFunctionTitle {
+  font-size: 1.25rem;
   font-weight: 700;
   color: rgba(5, 56, 112, 1);
   margin: 0 0 1.5rem 0;
@@ -1605,15 +1705,15 @@
 .sectionTitleOnly {
   text-align: center;
   background: #F7F8FA;
-  padding: 0.75rem 2.5rem;
-  margin: 1.25rem 0;
+  padding: 0.5rem 1.75rem;
+  margin: 0.5rem 0 0.75rem 0;
   cursor: default;
   pointer-events: none;
 }
 
 .sectionTitleOnly:hover {
   transform: none;
-  box-shadow: 0 8px 25px rgba(5, 56, 112, 0.12);
+  box-shadow: none;
   background: #F7F8FA;
 }
 
@@ -1637,6 +1737,12 @@
   height: 2px;
   background: #9ca3af;
   border-radius: 1px;
+}
+
+/* Compact variant for the "Svangerskap, aldersforandringer og sykdom" block heading */
+.enhancedSubheadingCompact {
+  margin-top: 0.25rem;
+  margin-bottom: 0.5rem;
 }
 
 /* Block-level stand-alone heading (has sub-blocks, no content) — same as Sykdommer style */
@@ -1814,7 +1920,7 @@
 }
 
 .enhancedSubheading {
-  font-size: 1.375rem;
+  font-size: 1.25rem;
   font-weight: 700;
   color: #053870;
   margin: 2.5rem 0 1.75rem 0;
@@ -1979,7 +2085,7 @@
   }
 
   .enhancedSubheading {
-    font-size: 1rem;
+    font-size: 1.125rem;
   }
 }
 
@@ -3969,11 +4075,11 @@
   align-items: center;
   gap: 2rem;
   margin: 1.5rem 0;
-  background: white;
-  border-radius: 1rem;
-  padding: 1.5rem 2rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
-  border: 1px solid rgba(5, 56, 112, 0.08);
+  background: transparent;
+  border-radius: 0;
+  padding: 0;
+  box-shadow: none;
+  border: none;
 }
 
 /* Constipation causes only: image on left, text on right (no change to other sections) */
@@ -4079,6 +4185,10 @@
 html.dark .sectionContainer {
   background: transparent;
   box-shadow: none;
+  --section-color-heading: #f1f5f9;
+  --section-color-body: #cbd5e1;
+  --section-color-muted: #94a3b8;
+  --section-color-accent: #93c5fd;
 }
 
 :global(:root[data-theme="dark"]) .sectionTitle,
@@ -4223,7 +4333,7 @@ html.dark .patientStoryLink:hover {
   .contentSubtitle,
   .contentSubheading,
   .enhancedSubheading {
-    font-size: 1.375rem;
+    font-size: 1.25rem;
   }
 
   /* Anatomy Grid - Better spacing on desktop */
@@ -4287,7 +4397,7 @@ html.dark .patientStoryLink:hover {
 
   .contentParagraph,
   .enhancedParagraph {
-    font-size: 1.15rem;
+    font-size: 1.125rem;
     line-height: 1.75;
   }
 
@@ -4298,7 +4408,7 @@ html.dark .patientStoryLink:hover {
   .contentSubtitle,
   .contentSubheading,
   .enhancedSubheading {
-    font-size: 1.5rem;
+    font-size: 1.25rem;
   }
 
   /* Anatomy Grid */
@@ -4401,7 +4511,7 @@ html.dark .patientStoryLink:hover {
 
   .contentParagraph,
   .enhancedParagraph {
-    font-size: 1.2rem;
+    font-size: 1.125rem;
     line-height: 1.8;
   }
 
@@ -4412,7 +4522,7 @@ html.dark .patientStoryLink:hover {
   .contentSubtitle,
   .contentSubheading,
   .enhancedSubheading {
-    font-size: 1.625rem;
+    font-size: 1.25rem;
   }
 
   /* Anatomy Grid */
