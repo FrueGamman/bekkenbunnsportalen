@@ -1413,11 +1413,20 @@ export const TilstandDynamicSection = ({
                 const hasContent = block.items.length > 0 || block.links.length > 0;
                 const headingOnly = !hasContent && block.headingTag != null && !!block.headingText;
 
+                // For urinary-incontinence causes → "Svangerskap, aldersforandringer og sykdom",
+                // use a block (stacked) layout for horizontal images so they are not squeezed side-by-side.
+                const isUrinaryPregnancyAgeBlock =
+                    activeSection === "causes" &&
+                    conditionSlug === "urinary-incontinence" &&
+                    slugify(block.headingText || "") === "svangerskap-aldersforandringer-og-sykdom";
+
                 const headingEl = block.headingTag && block.headingText
                     ? React.createElement(block.headingTag, {
                         className: headingOnly
                             ? `${styles.enhancedSubheading} ${styles.enhancedSubheadingStandalone}`
-                            : styles.enhancedSubheading,
+                            : isUrinaryPregnancyAgeBlock
+                                ? `${styles.enhancedSubheading} ${styles.enhancedSubheadingCompact}`
+                                : styles.enhancedSubheading,
                         style: {
                             ...(blockIdx > 0 ? { marginTop: "1.5rem" } : {}),
                             ...(headingOnly ? { textAlign: "center" as const } : {}),
@@ -1476,6 +1485,15 @@ export const TilstandDynamicSection = ({
                         {segs.map((seg, si) => {
                             if (seg.images.length === 0) return <React.Fragment key={si}>{renderParas(seg.paragraphs)}</React.Fragment>;
                             if (seg.images.length === 1) {
+                                if (isUrinaryPregnancyAgeBlock) {
+                                    // Block layout: text and then full-width image card beneath
+                                    return (
+                                        <React.Fragment key={si}>
+                                            {renderParas(seg.paragraphs)}
+                                            <div className={styles.anatomyItem}>{renderImgEl(seg.images[0], 0, styles.anatomyCaption)}</div>
+                                        </React.Fragment>
+                                    );
+                                }
                                 return (
                                     <div key={si} className={`${styles.sideBySideContainer} ${imageOnLeft ? styles.sideBySideImageLeft : ""}`}>
                                         <div className={styles.sideBySideText}>{renderParas(seg.paragraphs)}</div>

@@ -34,28 +34,12 @@ const HERO_DATA = {
   no: {
     title: "Velkommen til Bekkenbunnsportalen.no",
     description: "Dette er en kompetanseportal hvor du finner faglig oppdatert og kvalitetssikret informasjon om ulike tilstander, utredning og behandling innen inkontinens og bekkenbunnsykdom hos både kvinner og menn.",
-    subtitle: "Bekkenbunnsportalen presenteres av Nasjonalt senter for Bekkenbunnshelse (NBH)",
-    conditions: {
-      urinaryIncontinence: "Urinlekkasje",
-      urinaryRetention: "Tømmingsproblemer for urin",
-      fecalIncontinence: "Avføringslekkasje",
-      constipation: "Tømmingsproblemer og forstoppelse for avføring",
-      pelvicPain: "Langvarige underlivssmerter",
-      pregnancy: "Plager under graviditet og etter fødsel"
-    }
+    subtitle: "Bekkenbunnsportalen presenteres av Nasjonalt senter for Bekkenbunnshelse (NBH)"
   },
   en: {
     title: "Welcome to the Pelvic Floor Portal",
     description: "This is a knowledge portal where you will find up-to-date, quality-assured information on conditions, assessment and treatment within incontinence and pelvic floor disorders for both women and men. Here we include that the portal applies to both genders.",
-    subtitle: "Presented by the National Center for Pelvic Floor Health (NBH)",
-    conditions: {
-      urinaryIncontinence: "Urinary Incontinence",
-      urinaryRetention: "Urinary Retention",
-      fecalIncontinence: "Fecal Incontinence",
-      constipation: "Constipation",
-      pelvicPain: "Pelvic Pain",
-      pregnancy: "Pregnancy & Postpartum"
-    }
+    subtitle: "Presented by the National Center for Pelvic Floor Health (NBH)"
   }
 } as const
 
@@ -76,16 +60,39 @@ export const HeroSection = ({ cmsData }: HeroSectionProps) => {
 
   const normalizedTitle = (title || "").replace(/\s+/g, " ").trim()
   const lower = normalizedTitle.toLowerCase()
-  const lowerPrefix = defaultLine1.toLowerCase()
-  const prefixIdx = lower.indexOf(lowerPrefix)
+
+  // Try to strip a known greeting prefix from the CMS title to get just the site name.
+  // Prefixes ordered longest-first so we strip the most specific match.
+  const prefixCandidates = language === "no"
+    ? ["velkommen til"]
+    : ["welcome to the", "welcome to"]
+
+  let strippedLine2 = ""
+  for (const prefix of prefixCandidates) {
+    const idx = lower.indexOf(prefix)
+    if (idx >= 0) {
+      strippedLine2 = normalizedTitle.slice(idx + prefix.length).trim()
+      break
+    }
+  }
 
   const heroTitleLine1 = defaultLine1
   const heroTitleLine2 =
     normalizedTitle.length === 0
       ? defaultLine2
-      : prefixIdx >= 0
-        ? (normalizedTitle.slice(prefixIdx + defaultLine1.length).trim() || defaultLine2)
-        : normalizedTitle
+      : strippedLine2.length > 0
+        ? strippedLine2
+        : defaultLine2
+
+  // Canonical display order for hero condition cards
+  const CONDITION_ORDER = [
+    "urinary-incontinence",
+    "urinary-retention",
+    "fecal-incontinence",
+    "constipation",
+    "pelvic-pain",
+    "pregnancy"
+  ]
 
   const hardcodedIcons: Record<string, string> = {
     "urinary-incontinence": "/image-7.svg",
@@ -96,14 +103,14 @@ export const HeroSection = ({ cmsData }: HeroSectionProps) => {
     "pregnancy": "/vector-2.svg"
   }
 
-  const staticConditionList: HealthCondition[] = [
-    { id: 1, titleKey: staticData.conditions.urinaryIncontinence, icon: "/image-7.svg", route: "urinary-incontinence" },
-    { id: 2, titleKey: staticData.conditions.urinaryRetention, icon: "/vector.svg", route: "urinary-retention" },
-    { id: 3, titleKey: staticData.conditions.fecalIncontinence, icon: "/fecalincontinence.svg", route: "fecal-incontinence" },
-    { id: 4, titleKey: staticData.conditions.constipation, icon: "/constipation.svg", route: "constipation" },
-    { id: 5, titleKey: staticData.conditions.pelvicPain, icon: "/belly--1--1.svg", route: "pelvic-pain" },
-    { id: 6, titleKey: staticData.conditions.pregnancy, icon: "/vector-2.svg", route: "pregnancy" },
-  ]
+  // Sort helper: enforce CONDITION_ORDER for consistent display
+  const sortByOrder = (items: HealthCondition[]): HealthCondition[] => {
+    return [...items].sort((a, b) => {
+      const ai = CONDITION_ORDER.indexOf(a.route)
+      const bi = CONDITION_ORDER.indexOf(b.route)
+      return (ai === -1 ? 999 : ai) - (bi === -1 ? 999 : bi)
+    })
+  }
 
   let healthConditions: HealthCondition[]
   if (cmsData?.conditions && cmsData.conditions.length > 0) {
@@ -119,11 +126,13 @@ export const HeroSection = ({ cmsData }: HeroSectionProps) => {
     if (!hasPregnancy) {
       healthConditions = [
         ...healthConditions,
-        { id: "pregnancy-fallback", titleKey: staticData.conditions.pregnancy, icon: "/vector-2.svg", route: "pregnancy" }
+        { id: "pregnancy-fallback", titleKey: language === 'no' ? "Plager under graviditet og etter fødsel" : "Pregnancy & Postpartum", icon: "/vector-2.svg", route: "pregnancy" }
       ]
     }
+    // Sort to canonical order
+    healthConditions = sortByOrder(healthConditions)
   } else {
-    healthConditions = staticConditionList
+    healthConditions = []
   }
 
   const handleConditionClick = (route: string) => {
